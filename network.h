@@ -14,11 +14,11 @@ class network {
 
     public:
     network(Matrix input_layer, std::vector <int> hidden_layers_sizes, Matrix output_layer)
-        : input_layer(input_layer), hidden_layers(hidden_layers), output_layer(output_layer),
+        : input_layer(input_layer), output_layer(output_layer),
           input_layer_size(input_layer.getRows()), output_layer_size(output_layer.getRows()), hidden_layers_sizes(hidden_layers_sizes) {
     }
 
-    std::vector <Matrix> initialise_hidden_layers();
-    std::vector <Matrix> initialise_weights();
+    void initialise_hidden_layers();
+    void initialise_weights();
     Matrix feed_forward();
 };
