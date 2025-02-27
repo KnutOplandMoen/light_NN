@@ -18,7 +18,7 @@ class network {
           input_layer_size(input_layer.getRows()), output_layer_size(output_layer.getRows()), hidden_layers_sizes(hidden_layers_sizes) {
     }
 
-    std::vector <Matrix> initialise_hidden_layers(std::vector <int> hidden_layers_sizes);
-    std::vector <Matrix> initialise_weights(Matrix input_layer, std::vector <Matrix> hidden_layers, Matrix output_layer);
-    void feed_forward();
+    std::vector <Matrix> initialise_hidden_layers();
+    std::vector <Matrix> initialise_weights();
+    Matrix feed_forward();
 };
