@@ -4,3 +4,6 @@
 std::string test_function() {
     return "Hello, World!";
 }
+std::string hey(){
+    return "hey";
+}
