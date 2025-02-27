@@ -1,7 +1,8 @@
-#include <string>
+#include "functions.h"
 #include <iostream>
+using namespace std;
 
 int main() {
-    std::cout << "Hello, " << "wordld" << "!" << std::endl;
+    cout << test_function() << endl;
     return 0;
 }
