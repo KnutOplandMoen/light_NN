@@ -23,6 +23,24 @@ Matrix& Matrix::operator=(Matrix rhs){
     return *this;
 }
 
+
+Matrix Matrix::operator*(const Matrix &rhs) const {
+    if (cols != rhs.rows){
+        throw std::invalid_argument("Matrix dimensions do not match for multiplication.");
+    }
+    Matrix product(rows, rhs.cols);
+    for (size_t i = 0; i < rows; i++){
+        for (size_t j = 0; j < cols; j++){
+            for (size_t k = 0; k < cols; k++){
+                product[i][j] += data[i][k]*rhs.data[k][j];
+            }
+        }
+    }
+    return product;
+
+}
+
+
 void Matrix::setRandomValues(double lowerBound, double upperBound){
     for (size_t i = 0; i < rows; i++){
         for (size_t j = 0; j < cols; j++){
@@ -46,10 +64,29 @@ std::ostream &operator<<(std::ostream &os, const Matrix &m){
 
 Matrix Matrix::applyActivationFunction(std::string func){
     Matrix activatedMatrix(rows, cols);
-    for (size_t i = 0; i < rows; i++){
-        for (size_t j = 0; j < cols; j++){
-            activatedMatrix[i][j] = sigmoid(data[i][j]);
+    if (func == "sigmoid"){
+        for (size_t i = 0; i < rows; i++){
+            for (size_t j = 0; j < cols; j++){
+                activatedMatrix[i][j] = sigmoid(data[i][j]);
+            }
         }
+    }
+    else if (func == "reLU"){
+        for (size_t i = 0; i < rows; i++){
+            for (size_t j = 0; j < cols; j++){
+                activatedMatrix[i][j] = reLu(data[i][j]);
+            }
+        }
+    }
+    else if (func == "tanH"){
+        for (size_t i = 0; i < rows; i++){
+            for (size_t j = 0; j < cols; j++){
+                activatedMatrix[i][j] = tanh(data[i][j]);
+            }
+        }
+    }
+    else {
+        throw std::invalid_argument("Unknown activation function: " + func);
     }
     return activatedMatrix;
 
