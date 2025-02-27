@@ -21,3 +21,14 @@ std::vector <Matrix> network::initialise_weights(Matrix input_layer, std::vector
     this -> weights = weights;
 }
 
+std::vector <Matrix> network::initialise_hidden_layers(std::vector <int> hidden_layers_sizes) {
+    for (int i = 0; i < hidden_layers_sizes.size(); ++i) {
+        hidden_layers.push_back(Matrix(hidden_layers_sizes[i], 1));
+    }
+}
+
+void network::feed_forward() {
+    for (int i = 0; i < hidden_layers.size(); ++i) {
+        
+    }
+}
