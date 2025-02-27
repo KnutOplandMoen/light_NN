@@ -1,15 +1,12 @@
-#include <string>
 #include "functions.h"
 
-std::string test_function() {
-    return "Hello, World!";
+double randDouble(double lowerBound, double upperBound){
+    std::random_device rnd;
+    std::default_random_engine generator(rnd());
+    std::uniform_real_distribution<double> distribution(lowerBound, upperBound);
+    return distribution(generator);
 }
 
-std::string hey(){
-    return "hey";
-}
-  
-std::string test_function2() {
-    return "Hello, bakkis!2";
-
+double sigmoid(double n){
+    return 1/(1 + exp(-n));
 }

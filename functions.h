@@ -1,6 +1,12 @@
 #pragma once
 #include <iostream>
+#include <cmath>
+#include <random>
 
-#include <string>
+double randDouble(double lowerBound, double upperBound);
 
-std::string test_function(); // Function prototype for test_function() in functions.cpp
+double reLu(double n);
+
+double sigmoid(double n);
+
+double tanH(double n);
