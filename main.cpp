@@ -5,11 +5,6 @@
 #include <vector>
 
 int main() {
-    Matrix m(5,5);
-    std::cout << m;
-    m.setRandomValues(-5.0, 5.0);
-    std::cout << m;
-    std::cout << m.applyActivationFunction("sigmoid");
 
     Matrix input(4, 1);
     std::vector <int> hidden_layers = {2, 2};
@@ -19,5 +14,6 @@ int main() {
     my_net.initialise_hidden_layers();
     my_net.initialise_weights();
     Matrix output_layer = my_net.feed_forward();
+    std::cout << output_layer << std::endl;
     return 0;
 }

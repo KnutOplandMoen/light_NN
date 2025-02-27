@@ -25,20 +25,20 @@ Matrix& Matrix::operator=(Matrix rhs){
 
 
 Matrix Matrix::operator*(const Matrix &rhs) const {
-    if (cols != rhs.rows){
+    if (cols != rhs.rows) {
         throw std::invalid_argument("Matrix dimensions do not match for multiplication.");
     }
     Matrix product(rows, rhs.cols);
     for (size_t i = 0; i < rows; i++){
-        for (size_t j = 0; j < cols; j++){
+        for (size_t j = 0; j < rhs.cols; j++){ // Corrected: iterate over the correct number of columns
             for (size_t k = 0; k < cols; k++){
-                product[i][j] += data[i][k]*rhs.data[k][j];
+                product[i][j] += data[i][k] * rhs.data[k][j];
             }
         }
     }
     return product;
-
 }
+
 
 
 void Matrix::setRandomValues(double lowerBound, double upperBound){
