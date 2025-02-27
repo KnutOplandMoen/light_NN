@@ -31,11 +31,7 @@ Matrix Matrix::operator*(const Matrix &rhs) const {
     }
     Matrix product(rows, rhs.cols);
     for (size_t i = 0; i < rows; i++){
-<<<<<<< HEAD
-        for (size_t j = 0; j < rhs.cols; j++){ // Corrected: iterate over the correct number of columns
-=======
         for (size_t j = 0; j < rhs.cols; j++){
->>>>>>> 259841872b533bef323f4553b3d36fa5b0b8c540
             for (size_t k = 0; k < cols; k++){
                 product[i][j] += data[i][k] * rhs.data[k][j];
             }
