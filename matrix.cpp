@@ -16,6 +16,7 @@ Matrix::Matrix(const Matrix& m) : rows(m.getRows()), cols(m.getCols()){
     }
 }
 
+//assign operation utilizing copy-swap
 Matrix& Matrix::operator=(Matrix rhs){
     std::swap(data, rhs.data);
     std::swap(rows, rhs.rows);
@@ -30,7 +31,7 @@ Matrix Matrix::operator*(const Matrix &rhs) const {
     }
     Matrix product(rows, rhs.cols);
     for (size_t i = 0; i < rows; i++){
-        for (size_t j = 0; j < cols; j++){
+        for (size_t j = 0; j < rhs.cols; j++){
             for (size_t k = 0; k < cols; k++){
                 product[i][j] += data[i][k]*rhs.data[k][j];
             }
@@ -71,7 +72,7 @@ Matrix Matrix::applyActivationFunction(std::string func){
             }
         }
     }
-    else if (func == "reLU"){
+    else if (func == "reLu"){
         for (size_t i = 0; i < rows; i++){
             for (size_t j = 0; j < cols; j++){
                 activatedMatrix[i][j] = reLu(data[i][j]);
