@@ -21,14 +21,24 @@ std::vector <Matrix> network::initialise_weights(Matrix input_layer, std::vector
     this -> weights = weights;
 }
 
+/**
+ *Initialise the hidden layers:
+ *Making Nx1 size vectors depending on inputs given from user in hidden_layers_sizes param
+ */
 std::vector <Matrix> network::initialise_hidden_layers(std::vector <int> hidden_layers_sizes) {
     for (int i = 0; i < hidden_layers_sizes.size(); ++i) {
-        hidden_layers.push_back(Matrix(hidden_layers_sizes[i], 1));
+        hidden_layers.push_back(Matrix(hidden_layers_sizes[i], 1)); //making empty matrixes for the layers in network
     }
 }
 
+/**
+ * Going forward in the network, compputing the node values using matrix multiplication with the weigths
+ * At last the output layer is computed
+ */
 void network::feed_forward() {
-    for (int i = 0; i < hidden_layers.size(); ++i) {
-        
+    hidden_layers[0] = weights[0] * input_layer; //Computing first layer values
+    for (int i = 1; i < hidden_layers.size(); ++i) {
+        hidden_layers[i] = weights[i] * hidden_layers[i-1]; //To do: Add bias and activation function
     }
+    output_layer = weights.back() * hidden_layers.back(); //To do: Add a output function option here on the output layer: for instance softmax
 }
