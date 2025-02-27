@@ -55,6 +55,5 @@
         "list": "cpp",
         "unordered_map": "cpp",
         "xhash": "cpp"
-        "iosfwd": "cpp"
     }
 }
