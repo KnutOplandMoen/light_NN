@@ -11,14 +11,21 @@
  * and the output layer.
  */
 std::vector <Matrix> network::initialise_weights(Matrix input_layer, std::vector <Matrix> hidden_layers, Matrix output_layer) {
-    std::vector <Matrix> weights; 
-    weights.push_back(Matrix(hidden_layers[0].getRows(), input_layer.getRows())); 
-    for (int i = 0; i < hidden_layers.size(); ++i) {
-        weights.push_back(Matrix(hidden_layers[i+1].getRows(), hidden_layers[i].getRows()));
-    }
-    weights.push_back(Matrix(output_layer.getRows(), hidden_layers.back().getRows()));
 
-    this -> weights = weights;
+    Matrix matrix = Matrix(hidden_layers[0].getRows(), input_layer.getRows());
+    matrix.setRandomValues(-0.05, 0.05);
+    weights.push_back(matrix); 
+
+    for (int i = 0; i < hidden_layers.size(); ++i) {
+        Matrix matrix = Matrix(hidden_layers[i+1].getRows(), hidden_layers[i].getRows());
+        matrix.setRandomValues(-0.05, 0.05);
+        weights.push_back(matrix);
+
+    }
+
+    Matrix matrix = Matrix(output_layer.getRows(), hidden_layers.back().getRows());
+    matrix.setRandomValues(-0.05, 0.05);
+    weights.push_back(matrix);
 }
 
 /**
@@ -32,7 +39,7 @@ std::vector <Matrix> network::initialise_hidden_layers(std::vector <int> hidden_
 }
 
 /**
- * Going forward in the network, compputing the node values using matrix multiplication with the weigths
+ * Going forward in the network, computing the node values using matrix multiplication with the weigths
  * At last the output layer is computed
  */
 void network::feed_forward() {
