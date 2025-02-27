@@ -13,7 +13,7 @@ int main() {
     network my_net(input, hidden_layers, output);
     my_net.initialise_hidden_layers();
     my_net.initialise_weights();
-    Matrix output_layer = my_net.feed_forward();
+    Matrix output_layer = my_net.feed_forward(); //test
     std::cout << output_layer << std::endl;
     return 0;
 }
