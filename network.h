@@ -11,14 +11,20 @@ class network {
     int input_layer_size;
     int output_layer_size;
     std::vector <Matrix> weights;
+    std::vector<Matrix> biases;
+    std::string activationFunc;
 
     public:
-    network(Matrix input_layer, std::vector <int> hidden_layers_sizes, Matrix output_layer)
-        : input_layer(input_layer), output_layer(output_layer),
+    network(Matrix input_layer, std::vector <int> hidden_layers_sizes, Matrix output_layer, std::string activationFunc)
+        : activationFunc(activationFunc), input_layer(input_layer), output_layer(output_layer),
           input_layer_size(input_layer.getRows()), output_layer_size(output_layer.getRows()), hidden_layers_sizes(hidden_layers_sizes) {
+        initialise_biases();
+        initialise_hidden_layers();
+        initialise_weights();
     }
 
     void initialise_hidden_layers();
     void initialise_weights();
+    void initialise_biases();
     Matrix feed_forward();
 };
