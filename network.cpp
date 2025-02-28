@@ -38,14 +38,21 @@ void network::initialise_hidden_layers() {
     }
 }
 
+void network::initialise_biases() {
+    for (int i = 0; i < hidden_layers_sizes.size(); i++){
+        biases.push_back(Matrix(hidden_layers_sizes[i], 1));
+    }
+    biases.push_back(Matrix(output_layer_size, 1));
+}
+
 /**
  * Going forward in the network, computing the node values using matrix multiplication with the weigths
  * At last the output layer is computed
  */
 Matrix network::feed_forward() {
-    hidden_layers[0] = weights[0] * input_layer; //Computing first layer values
+    hidden_layers[0] = (weights[0] * input_layer).applyActivationFunction(activationFunc); //Computing first layer values
     for (int i = 1; i < hidden_layers.size() ; ++i) {
-        hidden_layers[i] = weights[i] * hidden_layers[i-1]; //To do: Add bias and activation function
+        hidden_layers[i] = ((weights[i] * hidden_layers[i-1]) + biases[i]).applyActivationFunction(activationFunc); //To do: Add bias and activation function
     }
-    return weights.back() * hidden_layers.back(); //To do: Add a output function option here on the output layer: for instance softmax
+    return ((weights.back() * hidden_layers.back()) + biases.back()).applyActivationFunction(activationFunc); //To do: Add a output function option here on the output layer: for instance softmax
 }

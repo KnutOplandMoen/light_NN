@@ -51,6 +51,7 @@ Matrix Matrix::operator+(const Matrix &rhs) const{
             sum[i][j] = data[i][j] + rhs.data[i][j];
         }
     }
+    return sum;
 }
 
 
