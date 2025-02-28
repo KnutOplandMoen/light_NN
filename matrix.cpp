@@ -41,6 +41,29 @@ Matrix Matrix::operator*(const Matrix &rhs) const {
 }
 
 
+Matrix Matrix::operator+(const Matrix &rhs) const{
+    if (rows != rhs.rows || cols != rhs.cols){
+        throw std::invalid_argument("Dimensions do not match for matrix adding.");
+    }
+    Matrix sum(rows, cols);
+    for (size_t i = 0; i < rows; i++){
+        for (size_t j = 0; j < cols; j++){
+            sum[i][j] = data[i][j] + rhs.data[i][j];
+        }
+    }
+}
+
+
+Matrix Matrix::transposed(){
+    Matrix transposed(cols, rows);
+    for (size_t i = 0; i < rows; i++){
+        for (size_t j = 0; j < cols; j++){
+            transposed[j][i] = data[i][j];
+        }
+    }
+    return transposed;
+}
+
 
 void Matrix::setRandomValues(double lowerBound, double upperBound){
     for (size_t i = 0; i < rows; i++){
