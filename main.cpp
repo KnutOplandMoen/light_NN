@@ -7,10 +7,10 @@
 int main() {
 
     // Define the sizes for input, hidden layers, and output layers
-    std::vector<int> hidden_layers_sizes = {10};  // One hidden layer with 3 neurons
+    std::vector<int> hidden_layers_sizes = {10, 10};  // One hidden layer with 3 neurons
     Matrix input_layer(2, 1);  // Input layer with 2 neurons (2 values)
     Matrix output_layer(20, 1); // Output layer with 1 neuron (1 value)
-    std::vector <std::string> activation_functions = {"reLu", "softmax"}; //activation and output functions, should matrch dimentions of network. 
+    std::vector <std::string> activation_functions = {"reLu", "reLu",  "softmax"}; //activation and output functions, should match be of dim: (1 + number of hidden layers)
 
     input_layer[0][0] = 5; // Example input value 1
     input_layer[1][0] = 5; // Example input value 2
@@ -22,7 +22,9 @@ int main() {
     // Perform the forward pass
     Matrix output = nn.feed_forward();
 
-    nn.visualise_network(true);
+    //Visualise the network
+    bool show_hidden_layers = true;
+    nn.visualise_network(show_hidden_layers);
 
     return 0;
 }

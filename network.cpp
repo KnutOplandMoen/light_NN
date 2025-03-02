@@ -52,7 +52,7 @@ void network::initialise_biases() {
 Matrix network::feed_forward() {
     hidden_layers[0] = (weights[0] * input_layer).applyActivationFunction(activationFuncions[0]); //Computing first layer values
     for (int i = 1; i < hidden_layers.size() ; ++i) {
-        hidden_layers[i] = ((weights[i] * hidden_layers[i-1]) + biases[i]).applyActivationFunction(activationFuncions[i]); //To do: Add bias and activation function
+        hidden_layers[i] = ((weights[i] * hidden_layers[i-1]) + biases[i]).applyActivationFunction(activationFuncions[i]); 
     }
     output_layer = ((weights.back() * hidden_layers.back()) + biases.back()).applyActivationFunction(activationFuncions.back());
     return output_layer; //To do: Add a output function option here on the output layer: for instance softmax
@@ -66,7 +66,7 @@ void network::visualise_network(bool show_hidden) {
         std::cout << "Hidden layers in neural net with corresponding weights: \n" << std::endl;
         std::cout << "weigths Input -> first hidden:\n" << weights[0] << std::endl;
         for (int i = 0; i < hidden_layers.size(); i++) {
-            std::cout << "Layer " << i + 1 << ": \n\n" << hidden_layers[i] << std::endl;
+            std::cout << "Layer " << i + 1 << " with " << activationFuncions[i] << " applied: \n\n" << hidden_layers[i] << std::endl;
             if (i == hidden_layers.size() - 1) {
                 std::cout << "Weights " << i+1 << ". -> Output layer \n" << weights[i+1] << std::endl;
             }
@@ -76,5 +76,11 @@ void network::visualise_network(bool show_hidden) {
         }
     }
     // Print the final output from the network
-    std::cout << "Output Layer: \n" << output_layer << std::endl;
+    std::cout << "Output Layer with " << activationFuncions.back() << " applied: \n" << output_layer << std::endl;
+}
+
+void network::check_params() {
+    if (activationFuncions.size() != hidden_layers_sizes.size() + 1) {
+        throw std::invalid_argument("The number of activation functions must match the number of layers in the network + 1.");
+    }
 }

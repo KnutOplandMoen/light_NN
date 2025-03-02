@@ -4,10 +4,10 @@
 
 class network {
     private:
-    Matrix input_layer;
-    std::vector <Matrix> hidden_layers;
-    std::vector <int> hidden_layers_sizes;
-    Matrix output_layer;
+    Matrix input_layer; // A matrix with input layer values
+    std::vector <Matrix> hidden_layers; //A vector containing the hidden layers
+    std::vector <int> hidden_layers_sizes; //A vector with the sizes of each hiddenlayer
+    Matrix output_layer; // A matrix with output layer values
     int input_layer_size;
     int output_layer_size;
     std::vector <Matrix> weights;
@@ -21,11 +21,15 @@ class network {
         initialise_biases();
         initialise_hidden_layers();
         initialise_weights();
+        check_params();
     }
 
     void initialise_hidden_layers();
     void initialise_weights();
     void initialise_biases();
+    void check_params();
+
     Matrix feed_forward();
     void visualise_network(bool show_hidden);
+
 };

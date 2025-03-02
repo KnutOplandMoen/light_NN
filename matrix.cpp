@@ -121,11 +121,11 @@ Matrix Matrix::applyActivationFunction(std::string func){
         for (size_t i_1 = 0; i_1 < rows; i_1++){
             for (size_t j_1 = 0; j_1 < cols; j_1++){
                 double exponential = std::exp(data[i_1][j_1]);
-                exponential_sum += exponential_sum;
+                exponential_sum += exponential;
                 activatedMatrix[i_1][j_1] = exponential;
             }
         }
-
+        
         for (size_t i_2 = 0; i_2 < rows; i_2++){
             for (size_t j_2 = 0; j_2 < cols; j_2++){
                 activatedMatrix[i_2][j_2] = activatedMatrix[i_2][j_2]/exponential_sum;
