@@ -22,7 +22,7 @@ int main() {
     // Perform the forward pass
     Matrix output = nn.feed_forward();
 
-    //Visualise the network
+    //Visualise the network after the forward pass
     bool show_hidden_layers = true;
     nn.visualise_network(show_hidden_layers);
 

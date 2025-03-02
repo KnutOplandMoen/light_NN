@@ -1,6 +1,7 @@
 #include "matrix.h"
 #include <vector>
 #include "network.h"
+#include "functions.h"
 
 /**
  * Initialise the weights for the neural network layers.
@@ -83,4 +84,8 @@ void network::check_params() {
     if (activationFuncions.size() != hidden_layers_sizes.size() + 1) {
         throw std::invalid_argument("The number of activation functions must match the number of layers in the network + 1.");
     }
+}
+
+void train(std::vector <int> train_x_labels, std::vector <int> train_y_labels, int epochs, double learning_rate) {
+
 }

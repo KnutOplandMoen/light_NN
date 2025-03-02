@@ -20,3 +20,16 @@ double reLu(double n){
     }
 }
 
+double cost(std::vector <double> output_layer, std::vector <double> correct_output_layer) {
+    if (output_layer.size() != correct_output_layer.size()) {
+        throw std::invalid_argument("output_layer and correct output layer must have same dimentions");
+    }
+    else {
+        double cost = 0;
+        for (int i = 0; i < output_layer.size(); ++i) {
+            cost += std::pow((output_layer[i] - correct_output_layer[i]), 2);
+        }
+        return cost; //return cost
+    }
+    
+}
