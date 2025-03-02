@@ -19,3 +19,4 @@ double reLu(double n){
         return n;
     }
 }
+

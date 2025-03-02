@@ -1,4 +1,5 @@
 #include "matrix.h"
+#include <cmath>
 
 //"default" constructor
 Matrix::Matrix(int rows, int cols) : rows(rows), cols(cols){
@@ -79,7 +80,12 @@ std::ostream &operator<<(std::ostream &os, const Matrix &m){
     for (size_t i = 0; i < m.rows; i++){
         os << "[";
         for (size_t j = 0; j < m.cols; j++){
+            if (j == m.cols - 1) {
+                os << m.data.at(i).at(j);
+            }
+            else {
             os << m.data.at(i).at(j) << ", ";
+            }
         }
         os << "]\n";
     }
@@ -107,6 +113,22 @@ Matrix Matrix::applyActivationFunction(std::string func){
         for (size_t i = 0; i < rows; i++){
             for (size_t j = 0; j < cols; j++){
                 activatedMatrix[i][j] = tanh(data[i][j]);
+            }
+        }
+    }
+    else if (func == "softmax") {
+        double exponential_sum = 0;
+        for (size_t i_1 = 0; i_1 < rows; i_1++){
+            for (size_t j_1 = 0; j_1 < cols; j_1++){
+                double exponential = std::exp(data[i_1][j_1]);
+                exponential_sum += exponential_sum;
+                activatedMatrix[i_1][j_1] = exponential;
+            }
+        }
+
+        for (size_t i_2 = 0; i_2 < rows; i_2++){
+            for (size_t j_2 = 0; j_2 < cols; j_2++){
+                activatedMatrix[i_2][j_2] = activatedMatrix[i_2][j_2]/exponential_sum;
             }
         }
     }
