@@ -32,4 +32,6 @@ class network {
     Matrix feed_forward();
     void visualise_network(bool show_hidden);
 
+    void train(std::vector <int> train_x_labels, std::vector <int> train_y_labels, int epochs, double learning_rate);
+
 };
