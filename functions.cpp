@@ -22,7 +22,7 @@ double reLu(double n){
 
 double cost(std::vector <double> output_layer, std::vector <double> correct_output_layer) {
     if (output_layer.size() != correct_output_layer.size()) {
-        throw std::invalid_argument("output_layer and correct output layer must have same dimentions");
+        throw std::invalid_argument("output_layer and correct output layer must have same dimensions");
     }
     else {
         double cost = 0;
