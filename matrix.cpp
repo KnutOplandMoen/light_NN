@@ -92,6 +92,19 @@ std::ostream &operator<<(std::ostream &os, const Matrix &m){
     return os;
 }
 
+Matrix Matrix::operator-(const Matrix& rhs) const {
+    if (rows != rhs.rows || cols != rhs.cols){
+        throw std::invalid_argument("Dimensions do not match for matrix adding.");
+    }
+    Matrix sum(rows, cols);
+    for (size_t i = 0; i < rows; i++){
+        for (size_t j = 0; j < cols; j++){
+            sum[i][j] = data[i][j] - rhs.data[i][j];
+        }
+    }
+    return sum;
+}
+
 
 Matrix Matrix::applyActivationFunction(std::string func){
     Matrix activatedMatrix(rows, cols);
@@ -136,5 +149,24 @@ Matrix Matrix::applyActivationFunction(std::string func){
         throw std::invalid_argument("Unknown activation function: " + func);
     }
     return activatedMatrix;
+
+}
+
+Matrix Matrix::applyActivationFunction_derivative(std::string func) {
+    Matrix activatedMatrix(rows, cols);
+    if (func == "sigmoid"){
+        for (size_t i = 0; i < rows; i++){
+            for (size_t j = 0; j < cols; j++){
+                activatedMatrix[i][j] = d_sigmoid(data[i][j]);
+            }
+        }
+    }
+    else if(func == "ReLu"){
+        for (size_t i = 0; i < rows; i++){
+            for (size_t j = 0; j < cols; j++){
+                activatedMatrix[i][j] = d_ReLu(data[i][j]);
+            }
+        }
+    }
 
 }

@@ -86,6 +86,6 @@ void network::check_params() {
     }
 }
 
-void train(std::vector <int> train_x_labels, std::vector <int> train_y_labels, int epochs, double learning_rate) {
-
+void train(Matrix train_x_labels, Matrix train_y_labels, int epochs, double learning_rate) {
+    
 }
