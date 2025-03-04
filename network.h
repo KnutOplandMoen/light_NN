@@ -30,6 +30,8 @@ class network {
     void check_params();
 
     Matrix feed_forward();
+    Matrix feed_forward_batch(Matrix x_labels) const;
+    std::vector <Matrix> errors(Matrix x_labels, Matrix y_labels) const;
     void visualise_network(bool show_hidden);
 
     void train(std::vector <int> train_x_labels, std::vector <int> train_y_labels, int epochs, double learning_rate);

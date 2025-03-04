@@ -3,7 +3,6 @@
 #include <vector>
 #include <memory>
 #include <algorithm>
-#include "functions.h"
 
 
 
@@ -24,8 +23,10 @@ public:
     std::vector<double>& operator[](size_t index) {return data.at(index);}
     Matrix operator*(const Matrix& rhs) const;
     Matrix operator+(const Matrix& rhs) const;
+    Matrix operator-(const Matrix &rhs) const;
     Matrix transposed();
     Matrix applyActivationFunction(std::string func);
+    Matrix applyActivationFunction_derivative(std::string func);
 
 };
 

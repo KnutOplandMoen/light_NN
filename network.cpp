@@ -59,6 +59,39 @@ Matrix network::feed_forward() {
     return output_layer; //To do: Add a output function option here on the output layer: for instance softmax
 }
 
+Matrix network::feed_forward_batch(Matrix x_labels) const{
+    std::vector<Matrix> hidden_layers_copy = hidden_layers;
+    Matrix output_layer_copy = output_layer;
+
+    hidden_layers_copy[0] = (weights[0] * x_labels).applyActivationFunction(activationFuncions[0]); //Computing first layer values
+    for (int i = 1; i < hidden_layers.size() ; ++i) {
+        hidden_layers_copy[i] = ((weights[i] * hidden_layers[i-1]) + biases[i]).applyActivationFunction(activationFuncions[i]); 
+    }
+    output_layer_copy = ((weights.back() * hidden_layers.back()) + biases.back()).applyActivationFunction(activationFuncions.back());
+    return output_layer_copy; //To do: Add a output function option here on the output layer: for instance softmax
+}
+
+std::vector <Matrix> network::errors(Matrix x_labels, Matrix y_labels) const {
+
+    //Making copy
+    Matrix output_layer_copy = feed_forward_batch(x_labels);
+    std::vector<Matrix> hidden_layers_copy = hidden_layers;
+    std::vector <Matrix> weights_copy = weights;
+
+    std::vector <Matrix> errors;
+
+    Matrix error_prev = output_layer_copy - y_labels;
+    errors.push_back(error_prev);
+
+    for (int i = hidden_layers.size() - 1; i >= 0; --i) {
+        Matrix error = hadamard((weights_copy[i+1].transposed() * error_prev), hidden_layers_copy[i].applyActivationFunction_derivative(activationFuncions[i]));
+        error_prev = error;
+        errors.push_back(error_prev);
+    }
+    return errors;
+}
+
+
 void network::visualise_network(bool show_hidden) {
     // Print the results
     std::cout << "Input Layer: \n" << input_layer << std::endl;
