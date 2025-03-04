@@ -48,22 +48,35 @@ double d_ReLu(double z) {
     }
 }
 
-double Error_layer(Matrix train_y_labels, Matrix output_layer, std::vector <std::string> activation_functions, std::vector <Matrix> hidden_layers) {
-    Matrix error1(output_layer.getRows(), 1);
-    Matrix error2(output_layer.getRows(), 1);
+Matrix hademan(Matrix a, Matrix b) {
+    int rows = a.getRows();
+    int cols = a.getCols();
+    if (rows != b.getRows() || cols != b.getCols()){
+        throw std::invalid_argument("Dimensions do not match for matrix adding.");
+    }
+    Matrix sum(rows, cols);
+    for (size_t i = 0; i < rows; i++){
+        for (size_t j = 0; j < cols; j++){
+            sum[i][j] = a[i][j] * b[i][j];
+        }
+    }
+    return sum;
+}
+
+double Error_layer(Matrix train_y_labels, Matrix output_layer, std::vector <std::string> activation_functions, std::vector <Matrix> hidden_layers, std::vector <Matrix> weights) {
+    Matrix current_error(output_layer.getRows(), 1);
+    Matrix prev_error(output_layer.getRows(), 1);
+    prev_error = output_layer - train_y_labels;
+
     for (int i = hidden_layers.size() - 1; i >= 0; --i) {
-        if (activation_functions[i+1] == "sigmoid") {
-            error1 = output_layer - train_y_labels;
-        }
+        if (activation_functions[i] == "ReLu") {
+            current_error = hademan((weights[i+1].transposed() * prev_error), hidden_layers[i].applyActivationFunction_derivative("ReLu")); 
+            prev_error = current_error;
+                    }
 
-        else if (activation_functions[i+1] == "ReLu") {
-            error2 = hidden_layers[i].applyActivationFunction_derivative("ReLu") - error1; //TODO: should use haneman product!
-            error1 = error2;
-        }
-
-        else if (activation_functions[i+1] == "sigmoid") {
-            error2 = hidden_layers[i].applyActivationFunction_derivative("sigmoid") - error1;
-            error1 = error2;
+        else if (activation_functions[i] == "sigmoid") {
+            current_error = hademan((weights[i+1].transposed() * prev_error), hidden_layers[i].applyActivationFunction_derivative("sigmoid")); 
+            prev_error = current_error;
         }
     } 
 }
