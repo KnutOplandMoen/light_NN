@@ -59,6 +59,8 @@ Matrix network::feed_forward() {
     return output_layer; //To do: Add a output function option here on the output layer: for instance softmax
 }
 
+
+
 void network::visualise_network(bool show_hidden) {
     // Print the results
     std::cout << "Input Layer: \n" << input_layer << std::endl;
@@ -86,6 +88,34 @@ void network::check_params() {
     }
 }
 
-void train(Matrix train_x_labels, Matrix train_y_labels, int epochs, double learning_rate) {
-    
+std::vector <Matrix> network::get_errors(Matrix train_x_labels, Matrix train_y_labels) {
+
+    std::vector <Matrix> hidden_layers_minibatch = feed_forward_batch(train_x_labels, hidden_layers, weights, activationFuncions, biases);
+
+    Matrix output_layer_minibatch = hidden_layers_minibatch.back();
+    hidden_layers_minibatch.pop_back();
+
+    Matrix current_error(output_layer_minibatch.getRows(), 1);
+    Matrix prev_error(output_layer_minibatch.getRows(), 1);
+    std::vector <Matrix> errors;
+
+    prev_error = output_layer_minibatch - train_y_labels;
+    errors.push_back(prev_error);
+
+    for (int i = hidden_layers.size() - 1; i >= 0; --i) {
+        if (activationFuncions[i] == "ReLu") {
+            current_error = hademan((weights[i+1].transposed() * prev_error), hidden_layers_minibatch[i].applyActivationFunction_derivative("ReLu")); 
+            prev_error = current_error;
+            errors.push_back(current_error);
+        }
+
+        else if (activationFuncions[i] == "sigmoid") {
+            current_error = hademan((weights[i+1].transposed() * prev_error), hidden_layers_minibatch[i].applyActivationFunction_derivative("sigmoid")); 
+            prev_error = current_error;
+            errors.push_back(current_error);
+        }
+    } 
+    errors = std::reverse(errors.begin(), errors.end());
+    return 
 }
+

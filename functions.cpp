@@ -1,5 +1,6 @@
 #include "functions.h"
 #include "matrix.h"
+#include "network.h"
 
 double randDouble(double lowerBound, double upperBound){
     std::random_device rnd;
@@ -63,20 +64,22 @@ Matrix hademan(Matrix a, Matrix b) {
     return sum;
 }
 
-double Error_layer(Matrix train_y_labels, Matrix output_layer, std::vector <std::string> activation_functions, std::vector <Matrix> hidden_layers, std::vector <Matrix> weights) {
-    Matrix current_error(output_layer.getRows(), 1);
-    Matrix prev_error(output_layer.getRows(), 1);
-    prev_error = output_layer - train_y_labels;
+std::vector <Matrix> feed_forward_batch(Matrix input_layer, std::vector <Matrix> hidden_layers_batch, std::vector <Matrix> weights, std::vector <std::string> activationFuncions, std::vector <Matrix> biases) {
+    hidden_layers_batch[0] = (weights[0] * input_layer).applyActivationFunction(activationFuncions[0]); //Computing first layer values
+    for (int i = 1; i < hidden_layers_batch.size() ; ++i) {
+        hidden_layers_batch[i] = ((weights[i] * hidden_layers_batch[i-1]) + biases[i]).applyActivationFunction(activationFuncions[i]); 
+    }
+    hidden_layers_batch.push_back(((weights.back() * hidden_layers_batch.back()) + biases.back()).applyActivationFunction(activationFuncions.back()));
+    return hidden_layers_batch; //To do: Add a output function option here on the output layer: for instance softmax
+}
 
-    for (int i = hidden_layers.size() - 1; i >= 0; --i) {
-        if (activation_functions[i] == "ReLu") {
-            current_error = hademan((weights[i+1].transposed() * prev_error), hidden_layers[i].applyActivationFunction_derivative("ReLu")); 
-            prev_error = current_error;
-                    }
+Matrix sum_gradient_layer(std::vector <Matrix> errors, std::vector <Matrix> layers) {
+    Matrix m1 = errors.back() * layers[layers.size() - 2].transposed();
+    Matrix sum = m1;
+    for (int i = layers.size() - 1; i >= 0; --i) {
+        sum = (errors[i] * layers[i].transposed()) + m1;
+        m1 = errors[i] * layers[i].transposed();
+    }
 
-        else if (activation_functions[i] == "sigmoid") {
-            current_error = hademan((weights[i+1].transposed() * prev_error), hidden_layers[i].applyActivationFunction_derivative("sigmoid")); 
-            prev_error = current_error;
-        }
-    } 
+    return sum;
 }
