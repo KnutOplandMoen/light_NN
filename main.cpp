@@ -9,7 +9,7 @@ int main() {
     // Define the sizes for input, hidden layers, and output layers
     std::vector<int> hidden_layers_sizes = {10, 10};  // One hidden layer with 3 neurons
     Matrix input_layer(3, 1);  // Input layer with 2 neurons (2 values)
-    Matrix output_layer(3, 1); // Output layer with 1 neuron (1 value)
+    Matrix output_layer(10, 1); // Output layer with 1 neuron (1 value)
     std::vector <std::string> activation_functions = {"reLu", "reLu",  "softmax"}; //activation and output functions, should match be of dim: (1 + number of hidden layers)
 
     input_layer[0][0] = 5; // Example input value 1
@@ -27,12 +27,14 @@ int main() {
     bool show_hidden_layers = false;
     nn.visualise_network(show_hidden_layers);
 
-    Matrix y_labels = input_layer;
-    Matrix x_labels = input_layer;
-    std::vector <Matrix> error = nn.errors(x_labels, y_labels);
-    std::cout << "errors with len " << error.size() << std::endl;
-    for (int i = 0; i < error.size(); ++i) {
-    std::cout << error[i] << std::endl;
-    }
+    Matrix y_label(10, 1);
+    y_label[1][0] = 1;
+    std::vector <Matrix> y_labels_train = {y_label};
+    std::vector <Matrix> x_labels_train = {input_layer};
+    
+    nn.train(x_labels_train, y_labels_train, 10, 0.4,  1);
+
+    nn.visualise_network(show_hidden_layers);
+    
     return 0;
 }

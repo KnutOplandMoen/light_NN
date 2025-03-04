@@ -71,7 +71,7 @@ Matrix network::feed_forward_batch(Matrix x_labels) const{
     return output_layer_copy; //To do: Add a output function option here on the output layer: for instance softmax
 }
 
-std::vector <Matrix> network::errors(Matrix x_labels, Matrix y_labels) const { //Backpropagating through network to get errors for each layer
+std::vector <Matrix> network::get_errors(Matrix x_labels, Matrix y_labels) const { //Backpropagating through network to get errors for each layer
     //Making copy
     Matrix output_layer_copy = feed_forward_batch(x_labels);
     std::vector<Matrix> hidden_layers_copy = hidden_layers;
@@ -90,13 +90,17 @@ std::vector <Matrix> network::errors(Matrix x_labels, Matrix y_labels) const { /
     return errors;
 }
 
-std::vector <Matrix> network::gradient_descent_weights(std::vector <std::vector <Matrix>> errors, double learning_rate) {
+void network::gradient_descent_weights(std::vector <std::vector <Matrix>> errors, double learning_rate) {
     std::vector <Matrix> sum;
+    std::cout << "error[0].size: " << errors[0].size() << std::endl;
     for (int i = 0; i < errors[0].size(); ++i) {
         int layer_col_size = errors[0][i].getCols();
         int layer_row_size = errors[0][i].getRows();
-        sum.push_back(Matrix(layer_row_size, layer_col_size));
+        Matrix error(layer_row_size, layer_col_size);
+        sum.push_back(error);
     }
+
+    std::cout << "collected errors "<< std::endl;
 
     for (int trening = 0; trening < errors.size(); trening++) {
         for (int lag = 0; lag < errors[trening].size(); lag++) {
@@ -104,11 +108,27 @@ std::vector <Matrix> network::gradient_descent_weights(std::vector <std::vector 
         } 
     }
 
+    std::cout << "added sum" << std::endl;
+
     for (int layer = 0; layer < weights.size(); ++layer) {
-        weights[layer] = weights[layer] - divideByNumber(sum[layer] * hidden_layers[layer].transposed(), learning_rate/errors.size());
+        std::cout << "in layer: " << layer << std::endl;
+        Matrix step = sum[layer] * hidden_layers[layer-1].transposed(); //TODO -> her skjer noe fakk
+        std::cout << "step: " << step << std::endl;
+        weights[layer] = weights[layer] - divideByNumber(step, learning_rate/errors.size());
     }
+
+    std::cout << "gradient descent done" << std::endl;
 }
 
+void network::train(std::vector <Matrix> train_x_labels, std::vector <Matrix> train_y_labels, int epochs, double learning_rate, int batch_size) {
+    std::vector <std::vector <Matrix>> errors;
+    for (int i = 0; i < batch_size; ++i) {
+        std::vector <Matrix> error = get_errors(train_x_labels[i], train_y_labels[i]);
+        errors.push_back(error);
+    }
+    std::cout << "error size: " << errors.size() << std::endl;
+    gradient_descent_weights(errors, learning_rate);
+}
 
 void network::visualise_network(bool show_hidden) {
     // Print the results

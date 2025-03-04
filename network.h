@@ -31,11 +31,11 @@ class network {
 
     Matrix feed_forward();
     Matrix feed_forward_batch(Matrix x_labels) const;
-    std::vector <Matrix> errors(Matrix x_labels, Matrix y_labels) const;
-    std::vector <Matrix> gradient_descent_weights(std::vector <std::vector <Matrix>> errors, double learning_rate);
+    std::vector <Matrix> get_errors(Matrix x_labels, Matrix y_labels) const;
+    void gradient_descent_weights(std::vector <std::vector <Matrix>> errors, double learning_rate);
 
     void visualise_network(bool show_hidden);
 
-    void train(std::vector <int> train_x_labels, std::vector <int> train_y_labels, int epochs, double learning_rate);
+    void train(std::vector <Matrix> train_x_labels, std::vector <Matrix> train_y_labels, int epochs, double learning_rate, int batch_size);
 
 };
