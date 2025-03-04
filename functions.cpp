@@ -63,3 +63,15 @@ Matrix hadamard(Matrix m1, Matrix m2) {
     }
     return result;
 }
+
+Matrix divideByNumber(Matrix m, double number) {
+    int cols = m.getCols();
+    int rows = m.getRows();
+    Matrix result(rows, cols);
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            result[i][j] = m[i][j] / number;
+        }
+    }
+    return result;
+}

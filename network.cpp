@@ -71,8 +71,7 @@ Matrix network::feed_forward_batch(Matrix x_labels) const{
     return output_layer_copy; //To do: Add a output function option here on the output layer: for instance softmax
 }
 
-std::vector <Matrix> network::errors(Matrix x_labels, Matrix y_labels) const {
-
+std::vector <Matrix> network::errors(Matrix x_labels, Matrix y_labels) const { //Backpropagating through network to get errors for each layer
     //Making copy
     Matrix output_layer_copy = feed_forward_batch(x_labels);
     std::vector<Matrix> hidden_layers_copy = hidden_layers;
@@ -89,6 +88,25 @@ std::vector <Matrix> network::errors(Matrix x_labels, Matrix y_labels) const {
         errors.push_back(error_prev);
     }
     return errors;
+}
+
+std::vector <Matrix> network::gradient_descent_weights(std::vector <std::vector <Matrix>> errors, double learning_rate) {
+    std::vector <Matrix> sum;
+    for (int i = 0; i < errors[0].size(); ++i) {
+        int layer_col_size = errors[0][i].getCols();
+        int layer_row_size = errors[0][i].getRows();
+        sum.push_back(Matrix(layer_row_size, layer_col_size));
+    }
+
+    for (int trening = 0; trening < errors.size(); trening++) {
+        for (int lag = 0; lag < errors[trening].size(); lag++) {
+            sum[lag] = sum [lag] + errors[trening][lag];
+        } 
+    }
+
+    for (int layer = 0; layer < weights.size(); ++layer) {
+        weights[layer] = weights[layer] - divideByNumber(sum[layer] * hidden_layers[layer].transposed(), learning_rate/errors.size());
+    }
 }
 
 
