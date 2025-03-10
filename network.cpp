@@ -65,9 +65,9 @@ Matrix network::feed_forward_batch(Matrix x_labels) const{
 
     hidden_layers_copy[0] = (weights[0] * x_labels).applyActivationFunction(activationFuncions[0]); //Computing first layer values
     for (int i = 1; i < hidden_layers.size() ; ++i) {
-        hidden_layers_copy[i] = ((weights[i] * hidden_layers[i-1]) + biases[i]).applyActivationFunction(activationFuncions[i]); 
+        hidden_layers_copy[i] = ((weights[i] * hidden_layers_copy[i-1]) + biases[i]).applyActivationFunction(activationFuncions[i]); 
     }
-    output_layer_copy = ((weights.back() * hidden_layers.back()) + biases.back()).applyActivationFunction(activationFuncions.back());
+    output_layer_copy = ((weights.back() * hidden_layers_copy.back()) + biases.back()).applyActivationFunction(activationFuncions.back());
     return output_layer_copy; //To do: Add a output function option here on the output layer: for instance softmax
 }
 
@@ -112,6 +112,8 @@ void network::gradient_descent_weights(std::vector <std::vector <Matrix>> errors
 
     for (int layer = 0; layer < weights.size(); ++layer) {
         std::cout << "in layer: " << layer << std::endl;
+        std::cout << "sum: " << sum[layer] << std::endl;
+        std::cout << "transpsed: " << hidden_layers[layer-1] << std::endl;
         Matrix step = sum[layer] * hidden_layers[layer-1].transposed(); //TODO -> her skjer noe fakk
         std::cout << "step: " << step << std::endl;
         weights[layer] = weights[layer] - divideByNumber(step, learning_rate/errors.size());
