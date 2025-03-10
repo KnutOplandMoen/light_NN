@@ -7,14 +7,17 @@
 int main() {
 
     // Define the sizes for input, hidden layers, and output layers
-    std::vector<int> hidden_layers_sizes = {10, 10};  // One hidden layer with 3 neurons
-    Matrix input_layer(3, 1);  // Input layer with 2 neurons (2 values)
-    Matrix output_layer(10, 1); // Output layer with 1 neuron (1 value)
+    std::vector<int> hidden_layers_sizes = {20, 20};  // One hidden layer with 3 neurons
+    Matrix input_layer(4, 1);  // Input layer with 3 neurons corresponfing to ax^2 + bx + c, where a, b, c, x are the inputs
+    Matrix output_layer(10, 1); // Output layer with 10 neuron (numbers 1-10) for classification
     std::vector <std::string> activation_functions = {"reLu", "reLu",  "softmax"}; //activation and output functions, should match be of dim: (1 + number of hidden layers)
 
-    input_layer[0][0] = 5; // Example input value 1
-    input_layer[1][0] = 5; // Example input value 2
-    input_layer[2][0] = 2;
+    input_layer[0][0] = 0; // Example input value 1
+    input_layer[1][0] = 0; // Example input value 2
+    input_layer[2][0] = 2; // Example input value 3
+    input_layer[3][0] = 1; // Example input value 4
+
+    //should return 1 for the number 2
 
     // Initialize the network with the layers
     network nn(input_layer, hidden_layers_sizes, output_layer, activation_functions);
@@ -29,11 +32,16 @@ int main() {
 
     Matrix y_label(10, 1);
     y_label[1][0] = 1;
+    std::cout << "y_label: \n" << y_label << std::endl;
     std::vector <Matrix> y_labels_train = {y_label};
     std::vector <Matrix> x_labels_train = {input_layer};
     
-    nn.train(x_labels_train, y_labels_train, 10, 0.4,  1);
+    int epochs = 100;
+    double learning_rate = 0.4;
+    double batch_size = 1;
+    nn.train(x_labels_train, y_labels_train, epochs, learning_rate,  batch_size);
 
+    nn.feed_forward();
     nn.visualise_network(show_hidden_layers);
     
     return 0;

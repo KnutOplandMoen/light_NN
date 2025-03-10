@@ -20,3 +20,5 @@ double cost(std::vector <double> output_layer, std::vector <double> correct_outp
 Matrix hadamard(Matrix m1, Matrix m2);
 
 Matrix divideByNumber(Matrix m, double number);
+
+std::vector <std::vector<Matrix>> get_data(int dim_x, int dim_y);

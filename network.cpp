@@ -59,21 +59,34 @@ Matrix network::feed_forward() {
     return output_layer; //To do: Add a output function option here on the output layer: for instance softmax
 }
 
-Matrix network::feed_forward_batch(Matrix x_labels) const{
+std::vector <std::vector<Matrix>> network::feed_forward_batch(Matrix x_labels) const{
     std::vector<Matrix> hidden_layers_copy = hidden_layers;
+    std::vector<Matrix> activation;
+    std::vector<Matrix> weigted_inputs;
+
     Matrix output_layer_copy = output_layer;
 
     hidden_layers_copy[0] = (weights[0] * x_labels).applyActivationFunction(activationFuncions[0]); //Computing first layer values
+    activation.push_back(hidden_layers_copy[0]);
+    weigted_inputs.push_back(weights[0] * x_labels);
+
     for (int i = 1; i < hidden_layers.size() ; ++i) {
         hidden_layers_copy[i] = ((weights[i] * hidden_layers_copy[i-1]) + biases[i]).applyActivationFunction(activationFuncions[i]); 
+        activation.push_back(hidden_layers_copy[i]);
+        weigted_inputs.push_back(weights[i] * hidden_layers_copy[i-1]);
     }
     output_layer_copy = ((weights.back() * hidden_layers_copy.back()) + biases.back()).applyActivationFunction(activationFuncions.back());
-    return output_layer_copy; //To do: Add a output function option here on the output layer: for instance softmax
+    activation.push_back(output_layer_copy);
+    weigted_inputs.push_back(weights.back() * hidden_layers_copy.back());
+    return {activation, weigted_inputs}; //To do: Add a output function option here on the output layer: for instance softmax
 }
 
 std::vector <Matrix> network::get_errors(Matrix x_labels, Matrix y_labels) const { //Backpropagating through network to get errors for each layer
     //Making copy
-    Matrix output_layer_copy = feed_forward_batch(x_labels);
+    std::vector <std::vector<Matrix>> feed_forward = feed_forward_batch(x_labels);
+    Matrix output_layer_copy = feed_forward[0].back();
+    std::vector<Matrix> activated_layers = feed_forward[0];
+    std::vector<Matrix> weigted_inputs = feed_forward[1];
     std::vector<Matrix> hidden_layers_copy = hidden_layers;
     std::vector <Matrix> weights_copy = weights;
 
@@ -83,53 +96,55 @@ std::vector <Matrix> network::get_errors(Matrix x_labels, Matrix y_labels) const
     errors.push_back(error_prev);
 
     for (int i = hidden_layers.size() - 1; i >= 0; --i) {
-        Matrix error = hadamard((weights_copy[i+1].transposed() * error_prev), hidden_layers_copy[i].applyActivationFunction_derivative(activationFuncions[i]));
+        Matrix error = hadamard((weights_copy[i+1].transposed() * error_prev), weigted_inputs[i].applyActivationFunction_derivative(activationFuncions[i]));
         error_prev = error;
         errors.push_back(error_prev);
     }
+    std::cout << "errors size: " << errors.size() << std::endl;
     return errors;
 }
 
-void network::gradient_descent_weights(std::vector <std::vector <Matrix>> errors, double learning_rate) {
+// Gradient descent for weights
+void network::gradient_descent_weights(std::vector <std::vector <Matrix>> errors, double learning_rate, Matrix x_labels) {
     std::vector <Matrix> sum;
-    std::cout << "error[0].size: " << errors[0].size() << std::endl;
-    for (int i = 0; i < errors[0].size(); ++i) {
-        int layer_col_size = errors[0][i].getCols();
-        int layer_row_size = errors[0][i].getRows();
+
+    //Making empty matrices for the sum of errors
+    for (int i = 0; i < weights.size(); ++i) {
+        int layer_col_size = weights[i].getCols();
+        int layer_row_size = weights[i].getRows();
         Matrix error(layer_row_size, layer_col_size);
         sum.push_back(error);
     }
 
-    std::cout << "collected errors "<< std::endl;
+    std::vector <std::vector<Matrix>> feed_forward = feed_forward_batch(x_labels); //Getting the feed forward values
+    Matrix output_layer_copy = feed_forward[0].back(); //Getting the output layer
+    std::vector<Matrix> activated_layers = feed_forward[0]; //Getting the activated layers
 
-    for (int trening = 0; trening < errors.size(); trening++) {
+    activated_layers.insert(activated_layers.begin(), x_labels); //Inserting the input layer to the activated layers
+    for (int trening = 0; trening < hidden_layers.size(); trening++) { //Going through the errors
+
         for (int lag = 0; lag < errors[trening].size(); lag++) {
-            sum[lag] = sum [lag] + errors[trening][lag];
+            sum[lag] = sum[lag] + (errors[trening][errors[trening].size() - lag - 1]*activated_layers[lag].transposed()); //Adding the errors * the activated layers transposed to sum
         } 
+
     }
 
-    std::cout << "added sum" << std::endl;
-
     for (int layer = 0; layer < weights.size(); ++layer) {
-        std::cout << "in layer: " << layer << std::endl;
-        std::cout << "sum: " << sum[layer] << std::endl;
-        std::cout << "transpsed: " << hidden_layers[layer-1] << std::endl;
-        Matrix step = sum[layer] * hidden_layers[layer-1].transposed(); //TODO -> her skjer noe fakk
-        std::cout << "step: " << step << std::endl;
-        weights[layer] = weights[layer] - divideByNumber(step, learning_rate/errors.size());
+
+        weights[layer] = weights[layer] - divideByNumber(sum[layer], errors.size()/learning_rate); //Updating the weights
+
     }
 
     std::cout << "gradient descent done" << std::endl;
 }
 
-void network::train(std::vector <Matrix> train_x_labels, std::vector <Matrix> train_y_labels, int epochs, double learning_rate, int batch_size) {
+void network::train(std::vector <Matrix> train_x_labels, std::vector <Matrix> train_y_labels, int epochs, double learning_rate, int batch_size) { //Training the network
     std::vector <std::vector <Matrix>> errors;
     for (int i = 0; i < batch_size; ++i) {
         std::vector <Matrix> error = get_errors(train_x_labels[i], train_y_labels[i]);
         errors.push_back(error);
     }
-    std::cout << "error size: " << errors.size() << std::endl;
-    gradient_descent_weights(errors, learning_rate);
+    gradient_descent_weights(errors, learning_rate, train_x_labels[0]);
 }
 
 void network::visualise_network(bool show_hidden) {

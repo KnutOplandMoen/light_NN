@@ -1,5 +1,7 @@
 #include "functions.h"
 #include "matrix.h"
+#include <fstream>
+#include <string>
 
 double randDouble(double lowerBound, double upperBound){
     std::random_device rnd;
@@ -74,4 +76,31 @@ Matrix divideByNumber(Matrix m, double number) {
         }
     }
     return result;
+}
+
+std::vector <std::vector<Matrix>> get_data(int dim_x, int dim_y) {
+    std::ifstream file("data.txt");
+    std::vector <Matrix> y_labels;
+    std::vector <Matrix> x_labels;
+
+    if (!file) {
+        std::cerr << "Could not open the file!" << std::endl;
+    }
+    else {
+        std::string line;
+        while (std::getline(file, line)) {
+            Matrix y_vector(dim_y, 1);
+            Matrix x_vector(dim_x, 1);
+            for (int i = 0; i < dim_y; ++i) {
+                y_vector[i][0] = line[i+dim_x] - '0';
+            }
+            for (int i = 0; i < dim_x; ++i) {
+                char temp = line[i];
+                x_vector[i][0] = temp - '0';
+            }
+            y_labels.push_back(y_vector);
+            x_labels.push_back(x_vector);
+        }
+        return {x_labels, y_labels};
+    }
 }

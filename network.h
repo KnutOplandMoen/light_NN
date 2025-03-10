@@ -30,9 +30,9 @@ class network {
     void check_params();
 
     Matrix feed_forward();
-    Matrix feed_forward_batch(Matrix x_labels) const;
+    std::vector <std::vector<Matrix>> feed_forward_batch(Matrix x_labels) const;
     std::vector <Matrix> get_errors(Matrix x_labels, Matrix y_labels) const;
-    void gradient_descent_weights(std::vector <std::vector <Matrix>> errors, double learning_rate);
+    void gradient_descent_weights(std::vector <std::vector <Matrix>> errors, double learning_rate, Matrix x_labels);
 
     void visualise_network(bool show_hidden);
 
