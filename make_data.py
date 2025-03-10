@@ -13,11 +13,11 @@ def generate_quadratic_samples(num_samples=5):
         y = (a * (x ** 2) + b * x + c) 
 
         # Create one-hot encoded output matrix
-        if not y > 9:
+        if not y >= 10:
             output_matrix = [0] * 11
             output_matrix[y] = 1  # Set the correct index to 1
 
-            samples.append(f"{a, b, c, x}\n{output_matrix}")
+            samples.append(f"{a, b, c, x}{output_matrix}")
 
     return samples
 

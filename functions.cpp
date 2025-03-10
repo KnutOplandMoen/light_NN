@@ -98,6 +98,8 @@ std::vector <std::vector<Matrix>> get_data(int dim_x, int dim_y) {
                 char temp = line[i];
                 x_vector[i][0] = temp - '0';
             }
+            std::cout << y_vector << std::endl;
+            std::cout << x_vector << std::endl;
             y_labels.push_back(y_vector);
             x_labels.push_back(x_vector);
         }
