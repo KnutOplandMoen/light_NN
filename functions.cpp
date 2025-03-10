@@ -79,12 +79,12 @@ Matrix divideByNumber(Matrix m, double number) {
 }
 
 std::vector <std::vector<Matrix>> get_data(int dim_x, int dim_y) {
-    std::ifstream file("data.txt");
+    std::ifstream file("c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\Data.txt");
     std::vector <Matrix> y_labels;
     std::vector <Matrix> x_labels;
 
     if (!file) {
-        std::cerr << "Could not open the file!" << std::endl;
+       throw std::invalid_argument("Could not open the file!");
     }
     else {
         std::string line;

@@ -13,6 +13,7 @@ class network {
     std::vector <Matrix> weights;
     std::vector<Matrix> biases;
     std::vector <std::string> activationFuncions;
+    double loss;
 
     public:
     network(Matrix input_layer, std::vector <int> hidden_layers_sizes, Matrix output_layer, std::vector <std::string> activationFuncions)
@@ -31,10 +32,13 @@ class network {
 
     Matrix feed_forward();
     std::vector <std::vector<Matrix>> feed_forward_batch(Matrix x_labels) const;
-    std::vector <Matrix> get_errors(Matrix x_labels, Matrix y_labels) const;
+    std::vector <Matrix> get_errors(Matrix x_labels, Matrix y_labels) ;
     void gradient_descent_weights(std::vector <std::vector <Matrix>> errors, double learning_rate, Matrix x_labels);
+    void gradient_descent_biases(std::vector <std::vector <Matrix>> errors, double learning_rate, Matrix x_labels);
 
     void visualise_network(bool show_hidden);
+
+    void update_loss(Matrix predicted, Matrix correct);
 
     void train(std::vector <Matrix> train_x_labels, std::vector <Matrix> train_y_labels, int epochs, double learning_rate, int batch_size);
 

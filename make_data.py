@@ -21,9 +21,11 @@ def generate_quadratic_samples(num_samples=5):
 
     return samples
 
-# Generate and print 5 samples
-for i in generate_quadratic_samples(10):
-    for j in i:
-        if j.isdigit():
+with open("Data.txt", "w") as f:
+    for sample in generate_quadratic_samples(100):
+        l = ""
+        for j in sample:
+            if j.isdigit():
+                l+=j
             print(j, end="")
-    print("'\n")
+        f.write(l + "\n")
