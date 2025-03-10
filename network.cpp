@@ -129,7 +129,7 @@ void network::gradient_descent_weights(std::vector <std::vector <Matrix>> errors
     std::vector<Matrix> activated_layers = feed_forward[0]; //Getting the activated layers
 
     activated_layers.insert(activated_layers.begin(), x_labels); //Inserting the input layer to the activated layers
-    for (int trening = 0; trening < hidden_layers.size(); trening++) { //Going through the errors
+    for (int trening = 0; trening < errors.size(); trening++) { //Going through the errors
 
         for (int lag = 0; lag < errors[trening].size(); lag++) {
             sum[lag] = sum[lag] + (errors[trening][errors[trening].size() - lag - 1]*activated_layers[lag].transposed()); //Adding the errors * the activated layers transposed to sum
@@ -162,7 +162,7 @@ void network::gradient_descent_biases(std::vector <std::vector <Matrix>> errors,
     std::vector<Matrix> activated_layers = feed_forward[0]; //Getting the activated layers
 
     activated_layers.insert(activated_layers.begin(), x_labels); //Inserting the input layer to the activated layers
-    for (int trening = 0; trening < hidden_layers.size(); trening++) { //Going through the errors
+    for (int trening = 0; trening < errors.size(); trening++) { //Going through the errors
 
         for (int lag = 0; lag < errors[trening].size(); lag++) {
             sum[lag] = sum[lag] + (errors[trening][errors[trening].size() - lag - 1]); //Adding the errors * the activated layers transposed to sum
@@ -188,8 +188,8 @@ void network::train(std::vector <Matrix> train_x_labels, std::vector <Matrix> tr
                 std::vector <Matrix> error = get_errors(train_x_labels[j], train_y_labels[j]);
                 errors.push_back(error);
             }
-            gradient_descent_weights(errors, learning_rate, train_x_labels[0]);
-            gradient_descent_biases(errors, learning_rate, train_x_labels[0]);
+            gradient_descent_weights(errors, learning_rate, train_x_labels[j]);
+            gradient_descent_biases(errors, learning_rate, train_x_labels[j]);
         }
         std::cout << "loss: " << loss/train_x_labels.size() << std::endl; 
         loss = 0; //Resetting the loss
@@ -215,6 +215,18 @@ void network::visualise_network(bool show_hidden) {
     }
     // Print the final output from the network
     std::cout << "Output Layer with " << activationFuncions.back() << " applied: \n" << output_layer << std::endl;
+}
+
+int network::get_prediction() {
+    double max = 0;
+    int max_index = 0;
+    for (int i = 0; i < output_layer.getRows(); ++i) {
+        if (output_layer[i][0] > max) {
+            max = output_layer[i][0];
+            max_index = i;
+        }
+    }
+    return max_index;
 }
 
 void network::check_params() {

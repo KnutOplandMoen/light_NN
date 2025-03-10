@@ -146,6 +146,9 @@ Matrix Matrix::applyActivationFunction(std::string func){
             }
         }
     }
+    else if (func == ""){
+        activatedMatrix = Matrix(*this);
+    }
     else {
         throw std::invalid_argument("Unknown activation function: " + func);
     }
