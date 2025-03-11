@@ -189,7 +189,7 @@ void network::train(std::vector <Matrix> train_x_labels, std::vector <Matrix> tr
     for (int i = 0; i < epochs; ++i) {
         std::cout << "Epoch: " << i << std::endl;
 
-        for (int j = 0; j < train_x_labels.size(); j += batch_size) {
+        for (int j = 0; j < train_x_labels.size(); j += 1) {
             std::vector<std::vector<Matrix>> errors;
             for (int k = 0; k < batch_size && (j+k) < train_x_labels.size(); ++k) {
                 std::vector<Matrix> error = get_errors(train_x_labels[j + k], train_y_labels[j + k]);
