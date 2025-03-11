@@ -22,7 +22,7 @@ def generate_quadratic_samples(num_samples=5):
     return samples
 
 with open("Data.txt", "w") as f:
-    for sample in generate_quadratic_samples(4000):
+    for sample in generate_quadratic_samples(2000):
         l = ""
         for j in sample:
             if j.isdigit():

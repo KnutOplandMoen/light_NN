@@ -106,3 +106,11 @@ std::vector <std::vector<Matrix>> get_data(int dim_x, int dim_y) {
         return {x_labels, y_labels};
     }
 }
+
+Matrix input_to_matrix(std::vector <double> input) {
+    Matrix m(input.size(), 1);
+    for (int i = 0; i < input.size(); ++i) {
+        m[i][0] = input[i];
+    }
+    return m;
+}

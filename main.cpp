@@ -8,15 +8,10 @@ int main() {
 
     // Define the sizes for input, hidden layers, and output layers
     std::vector<int> hidden_layers_sizes = {10, 10};  // One hidden layer with 3 neurons
-    Matrix input_layer(4, 1);  // Input layer with 3 neurons corresponfing to ax^2 + bx + c, where a, b, c, x are the inputs
     Matrix output_layer(11, 1); // Output layer with 10 neuron (numbers 1-10) for classification
     std::vector <std::string> activation_functions = {"reLu", "reLu", "sigmoid"}; //activation and output functions, should match be of dim: (1 + number of hidden layers)
 
-    input_layer[0][0] = 3; // Example input value 1
-    input_layer[1][0] = 2; // Example input value 2
-    input_layer[2][0] = 5; // Example input value 3
-    input_layer[3][0] = 0; // Example input value 4
-
+    Matrix input_layer = input_to_matrix({0, 1, 1, 0});
     //should return 1 for the number 2
 
     // Initialize the network with the layers
@@ -29,6 +24,8 @@ int main() {
     //Visualise the network after the forward pass
     bool show_hidden_layers = true;
     nn.visualise_network(show_hidden_layers);
+    int prediction = nn.get_prediction();
+    std::cout << "Prediction: " << prediction << std::endl; 
 
     // Get the data
     std::vector <std::vector<Matrix>> data = get_data(4, 11);
@@ -37,8 +34,8 @@ int main() {
     
     // Set the training parameters
     int epochs = 10;
-    double learning_rate = 0.05;
-    double batch_size = 10;
+    double learning_rate = 0.01;
+    double batch_size = 32;
 
     // Train the network
     nn.train(x_labels_train, y_labels_train, epochs, learning_rate,  batch_size);
@@ -46,6 +43,8 @@ int main() {
     // Perform the forward pass with same data and check performance
     nn.feed_forward();
     nn.visualise_network(show_hidden_layers);
+    int prediction_n = nn.get_prediction();
+    std::cout << "Prediction: " << prediction_n << std::endl;
     
     return 0;
 }
