@@ -37,6 +37,7 @@ class network {
     void gradient_descent_biases(std::vector <std::vector <Matrix>> errors, double learning_rate, Matrix x_labels);
 
     void visualise_network(bool show_hidden);
+    int get_prediction(Matrix output_layer);
     int get_prediction();
 
     void update_loss(Matrix predicted, Matrix correct);
