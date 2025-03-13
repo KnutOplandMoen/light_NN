@@ -13,8 +13,8 @@ private:
     int cols;
 public:
     Matrix(int rows, int cols);
+    Matrix() = default;
     Matrix(const Matrix& m); 
-    Matrix() = delete; //no default constructor
     int getRows() const {return rows;}
     int getCols() const {return cols;}
     void setRandomValues(double lowerBound, double upperBound);

@@ -146,7 +146,7 @@ void network::gradient_descent_weights(std::vector <std::vector <Matrix>> errors
 }
 
 void network::gradient_descent_biases(std::vector <std::vector <Matrix>> errors, double learning_rate, Matrix x_labels, std::vector <std::vector<Matrix>> feed_forward) {
-    std::vector <Matrix> sum(hidden_layers.size() + 1);
+    std::vector <Matrix> sum(hidden_layers.size());
 
     //Making empty matrices for the sum of errors
     for (int i = 0; i < hidden_layers.size(); ++i) {
@@ -163,7 +163,6 @@ void network::gradient_descent_biases(std::vector <std::vector <Matrix>> errors,
         for (int lag = 0; lag < errors[trening].size(); lag++) {
             sum[lag] = sum[lag] + (errors[trening][errors[trening].size() - lag - 1]); //Adding the errors * the activated layers transposed to sum
         } 
-
     }
 
     for (int layer = 0; layer < biases.size(); ++layer) { //Updating the biases

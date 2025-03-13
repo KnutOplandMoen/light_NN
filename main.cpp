@@ -27,9 +27,9 @@ int main() {
     std::vector <Matrix> x_labels_train = data[0];
     
     // Set the training parameters
-    int epochs = 100;
+    int epochs = 50;
     double learning_rate = 0.01;
-    double batch_size = 10;
+    double batch_size = 32;
 
     // Train the network
     nn.train(x_labels_train, y_labels_train, epochs, learning_rate,  batch_size);
