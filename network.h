@@ -32,7 +32,7 @@ class network {
 
     Matrix feed_forward();
     std::vector <std::vector<Matrix>> feed_forward_batch(Matrix x_labels) const;
-    std::vector <Matrix> get_errors(Matrix x_labels, Matrix y_labels) ;
+    std::vector <Matrix> get_errors(Matrix x_labels, Matrix y_labels) const;
     void gradient_descent_weights(std::vector <std::vector <Matrix>> errors, double learning_rate, Matrix x_labels, std::vector <std::vector<Matrix>> feed_forward);
     void gradient_descent_biases(std::vector <std::vector <Matrix>> errors, double learning_rate, Matrix x_labels, std::vector <std::vector<Matrix>> feed_forward);
 

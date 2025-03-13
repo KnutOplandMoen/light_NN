@@ -24,7 +24,7 @@ public:
     Matrix operator*(const Matrix& rhs) const;
     Matrix operator+(const Matrix& rhs) const;
     Matrix operator-(const Matrix &rhs) const;
-    Matrix transposed();
+    Matrix transposed() const;
     Matrix applyActivationFunction(std::string func);
     Matrix applyActivationFunction_derivative(std::string func);
 

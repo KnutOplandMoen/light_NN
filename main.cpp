@@ -27,7 +27,7 @@ int main() {
     std::vector <Matrix> x_labels_train = data[0];
     
     // Set the training parameters
-    int epochs = 10;
+    int epochs = 100;
     double learning_rate = 0.01;
     double batch_size = 10;
 
