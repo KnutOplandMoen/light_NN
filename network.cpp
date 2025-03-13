@@ -119,7 +119,7 @@ void network::update_loss(Matrix predicted, Matrix correct) {
 }
 
 // Gradient descent for weights
-void network::gradient_descent_weights(std::vector <std::vector <Matrix>> errors, double learning_rate, Matrix x_labels) {
+void network::gradient_descent_weights(std::vector <std::vector <Matrix>> errors, double learning_rate, Matrix x_labels, std::vector <std::vector<Matrix>> feed_forward) {
     std::vector <Matrix> sum;
 
     //Making empty matrices for the sum of errors
@@ -130,7 +130,6 @@ void network::gradient_descent_weights(std::vector <std::vector <Matrix>> errors
         sum.push_back(error);
     }
 
-    std::vector <std::vector<Matrix>> feed_forward = feed_forward_batch(x_labels); //Getting the feed forward values
     Matrix output_layer_copy = feed_forward[0].back(); //Getting the output layer
     std::vector<Matrix> activated_layers = feed_forward[0]; //Getting the activated layers
 
@@ -143,7 +142,7 @@ void network::gradient_descent_weights(std::vector <std::vector <Matrix>> errors
 
     }
 
-    for (int layer = 0; layer < weights.size(); ++layer) {
+    for (int layer = 0; layer < weights.size(); ++layer) { //Updating the weights
 
         weights[layer] = weights[layer] - divideByNumber(sum[layer], errors.size()/learning_rate); //Updating the weights
 
@@ -151,7 +150,7 @@ void network::gradient_descent_weights(std::vector <std::vector <Matrix>> errors
 
 }
 
-void network::gradient_descent_biases(std::vector <std::vector <Matrix>> errors, double learning_rate, Matrix x_labels) {
+void network::gradient_descent_biases(std::vector <std::vector <Matrix>> errors, double learning_rate, Matrix x_labels, std::vector <std::vector<Matrix>> feed_forward) {
     std::vector <Matrix> sum;
 
     //Making empty matrices for the sum of errors
@@ -161,9 +160,8 @@ void network::gradient_descent_biases(std::vector <std::vector <Matrix>> errors,
         Matrix error(layer_row_size, layer_col_size);
         sum.push_back(error);
     }
-
     sum.push_back(Matrix(output_layer_size, 1));
-    std::vector <std::vector<Matrix>> feed_forward = feed_forward_batch(x_labels); //Getting the feed forward values TODO make this a function
+
     Matrix output_layer_copy = feed_forward[0].back(); //Getting the output layer
     std::vector<Matrix> activated_layers = feed_forward[0]; //Getting the activated layers
 
@@ -176,7 +174,7 @@ void network::gradient_descent_biases(std::vector <std::vector <Matrix>> errors,
 
     }
 
-    for (int layer = 0; layer < biases.size(); ++layer) {
+    for (int layer = 0; layer < biases.size(); ++layer) { //Updating the biases
 
         biases[layer] = biases[layer] - divideByNumber(sum[layer], errors.size()/learning_rate); //Updating the biases
 
@@ -188,15 +186,16 @@ void network::train(std::vector <Matrix> train_x_labels, std::vector <Matrix> tr
     std::vector <std::vector <Matrix>> errors;
     for (int i = 0; i < epochs; ++i) {
         std::cout << "Epoch: " << i << std::endl;
-
+        std::vector<std::vector<Matrix>> errors;
         for (int j = 0; j < train_x_labels.size(); j += 1) {
-            std::vector<std::vector<Matrix>> errors;
             for (int k = 0; k < batch_size && (j+k) < train_x_labels.size(); ++k) {
                 std::vector<Matrix> error = get_errors(train_x_labels[j + k], train_y_labels[j + k]);
                 errors.push_back(error);
             }
-            gradient_descent_weights(errors, learning_rate, train_x_labels[j]);
-            gradient_descent_biases(errors, learning_rate, train_x_labels[j]);
+            std::vector <std::vector<Matrix>> feed_forward = feed_forward_batch(train_x_labels[j]);
+            gradient_descent_weights(errors, learning_rate, train_x_labels[j], feed_forward);
+            gradient_descent_biases(errors, learning_rate, train_x_labels[j], feed_forward);
+            errors.clear();
         }
         std::cout << "loss: " << loss/train_x_labels.size() << std::endl; 
         loss = 0; //Resetting the loss

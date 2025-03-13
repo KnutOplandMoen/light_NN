@@ -29,7 +29,7 @@ int main() {
     // Set the training parameters
     int epochs = 10;
     double learning_rate = 0.01;
-    double batch_size = 64;
+    double batch_size = 10;
 
     // Train the network
     nn.train(x_labels_train, y_labels_train, epochs, learning_rate,  batch_size);
