@@ -45,6 +45,8 @@ Matrix Matrix::operator*(const Matrix &rhs) const {
 
 Matrix Matrix::operator+(const Matrix &rhs) const{
     if (rows != rhs.rows || cols != rhs.cols){
+        std::cout << "Rows: " << rows << " Cols: " << cols << std::endl;
+        std::cout << "Rows: " << rhs.rows << " Cols: " << rhs.cols << std::endl;
         throw std::invalid_argument("Dimensions do not match for matrix adding.");
     }
     Matrix sum(rows, cols);
@@ -70,7 +72,7 @@ Matrix Matrix::operator-(const Matrix &rhs) const{
 }
 
 
-Matrix Matrix::transposed(){
+Matrix Matrix::transposed() const{
     Matrix transposed(cols, rows);
     for (size_t i = 0; i < rows; i++){
         for (size_t j = 0; j < cols; j++){

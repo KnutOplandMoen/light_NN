@@ -13,8 +13,8 @@ private:
     int cols;
 public:
     Matrix(int rows, int cols);
+    Matrix() = default;
     Matrix(const Matrix& m); 
-    Matrix() = delete; //no default constructor
     int getRows() const {return rows;}
     int getCols() const {return cols;}
     void setRandomValues(double lowerBound, double upperBound);
@@ -24,7 +24,7 @@ public:
     Matrix operator*(const Matrix& rhs) const;
     Matrix operator+(const Matrix& rhs) const;
     Matrix operator-(const Matrix &rhs) const;
-    Matrix transposed();
+    Matrix transposed() const;
     Matrix applyActivationFunction(std::string func);
     Matrix applyActivationFunction_derivative(std::string func);
 
