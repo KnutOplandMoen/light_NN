@@ -5,7 +5,7 @@ def generate_quadratic_samples(num_samples=5):
     numbers = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     for _ in range(num_samples):
         # Random coefficients for quadratic function: a, b, c (0 to 3)
-        a, b, c = random.randint(0, 5), random.randint(0, 5), random.randint(0, 5)
+        a, b, c = random.randint(0, 6), random.randint(0, 6), random.randint(0, 6)
         
         # Random x value between 0 and 9
         x = random.randint(0, 9)
@@ -25,7 +25,7 @@ def generate_quadratic_samples(num_samples=5):
     return samples
 
 with open("Data.txt", "w") as f:
-    for sample in generate_quadratic_samples(50):
+    for sample in generate_quadratic_samples(10000):
         l = ""
         for j in sample:
             if j.isdigit():
