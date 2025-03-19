@@ -13,7 +13,7 @@ int main() {
     // Define the sizes for input, hidden layers, and output layers
     std::vector<int> hidden_layers_sizes = {5, 5};  // One hidden layer with 3 neurons
     Matrix output_layer(2, 1); // Output layer with 10 neuron (numbers 1-10) for classification
-    std::vector <std::string> activation_functions = {"reLu", "reLu", "softmax"}; //activation and output functions, should match be of dim: (1 + number of hidden layers)
+    std::vector <std::string> activation_functions = {"leakyReLu", "leakyReLu", "softmax"}; //activation and output functions, should match be of dim: (1 + number of hidden layers)
 
     Matrix input_layer = input_to_matrix({0, 0});
     //should return 1 for the number 2
@@ -31,9 +31,9 @@ int main() {
     std::vector <Matrix> x_labels_train = data[0];
 
     // Set the training parameters
-    int epochs = 1;
+    int epochs = 20;
     double learning_rate = 0.01;
-    double batch_size = 1;
+    double batch_size = 10;
 
     // Train the network
     nn.train(x_labels_train, y_labels_train, epochs, learning_rate,  batch_size);

@@ -100,9 +100,6 @@ std::vector <Matrix> network::get_errors(Matrix x_labels, Matrix y_labels) const
         error_prev = error;
         errors.push_back(error_prev);
     }
-    for (int i = 0; i < errors.size(); ++i) {
-        std::cout << "error: \n" << errors[i] << std::endl;
-    }
     return errors;
 }
 
@@ -129,8 +126,8 @@ void network::gradient_descent_weights(std::vector<std::vector<Matrix>> errors, 
         for (int lag = 0; lag < errors[trening].size(); ++lag) { // Iterate over all layers
             int error_idx = errors[trening].size() - 1 - lag;
             Matrix gradient = errors[trening][error_idx] * activated_layers[lag].transposed(); // Compute the gradient
-            //std::cout << "error: \n" << errors[trening][error_idx] << std::endl;
-            //std::cout << "gradient: \n" << gradient << std::endl;
+            std::cout << "error: \n" << errors[trening][error_idx] << std::endl;
+            std::cout << "gradient: \n" << gradient << std::endl;
             sum[lag] = sum[lag] + gradient;
         }
     }
@@ -200,7 +197,6 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
                     std::vector<std::vector<Matrix>> feed_forward = feed_forward_batch(test1_matrix);
                     std::vector<Matrix> output_layer = feed_forward[0];
                     Matrix output_layer_copy = feed_forward[0].back();
-                    std::cout << "output_layer: \n" << output_layer_copy << std::endl;
                     int prediction_n = get_prediction(output_layer_copy);
                     if (prediction_n == correct_prediction) {
                         num_correct++;

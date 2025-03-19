@@ -159,6 +159,13 @@ Matrix Matrix::applyActivationFunction(std::string func){
             }
         }
     }
+    else if (func == "leakyReLu") {
+        for (size_t i = 0; i < rows; i++) {
+            for (size_t j = 0; j < cols; j++) {
+                activatedMatrix[i][j] = leakyReLu(data[i][j]);
+            }
+        }
+    }
     else if (func == ""){
         activatedMatrix = Matrix(*this);
     }
@@ -182,6 +189,13 @@ Matrix Matrix::applyActivationFunction_derivative(std::string func) {
         for (size_t i = 0; i < rows; i++){
             for (size_t j = 0; j < cols; j++){
                 activatedMatrix[i][j] = d_ReLu(data[i][j]);
+            }
+        }
+    }
+    else if (func == "leakyReLu") {
+        for (size_t i = 0; i < rows; i++) {
+            for (size_t j = 0; j < cols; j++) {
+                activatedMatrix[i][j] = d_leakyReLu(data[i][j]);
             }
         }
     }
