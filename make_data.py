@@ -1,33 +1,38 @@
 import random
 
-def generate_quadratic_samples(num_samples=5):
+def generate_balanced_quadratic_samples(samples_per_class=1818):
     samples = []
-    numbers = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    for _ in range(num_samples):
-        # Random coefficients for quadratic function: a, b, c (0 to 3)
-        a, b, c = random.randint(0, 6), random.randint(0, 6), random.randint(0, 6)
-        
-        # Random x value between 0 and 9
-        x = random.randint(0, 9)
+    numbers = [0] * 11  # Track samples per class
+    
+    # For each target y value (0 to 10)
+    for target_y in range(11):
+        while numbers[target_y] < samples_per_class:
+            # Random coefficients and x
+            a = random.randint(0, 6)
+            b = random.randint(0, 6)
+            c = random.randint(0, 6)
+            x = random.randint(0, 9)
+            
+            # Compute y
+            y = a * (x ** 2) + b * x + c
+            
+            # If y matches the target and we need more samples for this class
+            if y == target_y:
+                # Create one-hot encoded output
+                output_matrix = [0] * 11
+                output_matrix[y] = 1
+                numbers[y] += 1
+                
 
-        # Compute quadratic function result: y = ax^2 + bx + c (mod 11)
-        y = (a * (x ** 2) + b * x + c) 
+                # Format sample as a string (e.g., "12340100000")
+                sample = f"{a}{b}{c}{x}{''.join(map(str, output_matrix))}"
+                samples.append(sample)
+    random.shuffle(samples)
 
-        # Create one-hot encoded output matrix
-        if not y >= 11:
-            output_matrix = [0] * 11
-
-            output_matrix[y] = 1  # Set the correct index to 1
-            numbers[y] += 1
-
-            samples.append(f"{a, b, c, x}{output_matrix}")
-    print(numbers)  
+    print("Class distribution:", numbers)
     return samples
 
+# Generate 20,000 samples (approximately 1818 per class)
 with open("Data.txt", "w") as f:
-    for sample in generate_quadratic_samples(10000):
-        l = ""
-        for j in sample:
-            if j.isdigit():
-                l+=j
-        f.write(l + "\n")
+    for sample in generate_balanced_quadratic_samples(400):
+        f.write(sample + "\n")

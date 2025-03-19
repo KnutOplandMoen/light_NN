@@ -133,18 +133,29 @@ Matrix Matrix::applyActivationFunction(std::string func){
         }
     }
     else if (func == "softmax") {
-        double exponential_sum = 0;
-        for (size_t i_1 = 0; i_1 < rows; i_1++){
-            for (size_t j_1 = 0; j_1 < cols; j_1++){
-                double exponential = std::exp(data[i_1][j_1]);
-                exponential_sum += exponential;
-                activatedMatrix[i_1][j_1] = exponential;
+        // Find the maximum value in the matrix to avoid overflow
+        double max_val = data[0][0];
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
+                if (data[i][j] > max_val) {
+                    max_val = data[i][j];
+                }
             }
         }
-        
-        for (size_t i_2 = 0; i_2 < rows; i_2++){
-            for (size_t j_2 = 0; j_2 < cols; j_2++){
-                activatedMatrix[i_2][j_2] = activatedMatrix[i_2][j_2]/exponential_sum;
+    
+        double exponential_sum = 0.0;
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
+                double exponential = std::exp(data[i][j] - max_val);
+                exponential_sum += exponential;
+                activatedMatrix[i][j] = exponential;
+            }
+        }
+    
+        // Normalize by the sum of exponentials
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
+                activatedMatrix[i][j] /= exponential_sum;
             }
         }
     }
