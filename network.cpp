@@ -21,7 +21,7 @@ void network::initialise_weights() { //Initialising the weights for the network
     // Apply similar logic for other layers
     for (int i = 0; i < hidden_layers.size() - 1; ++i) {
         int n_inputs = hidden_layers[i].getRows();
-        limit = sqrt(6.0 / input_size);
+        limit = sqrt(6.0 / (hidden_layers_sizes[i] + hidden_layers_sizes[i+1]));
         Matrix matrix2(hidden_layers[i+1].getRows(), n_inputs);
         matrix2.setRandomValues(-limit, limit);
         weights.push_back(matrix2);
@@ -126,6 +126,12 @@ void network::gradient_descent_weights(std::vector<std::vector<Matrix>> errors, 
         for (int lag = 0; lag < errors[trening].size(); ++lag) {
             int error_idx = errors[trening].size() - 1 - lag;
             Matrix gradient = errors[trening][error_idx] * activated_layers[lag].transposed();
+            for (int i = 0; i < gradient.getRows(); ++i) {
+                for (int j = 0; j < gradient.getCols(); ++j) {
+                    if (gradient[i][j] > 1.0) gradient[i][j] = 1.0;
+                    if (gradient[i][j] < -1.0) gradient[i][j] = -1.0;
+                }
+            }
             sum[lag] = sum[lag] + gradient;
         }
     }
