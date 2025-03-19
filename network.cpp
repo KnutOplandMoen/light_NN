@@ -100,6 +100,9 @@ std::vector <Matrix> network::get_errors(Matrix x_labels, Matrix y_labels) const
         error_prev = error;
         errors.push_back(error_prev);
     }
+    for (int i = 0; i < errors.size(); ++i) {
+        std::cout << "error: \n" << errors[i] << std::endl;
+    }
     return errors;
 }
 
@@ -118,20 +121,16 @@ void network::update_loss(Matrix predicted, Matrix correct) {
 // Gradient descent for weights
 void network::gradient_descent_weights(std::vector<std::vector<Matrix>> errors, double learning_rate, Matrix x_labels, std::vector<std::vector<Matrix>> batch_activated_layer) {
     std::vector<Matrix> sum(weights.size());
-    for (int i = 0; i < weights.size(); ++i) {
-        sum[i] = Matrix(weights[i].getRows(), weights[i].getCols());
+    for (int i = 0; i < weights.size(); ++i) { // Initialize sum
+        sum[i] = Matrix(weights[i].getRows(), weights[i].getCols()); //add the same size as the weights
     }
-    for (int trening = 0; trening < errors.size(); ++trening) {
-        std::vector<Matrix> activated_layers = batch_activated_layer[trening];
-        for (int lag = 0; lag < errors[trening].size(); ++lag) {
+    for (int trening = 0; trening < errors.size(); ++trening) { // For each sample
+        std::vector<Matrix> activated_layers = batch_activated_layer[trening]; // Get the activated layers for the sample
+        for (int lag = 0; lag < errors[trening].size(); ++lag) { // Iterate over all layers
             int error_idx = errors[trening].size() - 1 - lag;
-            Matrix gradient = errors[trening][error_idx] * activated_layers[lag].transposed();
-            for (int i = 0; i < gradient.getRows(); ++i) {
-                for (int j = 0; j < gradient.getCols(); ++j) {
-                    if (gradient[i][j] > 1.0) gradient[i][j] = 1.0;
-                    if (gradient[i][j] < -1.0) gradient[i][j] = -1.0;
-                }
-            }
+            Matrix gradient = errors[trening][error_idx] * activated_layers[lag].transposed(); // Compute the gradient
+            //std::cout << "error: \n" << errors[trening][error_idx] << std::endl;
+            //std::cout << "gradient: \n" << gradient << std::endl;
             sum[lag] = sum[lag] + gradient;
         }
     }
@@ -161,8 +160,9 @@ void network::gradient_descent_biases(std::vector<std::vector<Matrix>> errors, d
 void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> train_y_labels, int epochs, double learning_rate, int batch_size) {
     for (int i = 0; i < epochs; ++i) {
         std::cout << "Epoch: " << i << std::endl;
+        
         for (int i = 0; i < weights.size(); ++i) {
-            std::cout << "weights " << i << ": \n" << weights[i] << std::endl;
+            //std::cout << "weights " << i << ": \n" << weights[i] << std::endl;
         }
         for (int j = 0; j < train_x_labels.size(); j += batch_size) {
             std::vector<std::vector<Matrix>> batch_errors;
@@ -189,6 +189,29 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
         }
         
         std::cout << "loss: " << loss / train_x_labels.size() << std::endl;
+        int num_correct = 0;
+        int num_total = 0;
+        for (int j = 0; j < 1; ++j) {
+        for (int x1 = 0; x1 <= 1; ++x1) {
+            for (int x2 = 0; x2 <= 1; ++x2) {
+                int correct_prediction = (x1 | x2); // Perform bitwise OR operation
+                if (correct_prediction <= 10) {
+                    Matrix test1_matrix = input_to_matrix({static_cast<double>(x1), static_cast<double>(x2)});
+                    std::vector<std::vector<Matrix>> feed_forward = feed_forward_batch(test1_matrix);
+                    std::vector<Matrix> output_layer = feed_forward[0];
+                    Matrix output_layer_copy = feed_forward[0].back();
+                    std::cout << "output_layer: \n" << output_layer_copy << std::endl;
+                    int prediction_n = get_prediction(output_layer_copy);
+                    if (prediction_n == correct_prediction) {
+                        num_correct++;
+                    }
+                    num_total++;
+                }
+            }
+        }
+    }
+    
+    std::cout << "Accuracy: " << static_cast<double>(num_correct) / num_total << std::endl;
         loss = 0;
     }
 }
