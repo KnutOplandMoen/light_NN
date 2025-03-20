@@ -16,16 +16,13 @@ int main() {
 
     // Initialize the network with the layers
     network nn(input_layer, hidden_layers_sizes, output_layer, activation_functions);
-
-    //Visualise the network after the forward pass
-    bool show_hidden_layers = false;
     
     // Get the data
     std::vector <std::vector<Matrix>> data = get_data(2, 2);
     std::vector <Matrix> y_labels = data[1];
     std::vector <Matrix> x_labels = data[0];
 
-    std::vector <std::vector<Matrix>> train_test_data = get_test_train_split(x_labels, y_labels, 0.9);
+    std::vector <std::vector<Matrix>> train_test_data = get_test_train_split(x_labels, y_labels, 0.75);
     std::vector <Matrix> x_labels_train = train_test_data[0];
     std::vector <Matrix> y_labels_train = train_test_data[1];
     std::vector <Matrix> x_labels_test = train_test_data[2];
