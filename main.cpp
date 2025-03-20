@@ -3,7 +3,6 @@
 #include "network.h"
 #include <iostream>
 #include <vector>
-#include "models/SaveToTxt.h"
 
 int main() {
 
@@ -12,13 +11,13 @@ int main() {
     Matrix output_layer(11, 1); // Output layer with 11 neurons
     Matrix input_layer = input_to_matrix({0, 0, 0, 0}); // inout layer with 4 neurons
 
-    save_to_txt("test.txt", {input_layer});
     std::vector <std::string> activation_functions = {"leakyReLu", "leakyReLu", "softmax"}; //activation and output functions, should match be of dim: (1 + number of hidden layers)
 
 
     // Initialize the network with the layers
     network nn(input_layer, hidden_layers_sizes, output_layer, activation_functions);
-    
+    //nn.load_state("weights1.txt"); // Load the weights from a file
+
     // Get the data
     std::vector <std::vector<Matrix>> data = get_data(4, 11);
     std::vector <Matrix> y_labels = data[1];
@@ -31,14 +30,16 @@ int main() {
     std::vector <Matrix> y_labels_test = train_test_data[3];
 
     // Set the training parameters
-    int epochs = 1;
-    double learning_rate = 0.1;
+    int epochs = 100;
+    double learning_rate = 0.01;
     double batch_size = 32;
 
+    std::vector<Matrix> weights = nn.get_weights();
+
     // Train the network
+    std::cout << "Training the network..." << std::endl;
     nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size);
 
-    nn.visualise_network();
-    
+    nn.save_state("weights1.txt"); // Save the weights and viases to a file in binary format
     return 0;
 }

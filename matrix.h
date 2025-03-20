@@ -30,6 +30,8 @@ public:
     Matrix applyActivationFunction(std::string func);
     Matrix applyActivationFunction_derivative(std::string func);
 
+    void SaveToBin(std::ofstream& file);
+    void LoadFromBin(std::ifstream& file);
 };
 
 
