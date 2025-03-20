@@ -55,7 +55,7 @@ void network::initialise_biases() {
  * Going forward in the network, computing the node values using matrix multiplication with the weigths
  * At last the output layer is computed
  */
-Matrix network::feed_forward() {
+Matrix network::feed_forward() { //Feed forward in the network to get the output layer values 
     hidden_layers[0] = ((weights[0] * input_layer) + biases[0]).applyActivationFunction(activationFuncions[0]); //Computing first layer values
     for (int i = 1; i < hidden_layers.size() ; ++i) {
         hidden_layers[i] = ((weights[i] * hidden_layers[i-1]) + biases[i]).applyActivationFunction(activationFuncions[i]); 
@@ -154,18 +154,14 @@ void network::gradient_descent_biases(std::vector<std::vector<Matrix>> errors, d
 }
 
 
-void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> train_y_labels, int epochs, double learning_rate, int batch_size) {
+void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> train_y_labels, std::vector <Matrix> test_x_labels, std::vector <Matrix> test_y_labels, int epochs, double learning_rate, int batch_size) {
     for (int i = 0; i < epochs; ++i) {
         std::cout << "Epoch: " << i << std::endl;
-        /*
-        for (int i = 0; i < weights.size(); ++i) {
-            std::cout << "weights " << i << ": \n" << weights[i] << std::endl;
-        }
-        */
+
         for (int j = 0; j < train_x_labels.size(); j += batch_size) {
             std::vector<std::vector<Matrix>> batch_errors;
             std::vector<std::vector<Matrix>> batch_activated_layers;
-            std::vector<std::vector<Matrix>> batch_weighted_inputs; // New vector for weighted inputs
+            std::vector<std::vector<Matrix>> batch_weighted_inputs; 
             std::vector<Matrix> batch_predictions;
             for (int k = 0; k < batch_size && (j + k) < train_x_labels.size(); ++k) {
                 int index = j + k;
@@ -186,31 +182,18 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
             }
         }
         
-        std::cout << "loss: " << loss / train_x_labels.size() << std::endl;
-        int num_correct = 0;
-        int num_total = 0;
-        for (int j = 0; j < 1; ++j) {
-        for (int x1 = 0; x1 <= 1; ++x1) {
-            for (int x2 = 0; x2 <= 1; ++x2) {
-                int correct_prediction = (x1 | x2); // Perform bitwise OR operation
-                if (correct_prediction <= 10) {
-                    Matrix test1_matrix = input_to_matrix({static_cast<double>(x1), static_cast<double>(x2)});
-                    std::vector<std::vector<Matrix>> feed_forward = feed_forward_batch(test1_matrix);
-                    std::vector<Matrix> output_layer = feed_forward[0];
-                    Matrix output_layer_copy = feed_forward[0].back();
-                    std::cout << "input: " << test1_matrix << std::endl;
-                    std::cout << "prediction: " << output_layer_copy << std::endl;
-                    int prediction_n = get_prediction(output_layer_copy);
-                    if (prediction_n == correct_prediction) {
-                        num_correct++;
-                    }
-                    num_total++;
-                }
-            }
+        // Test the network with the test data
+        std::vector <Matrix> predictions;
+        for (int j = 0; j < test_x_labels.size(); ++j) {
+            std::vector<std::vector<Matrix>> feed_forward = feed_forward_batch(test_x_labels[j]);
+            predictions.push_back(feed_forward[0].back());
         }
-    }
-    
-    std::cout << "Accuracy: " << (static_cast<double>(num_correct) / num_total)*100 << "%" << std::endl;
+
+        std::cout << "Accuracy: " << get_accuracy(predictions, test_y_labels) << "%" << std::endl;
+        std::cout << "loss: " << loss / train_x_labels.size() << std::endl;
+        std::cout << "-----------------" << std::endl;
+        
+
         loss = 0;
     }
 }

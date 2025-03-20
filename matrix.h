@@ -17,6 +17,8 @@ public:
     Matrix(const Matrix& m); 
     int getRows() const {return rows;}
     int getCols() const {return cols;}
+    double getMaxRow() const;
+
     void setRandomValues(double lowerBound, double upperBound);
     friend std::ostream& operator<<(std::ostream& os, const Matrix& m);
     Matrix& operator=(Matrix rhs);
