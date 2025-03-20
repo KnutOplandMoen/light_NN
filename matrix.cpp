@@ -208,7 +208,7 @@ double Matrix::getMaxRow() const {
     int max_idx = 0;
     for (size_t i = 0; i < rows; ++i) {
         for (size_t j = 0; j < cols; ++j) {
-            if (data[i][j] > max_idx) {
+            if (data[i][j] > max) {
                 max = data[i][j];
                 max_idx = i;
             }

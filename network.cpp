@@ -154,14 +154,10 @@ void network::gradient_descent_biases(std::vector<std::vector<Matrix>> errors, d
 }
 
 
-void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> train_y_labels, int epochs, double learning_rate, int batch_size) {
+void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> train_y_labels, std::vector <Matrix> test_x_labels, std::vector <Matrix> test_y_labels, int epochs, double learning_rate, int batch_size) {
     for (int i = 0; i < epochs; ++i) {
         std::cout << "Epoch: " << i << std::endl;
-        /*
-        for (int i = 0; i < weights.size(); ++i) {
-            std::cout << "weights " << i << ": \n" << weights[i] << std::endl;
-        }
-        */
+
         for (int j = 0; j < train_x_labels.size(); j += batch_size) {
             std::vector<std::vector<Matrix>> batch_errors;
             std::vector<std::vector<Matrix>> batch_activated_layers;
@@ -186,7 +182,16 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
             }
         }
         
+        // Test the network with the test data
+        std::vector <Matrix> predictions;
+        for (int j = 0; j < test_x_labels.size(); ++j) {
+            std::vector<std::vector<Matrix>> feed_forward = feed_forward_batch(test_x_labels[j]);
+            predictions.push_back(feed_forward[0].back());
+        }
+
+        std::cout << "Accuracy: " << get_accuracy(predictions, test_y_labels) << "%" << std::endl;
         std::cout << "loss: " << loss / train_x_labels.size() << std::endl;
+        std::cout << "-----------------" << std::endl;
         
 
         loss = 0;
