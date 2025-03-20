@@ -136,7 +136,7 @@ Matrix Matrix::applyActivationFunction(std::string func){
         // Find the maximum value in the matrix to avoid overflow
         double max_val = data[0][0];
         for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < cols; ++j) {
+            for (size_t j = 0; j < this->getCols(); ++j) {
                 if (data[i][j] > max_val) {
                     max_val = data[i][j];
                 }
@@ -201,4 +201,18 @@ Matrix Matrix::applyActivationFunction_derivative(std::string func) {
     }
     return activatedMatrix;
 
+}
+
+double Matrix::getMaxRow() const {
+    double max = 0;
+    int max_idx = 0;
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+            if (data[i][j] > max_idx) {
+                max = data[i][j];
+                max_idx = i;
+            }
+        }
+    }
+    return max_idx;
 }

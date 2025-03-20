@@ -120,3 +120,20 @@ Matrix input_to_matrix(std::vector <double> input) {
     }
     return m;
 }
+
+double get_accuracy(std::vector <Matrix> predictions, std::vector <Matrix> correct) {
+    if (predictions.size() != correct.size()) {
+        throw std::invalid_argument("The number of predictions must match the number of correct labels");
+    }
+    else {
+        double correct_predictions = 0;
+        for (int i = 0; i < predictions.size(); ++i) {
+            int predicted = predictions[i].getMaxRow();
+            int correct_label = correct[i].getMaxRow();
+            if (predicted == correct_label) {
+                correct_predictions++;
+            }
+        }
+        return (correct_predictions / predictions.size()) * 100;
+    }
+}
