@@ -2,6 +2,7 @@
 #include "functions.h"
 #include <cmath>
 #include <fstream>
+#include <omp.h>
 
 //"default" constructor
 Matrix::Matrix(int rows, int cols) : rows(rows), cols(cols){
@@ -33,6 +34,7 @@ Matrix Matrix::operator*(const Matrix &rhs) const {
         throw std::invalid_argument("Matrix dimensions do not match for multiplication.");
     }
     Matrix product(rows, rhs.cols);
+    #pragma omp parallel for //Parallelizing the loop
     for (size_t i = 0; i < rows; i++){
         for (size_t j = 0; j < rhs.cols; j++){
             for (size_t k = 0; k < cols; k++){
@@ -51,6 +53,7 @@ Matrix Matrix::operator+(const Matrix &rhs) const{
         throw std::invalid_argument("Dimensions do not match for matrix adding.");
     }
     Matrix sum(rows, cols);
+    #pragma omp parallel for collapse(2) //Parallelizing the loop
     for (size_t i = 0; i < rows; i++){
         for (size_t j = 0; j < cols; j++){
             sum[i][j] = data[i][j] + rhs.data[i][j];
@@ -64,6 +67,7 @@ Matrix Matrix::operator-(const Matrix &rhs) const{
         throw std::invalid_argument("Dimensions do not match for matrix adding.");
     }
     Matrix sum(rows, cols);
+    #pragma omp parallel for collapse(2)//Parallelizing the loop
     for (size_t i = 0; i < rows; i++){
         for (size_t j = 0; j < cols; j++){
             sum[i][j] = data[i][j] - rhs.data[i][j];
@@ -75,8 +79,9 @@ Matrix Matrix::operator-(const Matrix &rhs) const{
 
 Matrix Matrix::transposed() const{
     Matrix transposed(cols, rows);
-    for (size_t i = 0; i < rows; i++){
-        for (size_t j = 0; j < cols; j++){
+    #pragma omp parallel for collapse(2) // Parallelizing both loops
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < cols; j++) {
             transposed[j][i] = data[i][j];
         }
     }
@@ -136,6 +141,7 @@ Matrix Matrix::applyActivationFunction(std::string func){
     else if (func == "softmax") {
         // Find the maximum value in the matrix to avoid overflow
         double max_val = data[0][0];
+        #pragma omp parallel for
         for (size_t i = 0; i < rows; ++i) {
             for (size_t j = 0; j < this->getCols(); ++j) {
                 if (data[i][j] > max_val) {

@@ -3,6 +3,7 @@
 #include "network.h"
 #include "functions.h"
 #include <fstream>
+#include <chrono>
 
 /**
  * Initialise the weights for the neural network layers.
@@ -159,14 +160,25 @@ void network::gradient_descent_biases(std::vector<std::vector<Matrix>>& errors, 
 
 
 void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> train_y_labels, std::vector <Matrix> test_x_labels, std::vector <Matrix> test_y_labels, int epochs, double learning_rate, int batch_size) {
-    for (int i = 0; i < epochs; ++i) {
-        std::cout << "Epoch: " << i << std::endl;
+    std::cout << "Training the network with " << epochs << " epochs"<< std::endl;
+    std::cout << "----------------------------------" << std::endl;
+    std::cout << "Number of hidden layers: " << hidden_layers.size() << std::endl;
+    std::cout << "Number of training samples: " << train_x_labels.size() << std::endl;
+    std::cout << "Number of test samples: " << test_x_labels.size() << std::endl;
+    std::cout << "Learning rate: " << learning_rate << std::endl;
+    std::cout << "Batch size: " << batch_size << std::endl;
+    std::cout << "----------------------------------" << std::endl;
 
+    for (int i = 0; i < epochs; ++i) {
+        std::cout << "Epoch: " << i + 1 << std::endl;
+        auto start = std::chrono::high_resolution_clock::now();
+        // Train the network with the training data
         for (int j = 0; j < train_x_labels.size(); j += batch_size) {
             std::vector<std::vector<Matrix>> batch_errors;
             std::vector<std::vector<Matrix>> batch_activated_layers;
             std::vector<std::vector<Matrix>> batch_weighted_inputs; 
             std::vector<Matrix> batch_predictions;
+            #pragma omp parallel for
             for (int k = 0; k < batch_size && (j + k) < train_x_labels.size(); ++k) {
                 int index = j + k;
                 std::vector<std::vector<Matrix>> feed_forward = feed_forward_batch(train_x_labels[index]); // No shadowing
@@ -192,9 +204,11 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
             std::vector<std::vector<Matrix>> feed_forward = feed_forward_batch(test_x_labels[j]);
             predictions.push_back(feed_forward[0].back());
         }
-
+        auto stop = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
         std::cout << "Accuracy: " << get_accuracy(predictions, test_y_labels) << "%" << std::endl;
         std::cout << "loss: " << loss / train_x_labels.size() << std::endl;
+        std::cout << "Time: " << static_cast<double> (duration.count()) / 1000 << " s" << std::endl;
         std::cout << "-----------------" << std::endl;
         
 
@@ -299,6 +313,6 @@ void network::load_state(const std::string& filename) {
         m.LoadFromBin(file);
         biases.push_back(m);
     }
-    std::cout << "Network state loaded from " << filename << std::endl;
+    std::cout << "Network weights and biases loaded from " << filename << std::endl;
     file.close();
 }
