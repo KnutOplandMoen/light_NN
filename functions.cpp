@@ -2,6 +2,9 @@
 #include "matrix.h"
 #include <fstream>
 #include <string>
+#include <iostream>
+#include <fstream>
+#include <filesystem>
 
 double randDouble(double lowerBound, double upperBound){
     std::random_device rnd;
@@ -159,3 +162,4 @@ std::vector <std::vector<Matrix>> get_test_train_split(std::vector <Matrix> x_la
         return {x_labels_train, y_labels_train, x_labels_test, y_labels_test};
     }
 }
+

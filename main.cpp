@@ -3,6 +3,7 @@
 #include "network.h"
 #include <iostream>
 #include <vector>
+#include "models/SaveToTxt.h"
 
 int main() {
 
@@ -11,6 +12,7 @@ int main() {
     Matrix output_layer(11, 1); // Output layer with 11 neurons
     Matrix input_layer = input_to_matrix({0, 0, 0, 0}); // inout layer with 4 neurons
 
+    save_to_txt("test.txt", {input_layer});
     std::vector <std::string> activation_functions = {"leakyReLu", "leakyReLu", "softmax"}; //activation and output functions, should match be of dim: (1 + number of hidden layers)
 
 
@@ -29,7 +31,7 @@ int main() {
     std::vector <Matrix> y_labels_test = train_test_data[3];
 
     // Set the training parameters
-    int epochs = 100;
+    int epochs = 1;
     double learning_rate = 0.1;
     double batch_size = 32;
 

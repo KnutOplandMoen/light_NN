@@ -12,6 +12,7 @@
                 "${workspaceFolder}/matrix.cpp",
                 "${workspaceFolder}/network.cpp",
                 "${workspaceFolder}/functions.cpp",
+                "${workspaceFolder}/models/SaveToTxt.cpp",
                 "-o",
                 "${workspaceFolder}/main.exe"
             ],
