@@ -201,9 +201,7 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
                     std::cout << "input: " << test1_matrix << std::endl;
                     std::cout << "prediction: " << output_layer_copy << std::endl;
                     int prediction_n = get_prediction(output_layer_copy);
-                    std::cout << "prediction_n: " << prediction_n << std::endl;
                     if (prediction_n == correct_prediction) {
-                        std::cout << "Correct prediction!" << std::endl;
                         num_correct++;
                     }
                     num_total++;
@@ -212,7 +210,7 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
         }
     }
     
-    std::cout << "Accuracy: " << static_cast<double>(num_correct) / num_total << std::endl;
+    std::cout << "Accuracy: " << (static_cast<double>(num_correct) / num_total)*100 << "%" << std::endl;
         loss = 0;
     }
 }
