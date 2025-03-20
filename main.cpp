@@ -7,11 +7,12 @@
 int main() {
 
     // Define the sizes for input, hidden layers, and output layers
-    std::vector<int> hidden_layers_sizes = {10, 10};  // One hidden layer with 3 neurons
-    Matrix output_layer(11, 1); // Output layer with 10 neuron (numbers 1-10) for classification
+    std::vector<int> hidden_layers_sizes = {10, 10};  // hidden layers and neurons in each layer
+    Matrix output_layer(11, 1); // Output layer with 11 neurons
+    Matrix input_layer = input_to_matrix({0, 0, 0, 0}); // inout layer with 4 neurons
+
     std::vector <std::string> activation_functions = {"leakyReLu", "leakyReLu", "softmax"}; //activation and output functions, should match be of dim: (1 + number of hidden layers)
 
-    Matrix input_layer = input_to_matrix({0, 0, 0, 0});
 
     // Initialize the network with the layers
     network nn(input_layer, hidden_layers_sizes, output_layer, activation_functions);

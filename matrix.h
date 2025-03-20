@@ -22,7 +22,7 @@ public:
     void setRandomValues(double lowerBound, double upperBound);
     friend std::ostream& operator<<(std::ostream& os, const Matrix& m);
     Matrix& operator=(Matrix rhs);
-    std::vector<double>& operator[](size_t index) {return data.at(index);}
+    std::vector<double>& operator[](const size_t index) {return data.at(index);}
     Matrix operator*(const Matrix& rhs) const;
     Matrix operator+(const Matrix& rhs) const;
     Matrix operator-(const Matrix &rhs) const;
