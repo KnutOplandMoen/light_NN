@@ -19,16 +19,16 @@ double leakyReLu(double n);
  
 double d_leakyReLu(double n);
 
-double cost(std::vector <double> output_layer, std::vector <double> correct_output_layer);
+double cost(std::vector <double>& output_layer, std::vector <double>& correct_output_layer);
 
 Matrix hadamard(Matrix m1, Matrix m2);
 
-Matrix divideByNumber(Matrix m, double number);
+Matrix divideByNumber(Matrix& m, double number);
 
 std::vector <std::vector<Matrix>> get_data(int dim_x, int dim_y);
 
 Matrix input_to_matrix(std::vector <double> input);
 
-double get_accuracy(std::vector <Matrix> predictions, std::vector <Matrix> correct);
+double get_accuracy(std::vector <Matrix>& predictions, std::vector <Matrix>& correct);
 
 std::vector <std::vector<Matrix>> get_test_train_split(std::vector <Matrix> x_labels, std::vector <Matrix> y_labels, double split);

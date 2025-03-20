@@ -7,30 +7,26 @@
 int main() {
 
     // Define the sizes for input, hidden layers, and output layers
-    std::vector<int> hidden_layers_sizes = {5, 5};  // One hidden layer with 3 neurons
-    Matrix output_layer(2, 1); // Output layer with 10 neuron (numbers 1-10) for classification
+    std::vector<int> hidden_layers_sizes = {10, 10};  // hidden layers and neurons in each layer
+    Matrix output_layer(11, 1); // Output layer with 11 neurons
+    Matrix input_layer = input_to_matrix({0, 0, 0, 0}); // inout layer with 4 neurons
+
     std::vector <std::string> activation_functions = {"leakyReLu", "leakyReLu", "softmax"}; //activation and output functions, should match be of dim: (1 + number of hidden layers)
 
-    Matrix input_layer = input_to_matrix({0, 0});
-    //should return 1 for the number 2
 
     // Initialize the network with the layers
     network nn(input_layer, hidden_layers_sizes, output_layer, activation_functions);
-
-    //Visualise the network after the forward pass
-    bool show_hidden_layers = false;
     
     // Get the data
-    std::vector <std::vector<Matrix>> data = get_data(2, 2);
+    std::vector <std::vector<Matrix>> data = get_data(4, 11);
     std::vector <Matrix> y_labels = data[1];
     std::vector <Matrix> x_labels = data[0];
 
-    std::vector <std::vector<Matrix>> train_test_data = get_test_train_split(x_labels, y_labels, 0.9);
+    std::vector <std::vector<Matrix>> train_test_data = get_test_train_split(x_labels, y_labels, 0.75); //Splitting the data into training and test data
     std::vector <Matrix> x_labels_train = train_test_data[0];
     std::vector <Matrix> y_labels_train = train_test_data[1];
     std::vector <Matrix> x_labels_test = train_test_data[2];
     std::vector <Matrix> y_labels_test = train_test_data[3];
-
 
     // Set the training parameters
     int epochs = 100;
@@ -40,7 +36,7 @@ int main() {
     // Train the network
     nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size);
 
-    nn.visualise_network(show_hidden_layers);
+    nn.visualise_network();
     
     return 0;
 }

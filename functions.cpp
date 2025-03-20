@@ -45,7 +45,7 @@ double d_leakyReLu(double n) {
     return (n > 0) ? 1.0 : 0.01;
 }
 
-double cost(std::vector <double> output_layer, std::vector <double> correct_output_layer) {
+double cost(std::vector <double>& output_layer, std::vector <double>& correct_output_layer) {
     if (output_layer.size() != correct_output_layer.size()) {
         throw std::invalid_argument("output_layer and correct output layer must have same dimensions");
     }
@@ -74,7 +74,7 @@ Matrix hadamard(Matrix m1, Matrix m2) {
     return result;
 }
 
-Matrix divideByNumber(Matrix m, double number) {
+Matrix divideByNumber(Matrix& m, double number) {
     int cols = m.getCols();
     int rows = m.getRows();
     Matrix result(rows, cols);
@@ -121,7 +121,7 @@ Matrix input_to_matrix(std::vector <double> input) {
     return m;
 }
 
-double get_accuracy(std::vector <Matrix> predictions, std::vector <Matrix> correct) {
+double get_accuracy(std::vector <Matrix>& predictions, std::vector <Matrix>& correct) {
     if (predictions.size() != correct.size()) {
         throw std::invalid_argument("The number of predictions must match the number of correct labels");
     }
