@@ -30,17 +30,17 @@ class network {
     void initialise_biases();
     void check_params();
 
-    Matrix feed_forward();
-    std::vector <std::vector<Matrix>> feed_forward_batch(Matrix x_labels) const;
-    std::vector <Matrix> get_errors(Matrix x_labels, Matrix y_labels) const;
-    void gradient_descent_weights(std::vector<std::vector<Matrix>> errors, double learning_rate, Matrix x_labels, std::vector<std::vector<Matrix>> batch_activated_layers);
-    void gradient_descent_biases(std::vector<std::vector<Matrix>> errors, double learning_rate, Matrix x_labels, std::vector<std::vector<Matrix>> batch_activated_layers);
+    Matrix predict();
+    std::vector <std::vector<Matrix>> feed_forward_batch(Matrix& x_labels) const;
+    std::vector <Matrix> get_errors(Matrix& x_labels, Matrix& y_labels) const;
+    void gradient_descent_weights(std::vector<std::vector<Matrix>>& errors, double& learning_rate, Matrix& x_labels, std::vector<std::vector<Matrix>>& batch_activated_layers);
+    void gradient_descent_biases(std::vector<std::vector<Matrix>>& errors, double& learning_rate, Matrix& x_labels, std::vector<std::vector<Matrix>>& batch_activated_layers);
 
-    void visualise_network(bool show_hidden);
+    void visualise_network(bool show_hidden = false);
     int get_prediction(Matrix output_layer);
     int get_prediction();
 
-    void update_loss(Matrix predicted, Matrix correct);
+    void update_loss(Matrix& predicted, Matrix& correct);
 
     void train(std::vector <Matrix> train_x_labels, std::vector <Matrix> train_y_labels, std::vector <Matrix> test_x_labels, std::vector <Matrix> test_y_labels, int epochs, double learning_rate, int batch_size);
 
