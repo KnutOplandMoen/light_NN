@@ -13,7 +13,6 @@ int main() {
 
     std::vector <std::string> activation_functions = {"leakyReLu", "leakyReLu", "softmax"}; //activation and output functions, should match be of dim: (1 + number of hidden layers)
 
-
     // Initialize the network with the layers
     network nn(input_layer, hidden_layers_sizes, output_layer, activation_functions);
     nn.load_state("abcx_model.txt"); // Load the weights from a file

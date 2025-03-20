@@ -34,7 +34,7 @@ Matrix Matrix::operator*(const Matrix &rhs) const {
         throw std::invalid_argument("Matrix dimensions do not match for multiplication.");
     }
     Matrix product(rows, rhs.cols);
-    #pragma omp parallel for //Parallelizing the loop
+    #pragma omp parallel for collapse(2) //Parallelizing the loop
     for (size_t i = 0; i < rows; i++){
         for (size_t j = 0; j < rhs.cols; j++){
             for (size_t k = 0; k < cols; k++){

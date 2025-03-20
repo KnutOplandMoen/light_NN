@@ -103,7 +103,7 @@ std::vector <std::vector<Matrix>> get_data(int dim_x, int dim_y) {
             Matrix y_vector(dim_y, 1);
             Matrix x_vector(dim_x, 1);
             for (int i = 0; i < dim_y; ++i) {
-                y_vector[i][0] = line[i+dim_x] - '0';
+                y_vector[i][0] = line[i+dim_x] - '0'; // Convert characther to integr
             }
             for (int i = 0; i < dim_x; ++i) {
                 char temp = line[i];
