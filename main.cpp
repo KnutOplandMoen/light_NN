@@ -4,10 +4,6 @@
 #include <iostream>
 #include <vector>
 
-int f(int a, int b, int c, int x) {
-    return ((a * (x*x)) + (b*x) + c);
-}
-
 int main() {
 
     // Define the sizes for input, hidden layers, and output layers
@@ -21,7 +17,6 @@ int main() {
     // Initialize the network with the layers
     network nn(input_layer, hidden_layers_sizes, output_layer, activation_functions);
 
-
     //Visualise the network after the forward pass
     bool show_hidden_layers = false;
     
@@ -31,9 +26,9 @@ int main() {
     std::vector <Matrix> x_labels_train = data[0];
 
     // Set the training parameters
-    int epochs = 20;
+    int epochs = 100;
     double learning_rate = 0.01;
-    double batch_size = 10;
+    double batch_size = 32;
 
     // Train the network
     nn.train(x_labels_train, y_labels_train, epochs, learning_rate,  batch_size);
