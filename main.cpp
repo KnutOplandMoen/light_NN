@@ -22,8 +22,15 @@ int main() {
     
     // Get the data
     std::vector <std::vector<Matrix>> data = get_data(2, 2);
-    std::vector <Matrix> y_labels_train = data[1];
-    std::vector <Matrix> x_labels_train = data[0];
+    std::vector <Matrix> y_labels = data[1];
+    std::vector <Matrix> x_labels = data[0];
+
+    std::vector <std::vector<Matrix>> train_test_data = get_test_train_split(x_labels, y_labels, 0.75);
+    std::vector <Matrix> x_labels_train = train_test_data[0];
+    std::vector <Matrix> y_labels_train = train_test_data[1];
+    std::vector <Matrix> x_labels_test = train_test_data[2];
+    std::vector <Matrix> y_labels_test = train_test_data[3];
+
 
     // Set the training parameters
     int epochs = 100;

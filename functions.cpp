@@ -137,3 +137,25 @@ double get_accuracy(std::vector <Matrix> predictions, std::vector <Matrix> corre
         return (correct_predictions / predictions.size()) * 100;
     }
 }
+
+std::vector <std::vector<Matrix>> get_test_train_split(std::vector <Matrix> x_labels, std::vector <Matrix> y_labels, double split) {
+    if (x_labels.size() != y_labels.size()) {
+        throw std::invalid_argument("The number of x_labels must match the number of y_labels");
+    }
+    else {
+        int split_index = x_labels.size() * split;
+        std::vector <Matrix> x_labels_train;
+        std::vector <Matrix> y_labels_train;
+        std::vector <Matrix> x_labels_test;
+        std::vector <Matrix> y_labels_test;
+        for (int i = 0; i < split_index; ++i) {
+            x_labels_train.push_back(x_labels[i]);
+            y_labels_train.push_back(y_labels[i]);
+        }
+        for (int i = split_index; i < x_labels.size(); ++i) {
+            x_labels_test.push_back(x_labels[i]);
+            y_labels_test.push_back(y_labels[i]);
+        }
+        return {x_labels_train, y_labels_train, x_labels_test, y_labels_test};
+    }
+}
