@@ -24,7 +24,7 @@ class network {
         initialise_weights();
         check_params();
     }
-
+    std::vector<Matrix> get_weights();
     void initialise_hidden_layers();
     void initialise_weights();
     void initialise_biases();
@@ -41,6 +41,8 @@ class network {
     int get_prediction();
 
     void update_loss(Matrix& predicted, Matrix& correct);
+    void save_state(const std::string& filename);
+    void load_state(const std::string& filename);
 
     void train(std::vector <Matrix> train_x_labels, std::vector <Matrix> train_y_labels, std::vector <Matrix> test_x_labels, std::vector <Matrix> test_y_labels, int epochs, double learning_rate, int batch_size);
 

@@ -2,6 +2,7 @@
 #include <vector>
 #include "network.h"
 #include "functions.h"
+#include "models/SaveToTxt.h"
 
 /**
  * Initialise the weights for the neural network layers.
@@ -34,6 +35,9 @@ void network::initialise_weights() { //Initialising the weights for the network
     weights.push_back(matrix3);
 }
 
+std::vector<Matrix> network::get_weights() {
+    return weights;
+}
 /**
  *Initialise the hidden layers:
  *Making Nx1 size vectors depending on inputs given from user in hidden_layers_sizes param
@@ -249,3 +253,52 @@ void network::check_params() {
     }
 }
 
+void network::save_state(const std::string& filename) {
+    std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\models\\" + filename;
+    std::ofstream file(file_n, std::ios::binary);
+    if (!file.is_open()) {
+        throw std::invalid_argument("Could not open file: " + filename);
+    }
+    // Save weights
+    int num_weights = weights.size();
+    file.write(reinterpret_cast<char*>(&num_weights), sizeof(num_weights));
+    for (auto& w : weights) {
+        w.SaveToBin(file);
+    }
+    // Save biases
+    int num_biases = biases.size();
+    file.write(reinterpret_cast<char*>(&num_biases), sizeof(num_biases));
+    for (auto& b : biases) {
+        b.SaveToBin(file);
+    }
+    std::cout << "Network state saved to " << filename << std::endl;
+    file.close();
+}
+
+void network::load_state(const std::string& filename) {
+    std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\models\\" + filename;
+    std::ifstream file(file_n, std::ios::binary);
+    if (!file.is_open()) {
+        throw std::invalid_argument("Could not open file: " + filename);
+    }
+    // Load weights
+    int num_weights;
+    file.read(reinterpret_cast<char*>(&num_weights), sizeof(num_weights));
+    weights.clear();
+    for (int i = 0; i < num_weights; ++i) {
+        Matrix m;
+        m.LoadFromBin(file);
+        weights.push_back(m);
+    }
+    // Load biases
+    int num_biases;
+    file.read(reinterpret_cast<char*>(&num_biases), sizeof(num_biases));
+    biases.clear();
+    for (int i = 0; i < num_biases; ++i) {
+        Matrix m;
+        m.LoadFromBin(file);
+        biases.push_back(m);
+    }
+    std::cout << "Network state loaded from " << filename << std::endl;
+    file.close();
+}

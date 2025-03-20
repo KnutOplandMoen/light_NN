@@ -1,6 +1,7 @@
 #include "matrix.h"
 #include "functions.h"
 #include <cmath>
+#include <fstream>
 
 //"default" constructor
 Matrix::Matrix(int rows, int cols) : rows(rows), cols(cols){
@@ -215,4 +216,26 @@ double Matrix::getMaxRow() const {
         }
     }
     return max_idx;
+}
+
+void Matrix::SaveToBin(std::ofstream& file){
+    file.write(reinterpret_cast<char*>(&rows), sizeof(rows));
+    file.write(reinterpret_cast<char*>(&cols), sizeof(cols));
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+            file.write(reinterpret_cast<char*>(&data[i][j]), sizeof(data[i][j]));
+        }
+    }
+}
+
+void Matrix::LoadFromBin(std::ifstream& file) {
+    file.read(reinterpret_cast<char*>(&rows), sizeof(rows));
+    file.read(reinterpret_cast<char*>(&cols), sizeof(cols));
+    data.resize(rows);
+    for (size_t i = 0; i < rows; ++i) {
+        data[i].resize(cols);
+        for (size_t j = 0; j < cols; ++j) {
+            file.read(reinterpret_cast<char*>(&data[i][j]), sizeof(data[i][j]));
+        }
+    }
 }

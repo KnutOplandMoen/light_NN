@@ -71,5 +71,5 @@ def generate_balanced_quadratic_samples(samples_per_class=1818):
 
 # Generate 20,000 samples (approximately 1818 per class)
 with open("Data.txt", "w") as f:
-    for sample in generate_balanced_quadratic_samples(40):
+    for sample in generate_balanced_quadratic_samples(300):
         f.write(sample + "\n")
