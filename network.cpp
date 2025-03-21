@@ -179,7 +179,7 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
     int height = 500;
     int width = 1000;
     TDT4102::AnimationWindow window(100, 100, width, height, "Training network");
-    //TODO: find better way to do this
+    //TODO: find better way to do this -> atm creates window even when animation is false
     if (animation) {
     window.draw_line(TDT4102::Point(50, height - 50), TDT4102::Point(50, 50));
     window.draw_line(TDT4102::Point(50, height - 50), TDT4102::Point(width - 50, height - 50));
