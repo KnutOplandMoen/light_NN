@@ -138,7 +138,7 @@ void network::gradient_descent_weights(std::vector<std::vector<Matrix>>& errors,
         }
     }
     for (int layer = 0; layer < weights.size(); ++layer) {
-        weights[layer] = weights[layer] - divideByNumber(sum[layer], errors.size() / learning_rate);
+        weights[layer] = weights[layer] - sum[layer].divideByNumber(errors.size() / learning_rate);
     }
 }
 
@@ -155,7 +155,7 @@ void network::gradient_descent_biases(std::vector<std::vector<Matrix>>& errors, 
         }
     }
     for (int layer = 0; layer < L; ++layer) {
-        biases[layer] = biases[layer] - divideByNumber(sum[layer], errors.size() / learning_rate);
+        biases[layer] = biases[layer] - sum[layer].divideByNumber(errors.size() / learning_rate);
     }
 }
 

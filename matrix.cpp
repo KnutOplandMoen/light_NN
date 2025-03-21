@@ -245,3 +245,13 @@ void Matrix::LoadFromBin(std::ifstream& file) {
         }
     }
 }
+
+Matrix Matrix::divideByNumber(double number) {
+    Matrix result(rows, cols);
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+            result[i][j] = data[i][j] / number;
+        }
+    }
+    return result;
+}
