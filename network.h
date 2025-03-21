@@ -1,6 +1,11 @@
+#pragma once
 #include "matrix.h"
 #include <vector>
 #include <unordered_map>
+#include "functions/functions.h"
+#include <fstream>
+#include <chrono>
+#include <filesystem>
 
 class network {
     private:
@@ -31,7 +36,7 @@ class network {
     void check_params();
 
     Matrix predict();
-    std::vector <std::vector<Matrix>> feed_forward_batch(Matrix& x_labels) const;
+    std::vector <std::vector<Matrix>> feed_forward_pass(const Matrix& x_labels) const;
     std::vector <Matrix> get_errors(Matrix& x_labels, Matrix& y_labels) const;
     void gradient_descent_weights(std::vector<std::vector<Matrix>>& errors, double& learning_rate, Matrix& x_labels, std::vector<std::vector<Matrix>>& batch_activated_layers);
     void gradient_descent_biases(std::vector<std::vector<Matrix>>& errors, double& learning_rate, Matrix& x_labels, std::vector<std::vector<Matrix>>& batch_activated_layers);

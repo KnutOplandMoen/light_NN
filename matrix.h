@@ -26,6 +26,8 @@ public:
     Matrix operator*(const Matrix& rhs) const;
     Matrix operator+(const Matrix& rhs) const;
     Matrix operator-(const Matrix &rhs) const;
+    Matrix divideByNumber(double number);
+
     Matrix transposed() const;
     Matrix applyActivationFunction(std::string func);
     Matrix applyActivationFunction_derivative(std::string func);
@@ -33,5 +35,3 @@ public:
     void SaveToBin(std::ofstream& file);
     void LoadFromBin(std::ifstream& file);
 };
-
-

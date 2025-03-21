@@ -1,9 +1,10 @@
 #include "matrix.h"
 #include <vector>
 #include "network.h"
-#include "functions.h"
+#include "functions/functions.h"
 #include <fstream>
 #include <chrono>
+#include <filesystem>
 
 /**
  * Initialise the weights for the neural network layers.
@@ -69,7 +70,7 @@ Matrix network::predict() { //Feed forward in the network to get the output laye
     return output_layer; //To do: Add a output function option here on the output layer: for instance softmax
 }
 
-std::vector <std::vector<Matrix>> network::feed_forward_batch(Matrix& x_labels) const{
+std::vector <std::vector<Matrix>> network::feed_forward_pass(const Matrix& x_labels) const{
     std::vector<Matrix> hidden_layers_copy = hidden_layers;
     std::vector<Matrix> activation;
     std::vector<Matrix> weigted_inputs;
@@ -93,7 +94,7 @@ std::vector <std::vector<Matrix>> network::feed_forward_batch(Matrix& x_labels) 
 
 std::vector <Matrix> network::get_errors(Matrix& x_labels, Matrix& y_labels) const{ //Backpropagating through network to get errors for each layer
     //Making copy
-    std::vector <std::vector<Matrix>> feed_forward = feed_forward_batch(x_labels);
+    std::vector <std::vector<Matrix>> feed_forward = feed_forward_pass(x_labels);
 
     std::vector <Matrix> errors;
 
@@ -137,7 +138,7 @@ void network::gradient_descent_weights(std::vector<std::vector<Matrix>>& errors,
         }
     }
     for (int layer = 0; layer < weights.size(); ++layer) {
-        weights[layer] = weights[layer] - divideByNumber(sum[layer], errors.size() / learning_rate);
+        weights[layer] = weights[layer] - sum[layer].divideByNumber(errors.size() / learning_rate);
     }
 }
 
@@ -154,14 +155,15 @@ void network::gradient_descent_biases(std::vector<std::vector<Matrix>>& errors, 
         }
     }
     for (int layer = 0; layer < L; ++layer) {
-        biases[layer] = biases[layer] - divideByNumber(sum[layer], errors.size() / learning_rate);
+        biases[layer] = biases[layer] - sum[layer].divideByNumber(errors.size() / learning_rate);
     }
 }
 
 
 void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> train_y_labels, std::vector <Matrix> test_x_labels, std::vector <Matrix> test_y_labels, int epochs, double learning_rate, int batch_size) {
-    std::cout << "Training the network with " << epochs << " epochs"<< std::endl;
-    std::cout << "----------------------------------" << std::endl;
+    std::cout << "----------------------------------\n" << std::endl;
+    std::cout << "Initializing training of network with " << epochs << " epochs"<< std::endl;
+    std::cout << "\n----------------------------------" << std::endl;
     std::cout << "Number of hidden layers: " << hidden_layers.size() << std::endl;
     std::cout << "Number of training samples: " << train_x_labels.size() << std::endl;
     std::cout << "Number of test samples: " << test_x_labels.size() << std::endl;
@@ -171,6 +173,7 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
 
     for (int i = 0; i < epochs; ++i) {
         std::cout << "Epoch: " << i + 1 << std::endl;
+        std::cout << "---------" << std::endl;
         auto start = std::chrono::high_resolution_clock::now();
         // Train the network with the training data
         for (int j = 0; j < train_x_labels.size(); j += batch_size) {
@@ -179,9 +182,9 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
             std::vector<std::vector<Matrix>> batch_weighted_inputs; 
             std::vector<Matrix> batch_predictions;
             #pragma omp parallel for
-            for (int k = 0; k < batch_size && (j + k) < train_x_labels.size(); ++k) {
+            for (int k = 0; k < batch_size && (j + k) < train_x_labels.size(); ++k) { // For each batch (in parallel)
                 int index = j + k;
-                std::vector<std::vector<Matrix>> feed_forward = feed_forward_batch(train_x_labels[index]); // No shadowing
+                std::vector<std::vector<Matrix>> feed_forward = feed_forward_pass(train_x_labels[index]);
                 std::vector<Matrix> activated_layers = feed_forward[0];
                 activated_layers.insert(activated_layers.begin(), train_x_labels[index]);
                 std::vector<Matrix> weighted_inputs = feed_forward[1]; // Extract weighted inputs
@@ -201,14 +204,15 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
         // Test the network with the test data
         std::vector <Matrix> predictions;
         for (int j = 0; j < test_x_labels.size(); ++j) {
-            std::vector<std::vector<Matrix>> feed_forward = feed_forward_batch(test_x_labels[j]);
+            std::vector<std::vector<Matrix>> feed_forward = feed_forward_pass(test_x_labels[j]);
             predictions.push_back(feed_forward[0].back());
         }
         auto stop = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
         std::cout << "Accuracy: " << get_accuracy(predictions, test_y_labels) << "%" << std::endl;
         std::cout << "loss: " << loss / train_x_labels.size() << std::endl;
-        std::cout << "Time: " << static_cast<double> (duration.count()) / 1000 << " s" << std::endl;
+        std::cout << "Time taken for epoch: " << static_cast<double> (duration.count()) / 1000 << " s" << std::endl;
+        std::cout << "Estimated time left: " << static_cast<double> (duration.count()) / 1000 * (epochs - i - 1) << " s" << std::endl;
         std::cout << "-----------------" << std::endl;
         
 
@@ -267,12 +271,31 @@ void network::check_params() {
     }
 }
 
-void network::save_state(const std::string& filename) {
+void network::save_state(const std::string& filename) { //Saving the weights and biases to a file
     std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\models\\" + filename;
+    
+    if (std::filesystem::exists(file_n)) {
+        std::cout << filename <<" already exists! Are you sure you want to overwrite your previus model? [yes/no]\nAnswer: " << std::endl;
+        std::string answer;
+        std::cin >> answer;
+        while (answer != "yes" && answer != "no") {
+            std::cout << "Please enter yes or no\nAnswer: ";
+            std::cin >> answer;
+        }
+        if (answer != "yes") {
+            std::cout << "Model not saved" << std::endl;
+            return;
+        }
+        else {
+            std::cout << "Overwriting " << filename << std::endl;
+        }
+    };
+
     std::ofstream file(file_n, std::ios::binary);
     if (!file.is_open()) {
         throw std::invalid_argument("Could not open file: " + filename);
     }
+    
     // Save weights
     int num_weights = weights.size();
     file.write(reinterpret_cast<char*>(&num_weights), sizeof(num_weights));
@@ -289,7 +312,7 @@ void network::save_state(const std::string& filename) {
     file.close();
 }
 
-void network::load_state(const std::string& filename) {
+void network::load_state(const std::string& filename) { //Loading the weights and biases from a file
     std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\models\\" + filename;
     std::ifstream file(file_n, std::ios::binary);
     if (!file.is_open()) {

@@ -1,5 +1,5 @@
 #include "matrix.h"
-#include "functions.h"
+#include "functions/functions.h"
 #include <cmath>
 #include <fstream>
 #include <omp.h>
@@ -244,4 +244,14 @@ void Matrix::LoadFromBin(std::ifstream& file) {
             file.read(reinterpret_cast<char*>(&data[i][j]), sizeof(data[i][j]));
         }
     }
+}
+
+Matrix Matrix::divideByNumber(double number) {
+    Matrix result(rows, cols);
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+            result[i][j] = data[i][j] / number;
+        }
+    }
+    return result;
 }
