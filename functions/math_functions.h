@@ -1,9 +1,8 @@
-#pragma once
-#include <iostream>
-#include <cmath>
-#include <cctype>
-#include <random>
 #include "../matrix.h"
+#include <vector>
+#include <random>
+
+double get_accuracy(std::vector <Matrix>& predictions, std::vector <Matrix>& correct);
 
 double randDouble(double lowerBound, double upperBound);
 
@@ -24,5 +23,3 @@ double cost(std::vector <double>& output_layer, std::vector <double>& correct_ou
 Matrix hadamard(Matrix m1, Matrix m2);
 
 Matrix divideByNumber(Matrix& m, double number);
-
-double get_accuracy(std::vector <Matrix>& predictions, std::vector <Matrix>& correct);

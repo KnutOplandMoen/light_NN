@@ -1,8 +1,6 @@
-#pragma once
 #include "../matrix.h"
-#include <vector>
+#include "fstream"
 #include <string>
-#include <fstream>
 
 struct data_struct {
     std::vector <Matrix> x_labels;

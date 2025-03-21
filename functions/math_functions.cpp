@@ -1,5 +1,22 @@
 #include "math_functions.h"
 
+double get_accuracy(std::vector <Matrix>& predictions, std::vector <Matrix>& correct) {
+    if (predictions.size() != correct.size()) {
+        throw std::invalid_argument("The number of predictions must match the number of correct labels");
+    }
+    else {
+        double correct_predictions = 0;
+        for (int i = 0; i < predictions.size(); ++i) {
+            int predicted = predictions[i].getMaxRow();
+            int correct_label = correct[i].getMaxRow();
+            if (predicted == correct_label) {
+                correct_predictions++;
+            }
+        }
+        return (correct_predictions / predictions.size()) * 100;
+    }
+}
+
 double randDouble(double lowerBound, double upperBound){
     std::random_device rnd;
     std::default_random_engine generator(rnd());
@@ -81,21 +98,4 @@ Matrix divideByNumber(Matrix& m, double number) {
         }
     }
     return result;
-}
-
-double get_accuracy(std::vector <Matrix>& predictions, std::vector <Matrix>& correct) {
-    if (predictions.size() != correct.size()) {
-        throw std::invalid_argument("The number of predictions must match the number of correct labels");
-    }
-    else {
-        double correct_predictions = 0;
-        for (int i = 0; i < predictions.size(); ++i) {
-            int predicted = predictions[i].getMaxRow();
-            int correct_label = correct[i].getMaxRow();
-            if (predicted == correct_label) {
-                correct_predictions++;
-            }
-        }
-        return (correct_predictions / predictions.size()) * 100;
-    }
 }

@@ -1,2 +1,11 @@
-#include "data_functions.h" // Include the header file of the data related functions
-#include "math_functions.h" // Include the header file of the math related functions
+#pragma once
+#include <iostream>
+#include <cmath>
+#include <cctype>
+#include <random>
+#include "../matrix.h"
+#include <vector>
+#include <string>
+#include <fstream>
+#include "math_functions.h"
+#include "data_functions.h"

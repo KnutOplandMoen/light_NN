@@ -1,6 +1,5 @@
 #include "data_functions.h"
 
-
 data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
     std::ifstream file("c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\" + filename); //Change path to your own
     std::vector <Matrix> y_labels;
