@@ -30,7 +30,7 @@ int main() {
 
     // Set the training parameters
     int epochs = 0;
-    double learning_rate = 0.01;
+    double learning_rate = 0.001;
     double batch_size = 32;
 
     std::vector<Matrix> weights = nn.get_weights();
