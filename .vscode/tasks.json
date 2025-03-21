@@ -13,6 +13,7 @@
                 "${workspaceFolder}/network.cpp",
                 "${workspaceFolder}/functions/math_functions.cpp",
                 "${workspaceFolder}/functions/data_functions.cpp",
+                "${workspaceFolder}/functions/activation_functions.cpp",
                 "-o",
                 "${workspaceFolder}/main.exe"
             ],

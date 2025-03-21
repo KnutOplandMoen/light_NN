@@ -16,7 +16,11 @@ data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
             Matrix y_vector(dim_y, 1);
             Matrix x_vector(dim_x, 1);
             for (int i = 0; i < dim_y; ++i) {
-                y_vector[i][0] = line[i+dim_x] - '0'; // Convert characther to integr
+                char temp = line[i + dim_x];
+                if (!isdigit(temp)) {
+                    throw std::invalid_argument("The data file must only contain digits");
+                }
+                y_vector[i][0] = line[i+dim_x] - '0'; // Convert characther to integr with - '0'
             }
             for (int i = 0; i < dim_x; ++i) {
                 char temp = line[i];
@@ -34,7 +38,7 @@ data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
     }
 }
 
-Matrix input_to_matrix(std::vector <double> input) {
+Matrix input_to_matrix(std::vector <double> input) {//transforming n sized vector to nx1 matrix
     Matrix m(input.size(), 1);
     for (int i = 0; i < input.size(); ++i) {
         m[i][0] = input[i];
@@ -44,6 +48,7 @@ Matrix input_to_matrix(std::vector <double> input) {
 
 
 data_struct get_test_train_split(std::vector <Matrix> x_labels, std::vector <Matrix> y_labels, double split) {
+    
     if (x_labels.size() != y_labels.size()) {
         throw std::invalid_argument("The number of x_labels must match the number of y_labels");
     }

@@ -1,9 +1,11 @@
 #include "functions/functions.h"
 #include "matrix.h"
 #include "network.h"
+#include "plot.h"
 
 int main() {
 
+    
     // Define the sizes for input, hidden layers, and output layers
     std::vector<int> hidden_layers_sizes = {10, 10};  // hidden layers and neurons in each layer
     Matrix output_layer(11, 1); // Output layer with 11 neurons
@@ -40,6 +42,6 @@ int main() {
     Matrix prediction = nn.feed_forward_pass(input_to_matrix({3, 2, 3, 1}))[0].back();
     std::cout << "Prediction: \n" << prediction << std::endl;
 
-    nn.save_state("model_copy.txt"); // Save the weights and viases to a file in binary format
+    nn.save_state("abcx_copy.txt"); // Save the weights and viases to a file in binary format
     return 0;
 }
