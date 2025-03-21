@@ -25,10 +25,17 @@ Matrix hadamard(Matrix m1, Matrix m2);
 
 Matrix divideByNumber(Matrix& m, double number);
 
+struct train_test_split {
+    std::vector <Matrix> x_labels_train;
+    std::vector <Matrix> y_labels_train;
+    std::vector <Matrix> x_labels_test;
+    std::vector <Matrix> y_labels_test;
+};
+
 std::vector <std::vector<Matrix>> get_data(int dim_x, int dim_y, const std::string& filename);
 
 Matrix input_to_matrix(std::vector <double> input);
 
 double get_accuracy(std::vector <Matrix>& predictions, std::vector <Matrix>& correct);
 
-std::vector <std::vector<Matrix>> get_test_train_split(std::vector <Matrix> x_labels, std::vector <Matrix> y_labels, double split);
+train_test_split get_test_train_split(std::vector <Matrix> x_labels, std::vector <Matrix> y_labels, double split);
