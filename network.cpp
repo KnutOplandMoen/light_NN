@@ -209,7 +209,8 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
         std::cout << "Accuracy: " << get_accuracy(predictions, test_y_labels) << "%" << std::endl;
         std::cout << "loss: " << loss / train_x_labels.size() << std::endl;
-        std::cout << "Time: " << static_cast<double> (duration.count()) / 1000 << " s" << std::endl;
+        std::cout << "Time taken for epoch: " << static_cast<double> (duration.count()) / 1000 << " s" << std::endl;
+        std::cout << "Estimated time left: " << static_cast<double> (duration.count()) / 1000 * (epochs - i - 1) << " s" << std::endl;
         std::cout << "-----------------" << std::endl;
         
 
