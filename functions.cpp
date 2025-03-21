@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <cctype>
 
 double randDouble(double lowerBound, double upperBound){
     std::random_device rnd;
@@ -107,6 +108,9 @@ std::vector <std::vector<Matrix>> get_data(int dim_x, int dim_y) {
             }
             for (int i = 0; i < dim_x; ++i) {
                 char temp = line[i];
+                if (!isdigit(temp)) {
+                    throw std::invalid_argument("The data file must only contain digits");
+                }
                 x_vector[i][0] = temp - '0';
             }
             y_labels.push_back(y_vector);

@@ -67,7 +67,7 @@ Matrix Matrix::operator-(const Matrix &rhs) const{
         throw std::invalid_argument("Dimensions do not match for matrix adding.");
     }
     Matrix sum(rows, cols);
-    #pragma omp parallel for collapse(2)//Parallelizing the loop
+    #pragma omp parallel for collapse(2) //Parallelizing both loop
     for (size_t i = 0; i < rows; i++){
         for (size_t j = 0; j < cols; j++){
             sum[i][j] = data[i][j] - rhs.data[i][j];
@@ -141,7 +141,7 @@ Matrix Matrix::applyActivationFunction(std::string func){
     else if (func == "softmax") {
         // Find the maximum value in the matrix to avoid overflow
         double max_val = data[0][0];
-        #pragma omp parallel for
+        #pragma omp parallel for collapse(2) reduction(max:max_val) // Parallelizing both loops and getting max value
         for (size_t i = 0; i < rows; ++i) {
             for (size_t j = 0; j < this->getCols(); ++j) {
                 if (data[i][j] > max_val) {
@@ -151,7 +151,7 @@ Matrix Matrix::applyActivationFunction(std::string func){
         }
     
         double exponential_sum = 0.0;
-        for (size_t i = 0; i < rows; ++i) {
+        for (size_t i = 0; i < rows; ++i) { //we dont use paralell here becouse of small size (TODO: test with paralell and see if it is faster!!)
             for (size_t j = 0; j < cols; ++j) {
                 double exponential = std::exp(data[i][j] - max_val);
                 exponential_sum += exponential;
