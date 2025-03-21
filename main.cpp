@@ -1,8 +1,6 @@
 #include "functions/functions.h"
 #include "matrix.h"
 #include "network.h"
-#include <iostream>
-#include <vector>
 
 int main() {
 

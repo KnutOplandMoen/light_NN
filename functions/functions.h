@@ -1,11 +1,3 @@
 #pragma once
-#include <iostream>
-#include <cmath>
-#include <cctype>
-#include <random>
-#include "../matrix.h"
-#include <vector>
-#include <string>
-#include <fstream>
 #include "math_functions.h"
 #include "data_functions.h"
