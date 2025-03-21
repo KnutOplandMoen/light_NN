@@ -161,8 +161,9 @@ void network::gradient_descent_biases(std::vector<std::vector<Matrix>>& errors, 
 
 
 void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> train_y_labels, std::vector <Matrix> test_x_labels, std::vector <Matrix> test_y_labels, int epochs, double learning_rate, int batch_size) {
-    std::cout << "Training the network with " << epochs << " epochs"<< std::endl;
-    std::cout << "----------------------------------" << std::endl;
+    std::cout << "----------------------------------\n" << std::endl;
+    std::cout << "Initializing training of network with " << epochs << " epochs"<< std::endl;
+    std::cout << "----------------------------------\n" << std::endl;
     std::cout << "Number of hidden layers: " << hidden_layers.size() << std::endl;
     std::cout << "Number of training samples: " << train_x_labels.size() << std::endl;
     std::cout << "Number of test samples: " << test_x_labels.size() << std::endl;
