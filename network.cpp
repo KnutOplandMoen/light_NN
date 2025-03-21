@@ -4,6 +4,7 @@
 #include "functions.h"
 #include <fstream>
 #include <chrono>
+#include <filesystem>
 
 /**
  * Initialise the weights for the neural network layers.
@@ -69,7 +70,7 @@ Matrix network::predict() { //Feed forward in the network to get the output laye
     return output_layer; //To do: Add a output function option here on the output layer: for instance softmax
 }
 
-std::vector <std::vector<Matrix>> network::feed_forward_batch(Matrix& x_labels) const{
+std::vector <std::vector<Matrix>> network::feed_forward_batch(const Matrix& x_labels) const{
     std::vector<Matrix> hidden_layers_copy = hidden_layers;
     std::vector<Matrix> activation;
     std::vector<Matrix> weigted_inputs;
@@ -267,12 +268,31 @@ void network::check_params() {
     }
 }
 
-void network::save_state(const std::string& filename) {
+void network::save_state(const std::string& filename) { //Saving the weights and biases to a file
     std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\models\\" + filename;
+    
+    if (std::filesystem::exists(file_n)) {
+        std::cout << filename <<" already exists! Are you sure you want to overwrite your previus model? [yes/no]\nAnswer: " << std::endl;
+        std::string answer;
+        std::cin >> answer;
+        while (answer != "yes" && answer != "no") {
+            std::cout << "Please enter yes or no\nAnswer: ";
+            std::cin >> answer;
+        }
+        if (answer != "yes") {
+            std::cout << "Model not saved" << std::endl;
+            return;
+        }
+        else {
+            std::cout << "Overwriting " << filename << std::endl;
+        }
+    };
+
     std::ofstream file(file_n, std::ios::binary);
     if (!file.is_open()) {
         throw std::invalid_argument("Could not open file: " + filename);
     }
+    
     // Save weights
     int num_weights = weights.size();
     file.write(reinterpret_cast<char*>(&num_weights), sizeof(num_weights));
@@ -289,7 +309,7 @@ void network::save_state(const std::string& filename) {
     file.close();
 }
 
-void network::load_state(const std::string& filename) {
+void network::load_state(const std::string& filename) { //Loading the weights and biases from a file
     std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\models\\" + filename;
     std::ifstream file(file_n, std::ios::binary);
     if (!file.is_open()) {

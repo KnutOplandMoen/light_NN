@@ -90,8 +90,8 @@ Matrix divideByNumber(Matrix& m, double number) {
     return result;
 }
 
-std::vector <std::vector<Matrix>> get_data(int dim_x, int dim_y) {
-    std::ifstream file("c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\Data.txt");
+std::vector <std::vector<Matrix>> get_data(int dim_x, int dim_y, const std::string& filename) {
+    std::ifstream file("c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\" + filename);
     std::vector <Matrix> y_labels;
     std::vector <Matrix> x_labels;
 
@@ -99,6 +99,7 @@ std::vector <std::vector<Matrix>> get_data(int dim_x, int dim_y) {
        throw std::invalid_argument("Could not open the file!");
     }
     else {
+        std::cout << "Loading data from: " << filename << "..." << std::endl;
         std::string line;
         while (std::getline(file, line)) {
             Matrix y_vector(dim_y, 1);

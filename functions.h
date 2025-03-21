@@ -25,7 +25,7 @@ Matrix hadamard(Matrix m1, Matrix m2);
 
 Matrix divideByNumber(Matrix& m, double number);
 
-std::vector <std::vector<Matrix>> get_data(int dim_x, int dim_y);
+std::vector <std::vector<Matrix>> get_data(int dim_x, int dim_y, const std::string& filename);
 
 Matrix input_to_matrix(std::vector <double> input);
 
