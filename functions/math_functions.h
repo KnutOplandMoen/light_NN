@@ -24,3 +24,5 @@ double cost(std::vector <double>& output_layer, std::vector <double>& correct_ou
 Matrix hadamard(Matrix m1, Matrix m2);
 
 Matrix divideByNumber(Matrix& m, double number);
+
+double get_accuracy(std::vector <Matrix>& predictions, std::vector <Matrix>& correct);

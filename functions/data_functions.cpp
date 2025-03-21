@@ -2,7 +2,7 @@
 
 
 data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
-    std::ifstream file("c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\" + filename);
+    std::ifstream file("c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\" + filename); //Change path to your own
     std::vector <Matrix> y_labels;
     std::vector <Matrix> x_labels;
 
@@ -41,23 +41,6 @@ Matrix input_to_matrix(std::vector <double> input) {
         m[i][0] = input[i];
     }
     return m;
-}
-
-double get_accuracy(std::vector <Matrix>& predictions, std::vector <Matrix>& correct) {
-    if (predictions.size() != correct.size()) {
-        throw std::invalid_argument("The number of predictions must match the number of correct labels");
-    }
-    else {
-        double correct_predictions = 0;
-        for (int i = 0; i < predictions.size(); ++i) {
-            int predicted = predictions[i].getMaxRow();
-            int correct_label = correct[i].getMaxRow();
-            if (predicted == correct_label) {
-                correct_predictions++;
-            }
-        }
-        return (correct_predictions / predictions.size()) * 100;
-    }
 }
 
 
