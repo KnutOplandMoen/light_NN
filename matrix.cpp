@@ -1,5 +1,5 @@
 #include "matrix.h"
-#include "functions.h"
+#include "functions/functions.h"
 #include <cmath>
 #include <fstream>
 #include <omp.h>

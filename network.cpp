@@ -1,7 +1,7 @@
 #include "matrix.h"
 #include <vector>
 #include "network.h"
-#include "functions.h"
+#include "functions/functions.h"
 #include <fstream>
 #include <chrono>
 #include <filesystem>
