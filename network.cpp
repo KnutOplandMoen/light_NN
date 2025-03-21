@@ -70,7 +70,7 @@ Matrix network::predict() { //Feed forward in the network to get the output laye
     return output_layer; //To do: Add a output function option here on the output layer: for instance softmax
 }
 
-std::vector <std::vector<Matrix>> network::feed_forward_batch(const Matrix& x_labels) const{
+std::vector <std::vector<Matrix>> network::feed_forward_pass(const Matrix& x_labels) const{
     std::vector<Matrix> hidden_layers_copy = hidden_layers;
     std::vector<Matrix> activation;
     std::vector<Matrix> weigted_inputs;
@@ -94,7 +94,7 @@ std::vector <std::vector<Matrix>> network::feed_forward_batch(const Matrix& x_la
 
 std::vector <Matrix> network::get_errors(Matrix& x_labels, Matrix& y_labels) const{ //Backpropagating through network to get errors for each layer
     //Making copy
-    std::vector <std::vector<Matrix>> feed_forward = feed_forward_batch(x_labels);
+    std::vector <std::vector<Matrix>> feed_forward = feed_forward_pass(x_labels);
 
     std::vector <Matrix> errors;
 
@@ -180,9 +180,9 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
             std::vector<std::vector<Matrix>> batch_weighted_inputs; 
             std::vector<Matrix> batch_predictions;
             #pragma omp parallel for
-            for (int k = 0; k < batch_size && (j + k) < train_x_labels.size(); ++k) {
+            for (int k = 0; k < batch_size && (j + k) < train_x_labels.size(); ++k) { // For each batch (in parallel)
                 int index = j + k;
-                std::vector<std::vector<Matrix>> feed_forward = feed_forward_batch(train_x_labels[index]); // No shadowing
+                std::vector<std::vector<Matrix>> feed_forward = feed_forward_pass(train_x_labels[index]);
                 std::vector<Matrix> activated_layers = feed_forward[0];
                 activated_layers.insert(activated_layers.begin(), train_x_labels[index]);
                 std::vector<Matrix> weighted_inputs = feed_forward[1]; // Extract weighted inputs
@@ -202,7 +202,7 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
         // Test the network with the test data
         std::vector <Matrix> predictions;
         for (int j = 0; j < test_x_labels.size(); ++j) {
-            std::vector<std::vector<Matrix>> feed_forward = feed_forward_batch(test_x_labels[j]);
+            std::vector<std::vector<Matrix>> feed_forward = feed_forward_pass(test_x_labels[j]);
             predictions.push_back(feed_forward[0].back());
         }
         auto stop = std::chrono::high_resolution_clock::now();

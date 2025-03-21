@@ -39,7 +39,7 @@ int main() {
     nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size);
 
     // Test the network on a single input
-    Matrix prediction = nn.feed_forward_batch(input_to_matrix({3, 2, 3, 1}))[0].back();
+    Matrix prediction = nn.feed_forward_pass(input_to_matrix({3, 2, 3, 1}))[0].back();
     std::cout << "Prediction: \n" << prediction << std::endl;
 
     nn.save_state("model_copy.txt"); // Save the weights and viases to a file in binary format
