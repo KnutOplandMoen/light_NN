@@ -15,14 +15,14 @@ int main() {
 
     // Initialize the network with the layers
     network nn(input_layer, hidden_layers_sizes, output_layer, activation_functions);
-    nn.load_state("abcx_model.txt"); // Load the weights from a file
+    nn.load_state("abcx_model.txt"); // Load the state (weights and biases) from a file
 
     // Get the data
-    std::vector <std::vector<Matrix>> data = get_data(4, 11, "Data.txt");
-    std::vector <Matrix> y_labels = data[1];
-    std::vector <Matrix> x_labels = data[0];
+    data_struct data = get_data(4, 11, "Data.txt");
+    std::vector <Matrix> x_labels = data.x_labels;
+    std::vector <Matrix> y_labels = data.y_labels;
 
-    train_test_split train_test_data = get_test_train_split(x_labels, y_labels, 0.75); //Splitting the data into training and test data
+    data_struct train_test_data = get_test_train_split(x_labels, y_labels, 0.75); //Splitting the data into training and test data
     std::vector <Matrix> x_labels_train = train_test_data.x_labels_train;
     std::vector <Matrix> y_labels_train = train_test_data.y_labels_train;
     std::vector <Matrix> x_labels_test = train_test_data.x_labels_test;
