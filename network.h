@@ -49,6 +49,6 @@ class network {
     void save_state(const std::string& filename);
     void load_state(const std::string& filename);
 
-    void train(std::vector <Matrix> train_x_labels, std::vector <Matrix> train_y_labels, std::vector <Matrix> test_x_labels, std::vector <Matrix> test_y_labels, int epochs, double learning_rate, int batch_size);
+    void train(std::vector <Matrix> train_x_labels, std::vector <Matrix> train_y_labels, std::vector <Matrix> test_x_labels, std::vector <Matrix> test_y_labels, int epochs, double learning_rate, int batch_size, bool animation = false);
 
 };

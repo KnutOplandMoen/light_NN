@@ -5,6 +5,7 @@
 #include <fstream>
 #include <chrono>
 #include <filesystem>
+#include "AnimationWindow.h"
 
 /**
  * Initialise the weights for the neural network layers.
@@ -160,7 +161,7 @@ void network::gradient_descent_biases(std::vector<std::vector<Matrix>>& errors, 
 }
 
 
-void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> train_y_labels, std::vector <Matrix> test_x_labels, std::vector <Matrix> test_y_labels, int epochs, double learning_rate, int batch_size) {
+void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> train_y_labels, std::vector <Matrix> test_x_labels, std::vector <Matrix> test_y_labels, int epochs, double learning_rate, int batch_size, bool animation) {
     std::cout << "----------------------------------\n" << std::endl;
     std::cout << "Initializing training of network with " << epochs << " epochs"<< std::endl;
     std::cout << "\n----------------------------------" << std::endl;
@@ -170,6 +171,25 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
     std::cout << "Learning rate: " << learning_rate << std::endl;
     std::cout << "Batch size: " << batch_size << std::endl;
     std::cout << "----------------------------------" << std::endl;
+
+    std::vector <double> epochs_n;
+    std::vector <double> loss_n;
+    std::vector <double> accuracy_n;
+
+    int height = 500;
+    int width = 1000;
+    TDT4102::AnimationWindow window(100, 100, width, height, "Training network");
+    //TODO: find better way to do this
+    if (animation) {
+    window.draw_line(TDT4102::Point(50, height - 50), TDT4102::Point(50, 50));
+    window.draw_line(TDT4102::Point(50, height - 50), TDT4102::Point(width - 50, height - 50));
+    window.draw_text(TDT4102::Point(52, 50), "100%", TDT4102::Color::black, 10);
+    window.next_frame();    
+    }
+    else {
+        window.close();
+    }
+    
 
     for (int i = 0; i < epochs; ++i) {
         std::cout << "Epoch: " << i + 1 << std::endl;
@@ -209,13 +229,22 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
         }
         auto stop = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-        std::cout << "Accuracy: " << get_accuracy(predictions, test_y_labels) << "%" << std::endl;
-        std::cout << "loss: " << loss / train_x_labels.size() << std::endl;
+
+        double current_accuracy = get_accuracy(predictions, test_y_labels);
+        double current_loss = loss / train_x_labels.size();
+        std::cout << "Accuracy: " << current_accuracy << "%" << std::endl;
+        std::cout << "loss: " << current_loss << std::endl;
         std::cout << "Time taken for epoch: " << static_cast<double> (duration.count()) / 1000 << " s" << std::endl;
         std::cout << "Estimated time left: " << static_cast<double> (duration.count()) / 1000 * (epochs - i - 1) << " s" << std::endl;
         std::cout << "-----------------" << std::endl;
         
+        epochs_n.push_back(i);
+        loss_n.push_back(current_loss);
+        accuracy_n.push_back(current_accuracy);
 
+        if (animation) {
+            update(epochs_n, loss_n, accuracy_n, current_accuracy, current_loss, width, height, epochs, window);
+        }
         loss = 0;
     }
 }

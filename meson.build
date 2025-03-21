@@ -29,6 +29,7 @@ exe = executable(
   'program',
   src,
 'activation_functions.cpp',
+'animation_functions.cpp',
 'data_functions.cpp',
 'main.cpp',
 'math_functions.cpp',

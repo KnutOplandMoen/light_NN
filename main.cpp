@@ -13,7 +13,7 @@ int main() {
 
     // Initialize the network with the layers
     network nn(input_layer, hidden_layers_sizes, output_layer, activation_functions);
-    nn.load_state("abcx_model.txt"); // Load the state (weights and biases) from file
+    nn.load_state("abcx_copy.txt"); // Load the state (weights and biases) from file
 
     // Get the data
     data_struct data = get_data(4, 11, "Data.txt");
@@ -27,14 +27,14 @@ int main() {
     std::vector <Matrix> y_labels_test = train_test_data.y_labels_test;
 
     // Set the training parameters
-    int epochs = 1;
-    double learning_rate = 0.001;
+    int epochs = 40;
+    double learning_rate = 0.01;
     double batch_size = 32;
 
     std::vector<Matrix> weights = nn.get_weights();
 
     // Train the network
-    nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size);
+    nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size, true);
 
     // Test the network on a single input
     Matrix prediction = nn.feed_forward_pass(input_to_matrix({3, 2, 3, 1}))[0].back();
