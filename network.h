@@ -2,7 +2,7 @@
 #include "matrix.h"
 #include <vector>
 #include <unordered_map>
-#include "functions/functions.h"
+#include "functions.h"
 #include <fstream>
 #include <chrono>
 #include <filesystem>

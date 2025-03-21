@@ -1,7 +1,7 @@
 #include "matrix.h"
 #include <vector>
 #include "network.h"
-#include "functions/functions.h"
+#include "functions.h"
 #include <fstream>
 #include <chrono>
 #include <filesystem>
@@ -272,7 +272,7 @@ void network::check_params() {
 }
 
 void network::save_state(const std::string& filename) { //Saving the weights and biases to a file
-    std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\models\\" + filename;
+    std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\TDT4102\\prosjekt\\models\\" + filename;
     
     if (std::filesystem::exists(file_n)) {
         std::cout << filename <<" already exists! Are you sure you want to overwrite your previus model? [yes/no]\nAnswer: " << std::endl;
@@ -313,7 +313,7 @@ void network::save_state(const std::string& filename) { //Saving the weights and
 }
 
 void network::load_state(const std::string& filename) { //Loading the weights and biases from a file
-    std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\models\\" + filename;
+    std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\TDT4102\\prosjekt\\models\\" + filename;
     std::ifstream file(file_n, std::ios::binary);
     if (!file.is_open()) {
         throw std::invalid_argument("Could not open file: " + filename);

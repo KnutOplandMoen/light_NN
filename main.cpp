@@ -1,10 +1,9 @@
-#include "functions/functions.h"
+#include "std_lib_facilities.h"
+#include "functions.h"
 #include "matrix.h"
 #include "network.h"
 
 int main() {
-
-
     // Define the sizes for input, hidden layers, and output layers
     std::vector<int> hidden_layers_sizes = {10, 10};  // hidden layers and neurons in each layer
     Matrix output_layer(11, 1); // Output layer with 11 neurons
