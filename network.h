@@ -6,6 +6,7 @@
 #include <fstream>
 #include <chrono>
 #include <filesystem>
+#include "AnimationWindow.h"
 
 class network {
     private:
@@ -20,7 +21,9 @@ class network {
     std::vector <std::string> activationFuncions;
     double loss;
 
+
     public:
+    
     network(Matrix input_layer, std::vector <int> hidden_layers_sizes, Matrix output_layer, std::vector <std::string> activationFuncions)
         : activationFuncions(activationFuncions), input_layer(input_layer), output_layer(output_layer),
           input_layer_size(input_layer.getRows()), output_layer_size(output_layer.getRows()), hidden_layers_sizes(hidden_layers_sizes) {
@@ -30,6 +33,7 @@ class network {
         check_params();
     }
     std::vector<Matrix> get_weights();
+    std::vector <std::string> getActivationFunctions() {return activationFuncions;}
     void initialise_hidden_layers();
     void initialise_weights();
     void initialise_biases();

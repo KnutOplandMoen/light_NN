@@ -13,10 +13,10 @@ int main() {
 
     // Initialize the network with the layers
     network nn(input_layer, hidden_layers_sizes, output_layer, activation_functions);
-    nn.load_state("abcx_copy.txt"); // Load the state (weights and biases) from file
+    //nn.load_state("abcx_copy.txt"); // Load the state (weights and biases) from file
 
     // Get the data
-    data_struct data = get_data(4, 11, "Data.txt");
+    data_struct data = get_data(4, 11, "Data.txt"); //Todo: Why is this taking such a long time?
     std::vector <Matrix> x_labels = data.x_labels;
     std::vector <Matrix> y_labels = data.y_labels;
 
@@ -27,7 +27,7 @@ int main() {
     std::vector <Matrix> y_labels_test = train_test_data.y_labels_test;
 
     // Set the training parameters
-    int epochs = 40;
+    int epochs = 0;
     double learning_rate = 0.01;
     double batch_size = 32;
 
@@ -37,9 +37,10 @@ int main() {
     nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size, true);
 
     // Test the network on a single input
-    Matrix prediction = nn.feed_forward_pass(input_to_matrix({3, 2, 3, 1}))[0].back();
-    std::cout << "Prediction: \n" << prediction << std::endl;
+    std::vector<std::vector<Matrix>> prediction = nn.feed_forward_pass(input_to_matrix({3, 2, 3, 1}));
+    std::cout << "Prediction: \n" << prediction[0].back() << std::endl;
 
+    visualize_feed_forward(prediction[0], input_to_matrix({3, 2, 3, 1})); // Visualize the feed forward pass
     nn.save_state("abcx_copy.txt"); // Save the weights and viases to a file in binary format
     return 0;
 }

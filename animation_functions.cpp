@@ -1,4 +1,5 @@
 #include "animation_functions.h"
+#include "network.h"
 
 void update(std::vector <double>& epochs_n, std::vector <double>& loss_n, std::vector <double>& accuracy_n, double current_accuracy, double current_loss, int width, int height, int epochs, TDT4102::AnimationWindow& window) {
     for (int j = 0; j < epochs_n.size(); ++j) {
@@ -18,4 +19,24 @@ void update(std::vector <double>& epochs_n, std::vector <double>& loss_n, std::v
     window.draw_text(TDT4102::Point(5, 20), "Accuracy: " + std::to_string(current_accuracy), TDT4102::Color::dark_orange, 20);
     window.draw_text(TDT4102::Point(5, 2), "Loss: " + std::to_string(current_loss), TDT4102::Color::navy, 20);
     window.next_frame();
+}
+
+void visualize_feed_forward(std::vector<Matrix> activated_layers, const Matrix& x_labels) {
+    int width = 1000;
+    int height = 500;
+    TDT4102::AnimationWindow window(100, 100, width, height, "Feed forward pass");
+
+    activated_layers.insert(activated_layers.begin(), x_labels);
+    
+    for (int i = 0; i < activated_layers.size(); ++i) {
+        window.draw_text(TDT4102::Point(50 + (i * width/activated_layers.size()), 20), "Layer " + std::to_string(i), TDT4102::Color::black, 20);
+
+        for (int j = 0; j < activated_layers[i].getRows(); ++j) {
+            window.draw_circle(TDT4102::Point(50 + (i * width/activated_layers.size()), (height - 50) - (j*(height-50))/activated_layers[i].getRows()), 20, TDT4102::Color::black);
+            window.draw_text(TDT4102::Point(50 + (i * width/activated_layers.size()),(height - 50) - (j*height)/activated_layers[i].getRows()), std::to_string(activated_layers[i][j][0]), TDT4102::Color::white, 20);
+
+        }
+    }
+
+    window.wait_for_close();   
 }
