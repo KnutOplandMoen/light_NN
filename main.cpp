@@ -13,7 +13,7 @@ int main() {
 
     // Initialize the network with the layers
     network nn(input_layer, hidden_layers_sizes, output_layer, activation_functions);
-    //nn.load_state("abcx_model.txt"); // Load the state (weights and biases) from file
+    nn.load_state("abcx_model.txt"); // Load the state (weights and biases) from file
 
     /* 
     // Get the data
