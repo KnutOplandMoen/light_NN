@@ -23,17 +23,20 @@ void update(std::vector <double>& epochs_n, std::vector <double>& loss_n, std::v
 
 void visualize_feed_forward(std::vector<Matrix> activated_layers, const Matrix& x_labels) {
     int width = 1000;
-    int height = 500;
+    int height = 650;
+    int circle_size = 15;
     TDT4102::AnimationWindow window(100, 100, width, height, "Feed forward pass");
 
     activated_layers.insert(activated_layers.begin(), x_labels);
     
     for (int i = 0; i < activated_layers.size(); ++i) {
-        window.draw_text(TDT4102::Point(50 + (i * width/activated_layers.size()), 20), "Layer " + std::to_string(i), TDT4102::Color::black, 20);
+        //window.draw_text(TDT4102::Point(50 + (i * width/activated_layers.size()), 20), "Layer " + std::to_string(i), TDT4102::Color::black, 20);
 
-        for (int j = 0; j < activated_layers[i].getRows(); ++j) {
-            window.draw_circle(TDT4102::Point(50 + (i * width/activated_layers.size()), (height - 50) - (j*(height-50))/activated_layers[i].getRows()), 20, TDT4102::Color::black);
-            window.draw_text(TDT4102::Point(50 + (i * width/activated_layers.size()),(height - 50) - (j*height)/activated_layers[i].getRows()), std::to_string(activated_layers[i][j][0]), TDT4102::Color::white, 20);
+        for (int j = 1; j <= activated_layers[i].getRows(); ++j) {
+            std::cout << "i: " << i << " j: " << j << std::endl;
+            std::cout << ((activated_layers[i].getRows() * circle_size * 2))/((activated_layers[i].getRows()+1)) << std::endl;
+            window.draw_circle(TDT4102::Point(50 + (i * width/activated_layers.size()), height - 50 - (((height - 100 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), circle_size, TDT4102::Color::black);
+            window.draw_text(TDT4102::Point(42 + (i * width/activated_layers.size()), (height) - (j*(height-100))/activated_layers[i].getRows() - 5), std::to_string(static_cast <int> (activated_layers[i][j-1][0])), TDT4102::Color::white, 20);
 
         }
     }
