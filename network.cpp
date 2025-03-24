@@ -1,11 +1,4 @@
-#include "matrix.h"
-#include <vector>
 #include "network.h"
-#include "functions.h"
-#include <fstream>
-#include <chrono>
-#include <filesystem>
-#include "AnimationWindow.h"
 
 /**
  * Initialise the weights for the neural network layers.
@@ -16,9 +9,9 @@
  * and the output layer.
  */
 void network::initialise_weights() { //Initialising the weights for the network
-    int input_size = input_layer.getRows();
-    double limit = limit = sqrt(2.0 / input_size);
-    Matrix matrix1(hidden_layers[0].getRows(), input_size);
+
+    double limit = limit = sqrt(2.0 / input_layer_size);
+    Matrix matrix1(hidden_layers[0].getRows(), input_layer_size);
     matrix1.setRandomValues(-limit, limit);
     weights.push_back(matrix1);
 
@@ -33,7 +26,7 @@ void network::initialise_weights() { //Initialising the weights for the network
 
     int last_hidden_size = hidden_layers.back().getRows();
     limit = sqrt(2.0 / last_hidden_size);
-    Matrix matrix3(output_layer.getRows(), last_hidden_size);
+    Matrix matrix3(output_layer_size, last_hidden_size);
     matrix3.setRandomValues(-limit, limit);
     weights.push_back(matrix3);
 }
@@ -56,19 +49,6 @@ void network::initialise_biases() {
         biases.push_back(Matrix(hidden_layers_sizes[i], 1));
     }
     biases.push_back(Matrix(output_layer_size, 1));
-}
-
-/**
- * Going forward in the network, computing the node values using matrix multiplication with the weigths
- * At last the output layer is computed
- */
-Matrix network::predict() { //Feed forward in the network to get the output layer values 
-    hidden_layers[0] = ((weights[0] * input_layer) + biases[0]).applyActivationFunction(activationFuncions[0]); //Computing first layer values
-    for (int i = 1; i < hidden_layers.size() ; ++i) {
-        hidden_layers[i] = ((weights[i] * hidden_layers[i-1]) + biases[i]).applyActivationFunction(activationFuncions[i]); 
-    }
-    output_layer = ((weights.back() * hidden_layers.back()) + biases.back()).applyActivationFunction(activationFuncions.back());
-    return output_layer; //To do: Add a output function option here on the output layer: for instance softmax
 }
 
 std::vector <std::vector<Matrix>> network::feed_forward_pass(const Matrix& x_labels) const{
@@ -176,21 +156,16 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
     std::vector <double> loss_n;
     std::vector <double> accuracy_n;
 
-    int height = 500;
-    int width = 1000;
-    TDT4102::AnimationWindow window(100, 100, width, height, "Training network");
+    training_visualise window(100, 100, 1000, 500, "Training network");
     //TODO: find better way to do this -> atm creates window even when animation is false
     if (animation) {
-    window.draw_line(TDT4102::Point(50, height - 50), TDT4102::Point(50, 50));
-    window.draw_line(TDT4102::Point(50, height - 50), TDT4102::Point(width - 50, height - 50));
-    window.draw_text(TDT4102::Point(52, 50), "100%", TDT4102::Color::black, 10);
-    window.next_frame();    
+        window.initialise();
     }
     else {
-        window.close();
+        window.close(); // Should close the window if animation is false -> not working!!!
     }
     
-
+        
     for (int i = 0; i < epochs; ++i) {
         std::cout << "Epoch: " << i + 1 << std::endl;
         std::cout << "---------" << std::endl;
@@ -243,21 +218,28 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
         accuracy_n.push_back(current_accuracy);
 
         if (animation) {
-            update(epochs_n, loss_n, accuracy_n, current_accuracy, current_loss, width, height, epochs, window);
+            window.update(epochs_n, loss_n, accuracy_n, current_accuracy, current_loss, epochs);
         }
-        loss = 0;
+
+
+        loss = 0; // Reset loss
     }
+std::cout << "Training complete!" << std::endl;
 }
 
-void network::visualise_network(bool show_hidden) {
+
+void network::visualise_network_terminal(Matrix& input, bool show_hidden) {
     // Print the results
-    std::cout << "Input Layer: \n" << input_layer << std::endl;
+    std::cout << "Input Layer: \n" << input << std::endl;
+
+    std::vector<std::vector<Matrix>> feed_forward = feed_forward_pass(input);
+    std::vector<Matrix> activated_layers = feed_forward[0];
 
     if (show_hidden) {
         std::cout << "Hidden layers in neural net with corresponding weights: \n" << std::endl;
         std::cout << "weigths Input -> first hidden:\n" << weights[0] << std::endl;
         for (int i = 0; i < hidden_layers.size(); i++) {
-            std::cout << "Layer " << i + 1 << " with " << activationFuncions[i] << " applied: \n\n" << hidden_layers[i] << std::endl;
+            std::cout << "Layer " << i + 1 << " with " << activationFuncions[i] << " applied: \n\n" << activated_layers[i] << std::endl;
             if (i == hidden_layers.size() - 1) {
                 std::cout << "Weights " << i+1 << ". -> Output layer \n" << weights[i+1] << std::endl;
             }
@@ -267,32 +249,9 @@ void network::visualise_network(bool show_hidden) {
         }
     }
     // Print the final output from the network
-    std::cout << "Output Layer with " << activationFuncions.back() << " applied: \n" << output_layer << std::endl;
+    std::cout << "Output Layer with " << activationFuncions.back() << " applied: \n" << activated_layers.back() << std::endl;
 }
 
-int network::get_prediction(Matrix output_layer) {
-    double max = 0;
-    int max_index = 0;
-    for (int i = 0; i < output_layer.getRows(); ++i) {
-        if (output_layer[i][0] > max) {
-            max = output_layer[i][0];
-            max_index = i;
-        }
-    }
-    return max_index;
-}
-
-int network::get_prediction() {
-    double max = 0;
-    int max_index = 0;
-    for (int i = 0; i < output_layer.getRows(); ++i) {
-        if (output_layer[i][0] > max) {
-            max = output_layer[i][0];
-            max_index = i;
-        }
-    }
-    return max_index;
-}
 
 void network::check_params() {
     if (activationFuncions.size() != hidden_layers_sizes.size() + 1) {
