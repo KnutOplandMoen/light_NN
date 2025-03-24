@@ -1,7 +1,7 @@
 #include "data_functions.h"
 
 data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
-    std::ifstream file("c:\\Users\\knuto\\Documents\\programering\\TDT4102\\prosjekt\\" + filename); //Change path to your own
+    std::ifstream file("c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\" + filename); //Change path to your own
     std::vector <Matrix> y_labels;
     std::vector <Matrix> x_labels;
 
@@ -17,18 +17,29 @@ data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
             Matrix x_vector(dim_x, 1);
             for (int i = 0; i < dim_y; ++i) {
                 char temp = line[i + dim_x];
-                if (!isdigit(temp)) {
-                    throw std::invalid_argument("The data file can only contain digits");
+                try {
+                    if (!isdigit(temp)) {
+                        throw std::invalid_argument("The data file can only contain digits, but found: " + temp);
+                    }
+                }
+                catch (std::invalid_argument& e) {
+                    std::cout << e.what() << std::endl;
                 }
                 y_vector[i][0] = line[i+dim_x] - '0'; // Convert characther to integr with - '0'
             }
-            for (int i = 0; i < dim_x; ++i) {
-                char temp = line[i];
-                std::cout << temp << std::endl;
-                if (!isdigit(temp)) {
-                    throw std::invalid_argument("The data file can only contain digits");
+            try { //TODO: idk why this doesnt throw error with text in termianl...
+                for (int i = 0; i < dim_x; ++i) {
+                    char temp = line[i];
+                    std::cout << temp << std::endl;
+                    if (!isdigit(temp)) {
+                        std::cerr << "Invalid character detected: " << temp << " (ASCII: " << int(temp) << ")" << std::endl;
+                        throw std::invalid_argument("The data file can only contain digits");
+                    }
+                    x_vector[i][0] = temp - '0';
                 }
-                x_vector[i][0] = temp - '0';
+            } catch (const std::invalid_argument& e) {
+                std::cerr << e.what() << std::endl;
+              // Exit with an error (adjust based on your function)
             }
             y_labels.push_back(y_vector);
             x_labels.push_back(x_vector);

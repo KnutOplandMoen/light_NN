@@ -267,7 +267,7 @@ void network::check_params() {
 }
 
 void network::save_state(const std::string& filename) { //Saving the weights and biases to a file
-    std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\TDT4102\\prosjekt\\models\\" + filename;
+    std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\models\\" + filename;
     std::cout << "\033[1;36mInfo: \033[0m" << "Saving model weights and biases to: " << filename << "...\n";
     if (std::filesystem::exists(file_n)) {
         std::cout << "\033[1;31mWarning: \033[0m" << filename <<" already exists!\nAre you sure you want to overwrite your previus model? [yes/no]\nAnswer: " << std::endl;
@@ -309,7 +309,7 @@ void network::save_state(const std::string& filename) { //Saving the weights and
 }
 
 void network::load_state(const std::string& filename) { //Loading the weights and biases from a file
-    std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\TDT4102\\prosjekt\\models\\" + filename;
+    std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\models\\" + filename;
     std::ifstream file(file_n, std::ios::binary);
     if (!file.is_open()) {
         throw std::invalid_argument("Could not open file: " + filename);
