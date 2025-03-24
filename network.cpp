@@ -1,11 +1,4 @@
-#include "matrix.h"
-#include <vector>
 #include "network.h"
-#include "functions.h"
-#include <fstream>
-#include <chrono>
-#include <filesystem>
-#include "AnimationWindow.h"
 
 /**
  * Initialise the weights for the neural network layers.
