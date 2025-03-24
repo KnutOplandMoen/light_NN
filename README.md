@@ -47,9 +47,10 @@ Lets user load and save models (The weights and biases)
 - **save_state(std::string file)** -> saves to models weights and biases to file
   
 ## Other functionality:
-### visualize_feed_forward
-Given activated layers in the network and the input that gave those activated layers, visualize_feed_forward(activated_layers, input) will give a nice visualisation like this:
-![image](https://github.com/user-attachments/assets/937d551b-69d5-4265-bdee-1fc510acfb01)
-Here trying to predict the input [1, 3, 6, 0] corresponding to **x** = 1, **c** = 3, **b** = 6 and **a** = 0 in the function:  
-**a**x^2 + **b**x + **c**. Here the network predict output neuron 9, which is correct :star_struck: 
+### feed_forward_visualise class
+Given activated layers in the network and the input that gave those activated layers, feed_forward_visualise::visualize_feed_forward(activated_layers, input) will give a nice visualisation like this:
+![image](https://github.com/user-attachments/assets/7dfb18f1-ab5c-4946-a1fb-2a87b2635c90)
+
+Here trying to predict the input [1, 0, 5, 2] corresponding to **x** = 1, **c** = 0, **b** = 5 and **a** = 2 in the function:  
+**a**x^2 + **b**x + **c**. Here the network predict output neuron 7, which is correct :star_struck: 
 # More to write!
