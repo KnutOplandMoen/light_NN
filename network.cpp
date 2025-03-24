@@ -9,9 +9,9 @@
  * and the output layer.
  */
 void network::initialise_weights() { //Initialising the weights for the network
-    int input_size = input_layer.getRows();
-    double limit = limit = sqrt(2.0 / input_size);
-    Matrix matrix1(hidden_layers[0].getRows(), input_size);
+
+    double limit = limit = sqrt(2.0 / input_layer_size);
+    Matrix matrix1(hidden_layers[0].getRows(), input_layer_size);
     matrix1.setRandomValues(-limit, limit);
     weights.push_back(matrix1);
 
@@ -26,7 +26,7 @@ void network::initialise_weights() { //Initialising the weights for the network
 
     int last_hidden_size = hidden_layers.back().getRows();
     limit = sqrt(2.0 / last_hidden_size);
-    Matrix matrix3(output_layer.getRows(), last_hidden_size);
+    Matrix matrix3(output_layer_size, last_hidden_size);
     matrix3.setRandomValues(-limit, limit);
     weights.push_back(matrix3);
 }
@@ -49,19 +49,6 @@ void network::initialise_biases() {
         biases.push_back(Matrix(hidden_layers_sizes[i], 1));
     }
     biases.push_back(Matrix(output_layer_size, 1));
-}
-
-/**
- * Going forward in the network, computing the node values using matrix multiplication with the weigths
- * At last the output layer is computed
- */
-Matrix network::predict() { //Feed forward in the network to get the output layer values 
-    hidden_layers[0] = ((weights[0] * input_layer) + biases[0]).applyActivationFunction(activationFuncions[0]); //Computing first layer values
-    for (int i = 1; i < hidden_layers.size() ; ++i) {
-        hidden_layers[i] = ((weights[i] * hidden_layers[i-1]) + biases[i]).applyActivationFunction(activationFuncions[i]); 
-    }
-    output_layer = ((weights.back() * hidden_layers.back()) + biases.back()).applyActivationFunction(activationFuncions.back());
-    return output_layer; //To do: Add a output function option here on the output layer: for instance softmax
 }
 
 std::vector <std::vector<Matrix>> network::feed_forward_pass(const Matrix& x_labels) const{
@@ -244,7 +231,7 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
 
 void network::visualise_network_terminal(Matrix& input, bool show_hidden) {
     // Print the results
-    std::cout << "Input Layer: \n" << input_layer << std::endl;
+    std::cout << "Input Layer: \n" << input << std::endl;
 
     std::vector<std::vector<Matrix>> feed_forward = feed_forward_pass(input);
     std::vector<Matrix> activated_layers = feed_forward[0];
@@ -266,29 +253,6 @@ void network::visualise_network_terminal(Matrix& input, bool show_hidden) {
     std::cout << "Output Layer with " << activationFuncions.back() << " applied: \n" << activated_layers.back() << std::endl;
 }
 
-int network::get_prediction(Matrix output_layer) {
-    double max = 0;
-    int max_index = 0;
-    for (int i = 0; i < output_layer.getRows(); ++i) {
-        if (output_layer[i][0] > max) {
-            max = output_layer[i][0];
-            max_index = i;
-        }
-    }
-    return max_index;
-}
-
-int network::get_prediction() {
-    double max = 0;
-    int max_index = 0;
-    for (int i = 0; i < output_layer.getRows(); ++i) {
-        if (output_layer[i][0] > max) {
-            max = output_layer[i][0];
-            max_index = i;
-        }
-    }
-    return max_index;
-}
 
 void network::check_params() {
     if (activationFuncions.size() != hidden_layers_sizes.size() + 1) {

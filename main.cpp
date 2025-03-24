@@ -7,13 +7,13 @@
 int main() {
     // Define the sizes for input, hidden layers, and output layers
     std::vector<int> hidden_layers_sizes = {10, 10};  // hidden layers and neurons in each layer
-    Matrix output_layer(11, 1); // Output layer with 11 neurons
-    Matrix input_layer = input_to_matrix({3, 2, 1, 0}); // inout layer with 4 neurons
+    int output_layer_size = 11; // Output layer with 11 neurons
+    int input_layer_size = 4; // inout layer with 4 neurons
 
     std::vector <std::string> activation_functions = {"leakyReLu", "leakyReLu", "softmax"}; //activation and output functions, should match be of dim: (1 + number of hidden layers)
 
     // Initialize the network with the layers
-    network nn(input_layer, hidden_layers_sizes, output_layer, activation_functions);
+    network nn(input_layer_size, hidden_layers_sizes, output_layer_size, activation_functions);
     nn.load_state("abcx_model.txt"); // Load the state (weights and biases) from file
 
     /*
@@ -39,7 +39,7 @@ int main() {
     nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size, true);
     
     */
-    // Test the network on a single input
+    // Test the network on a mutiple inputs
     feed_forward_visualise nn_vis(100, 100, 1000, 700, "Feed forward pass"); // Create a window for visualization
 
     for (double b = 0; b <= 7; ++b) {
