@@ -1,5 +1,5 @@
 #include "network.h"
-
+#include <unistd.h>
 /**
  * Initialise the weights for the neural network layers.
  * 
@@ -224,6 +224,8 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
         loss = 0; // Reset loss
     }
 std::cout << "Training complete!" << std::endl;
+usleep(2000000); // Wait for 2 seconds
+window.finish();
 }
 
 
