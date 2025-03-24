@@ -24,8 +24,9 @@ data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
             }
             for (int i = 0; i < dim_x; ++i) {
                 char temp = line[i];
+                std::cout << temp << std::endl;
                 if (!isdigit(temp)) {
-                    throw std::invalid_argument("The data file must only contain digits");
+                    throw std::invalid_argument("The data file can only contain digits");
                 }
                 x_vector[i][0] = temp - '0';
             }

@@ -8,7 +8,7 @@
  * between each pair of consecutive hidden layers, and between the last hidden layer
  * and the output layer.
  */
-void network::initialise_weights() { //Initialising the weights for the network
+void network::initialise_weights() { //Initialising the weights for the network //TODO: this doenst need to run if weights are loaded...
 
     double limit = limit = sqrt(2.0 / input_layer_size);
     Matrix matrix1(hidden_layers[0].getRows(), input_layer_size);
@@ -38,13 +38,13 @@ std::vector<Matrix> network::get_weights() {
  *Initialise the hidden layers:
  *Making Nx1 size vectors depending on inputs given from user in hidden_layers_sizes param
  */
-void network::initialise_hidden_layers() {
+void network::initialise_hidden_layers() { 
     for (int i = 0; i < hidden_layers_sizes.size(); ++i) {
         hidden_layers.push_back(Matrix(hidden_layers_sizes[i], 1)); //making empty matrixes for the layers in network
     }
 }
 
-void network::initialise_biases() {
+void network::initialise_biases() { //TODO: this doenst need to run if biases are loaded from old model...
     for (int i = 0; i < hidden_layers_sizes.size(); i++){
         biases.push_back(Matrix(hidden_layers_sizes[i], 1));
     }
@@ -55,7 +55,7 @@ std::vector <std::vector<Matrix>> network::feed_forward_pass(const Matrix& x_lab
     std::vector<Matrix> hidden_layers_copy = hidden_layers;
     std::vector<Matrix> activation;
     std::vector<Matrix> weigted_inputs;
-    activation.reserve(hidden_layers.size() + 1);
+    activation.reserve(hidden_layers.size() + 1); //Reserving space for the hidden layers sice we know the size
     weigted_inputs.reserve(hidden_layers.size() + 1);
 
     hidden_layers_copy[0] = ((weights[0] * x_labels) + biases[0]).applyActivationFunction(activationFuncions[0]); //Computing first layer values
@@ -113,8 +113,6 @@ void network::gradient_descent_weights(std::vector<std::vector<Matrix>>& errors,
         for (int lag = 0; lag < errors[trening].size(); ++lag) { // Iterate over all layers
             int error_idx = errors[trening].size() - 1 - lag;
             Matrix gradient = errors[trening][error_idx] * activated_layers[lag].transposed(); // Compute the gradient
-            //std::cout << "error: \n" << errors[trening][error_idx] << std::endl;
-            //std::cout << "gradient: \n" << gradient << std::endl;
             sum[lag] = sum[lag] + gradient;
         }
     }
@@ -142,9 +140,9 @@ void network::gradient_descent_biases(std::vector<std::vector<Matrix>>& errors, 
 
 
 void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> train_y_labels, std::vector <Matrix> test_x_labels, std::vector <Matrix> test_y_labels, int epochs, double learning_rate, int batch_size, bool animation) {
-    std::cout << "----------------------------------\n" << std::endl;
+    std::cout << "\n----------------------------------\n" << std::endl;
     std::cout << "\033[1;36mInfo: \033[0m" << "Initializing training of network\n";
-    std::cout << "\n----------------------------------" << std::endl;
+    std::cout << "\n-----------------------------------------" << std::endl;
     std::cout << "\033[1;30m    Parameters \033[0m\n";
     std::cout << "      Number of hidden layers     : " << hidden_layers.size() << std::endl;
     std::cout << "      Number of training samples  : " << train_x_labels.size() << std::endl;
@@ -152,7 +150,7 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
     std::cout << "      Learning rate               : " << learning_rate << std::endl;
     std::cout << "      Batch size                  : " << batch_size << std::endl;
     std::cout << "      Epochs                      : " << epochs << std::endl;
-    std::cout << "----------------------------------" << std::endl;
+    std::cout << "-------------------------------------------" << std::endl;
 
     double epochs_n[epochs];
     double loss_n[epochs];

@@ -18,12 +18,12 @@ int main() {
 
     
     // Get the data
-    data_struct data = get_data(4, 11, "Data.txt"); //Todo: Why is this taking such a long time?
+    data_struct data = get_data(4, 11, "Data.txt"); 
     std::vector <Matrix> x_labels = data.x_labels;
     std::vector <Matrix> y_labels = data.y_labels;
 
-    data_struct train_test_data = get_test_train_split(x_labels, y_labels, 0.75); //Splitting the data into training and test data
-    std::vector <Matrix> x_labels_train = train_test_data.x_labels_train;
+    data_struct train_test_data = get_test_train_split(x_labels, y_labels, 0.75); //Splitting the data into training and test data 
+    std::vector <Matrix> x_labels_train = train_test_data.x_labels_train; //TODO: This could probably be done in a better way
     std::vector <Matrix> y_labels_train = train_test_data.y_labels_train;
     std::vector <Matrix> x_labels_test = train_test_data.x_labels_test;
     std::vector <Matrix> y_labels_test = train_test_data.y_labels_test;
@@ -33,10 +33,9 @@ int main() {
     double learning_rate = 0.01;
     double batch_size = 32;
 
-    std::vector<Matrix> weights = nn.get_weights();
- 
+    std::vector<Matrix> weights = nn.get_weights();;
     // Train the network
-    nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size, true);
+    nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size, false);
     
     
     //Test the network on a mutiple inputs
@@ -47,9 +46,9 @@ int main() {
         for (double a = 0; a <= 3; ++a) {
             nn_vis.next_frame(); // Show the window
             Matrix input = input_to_matrix({a, b, 0, 1}); // Input to the network
-            //std::vector<std::vector<Matrix>> prediction = nn.feed_forward_pass(input); // Feed forward pass
-            //nn_vis.visualize_feed_forward(prediction[0], input); // Visualize the feed forward pass with AnimationWindow
-            //nn.visualise_network_terminal(input, true);
+            std::vector<std::vector<Matrix>> prediction = nn.feed_forward_pass(input); // Feed forward pass
+            nn_vis.visualize_feed_forward(prediction[0], input); // Visualize the feed forward pass with AnimationWindow
+            nn.visualise_network_terminal(input, true);
             usleep(2000000); // Wait for 2 seconds
         }
     }
