@@ -2,6 +2,7 @@
 #include "functions.h"
 #include "matrix.h"
 #include "network.h"
+#include <unistd.h>
 
 int main() {
     // Define the sizes for input, hidden layers, and output layers
@@ -15,7 +16,7 @@ int main() {
     network nn(input_layer, hidden_layers_sizes, output_layer, activation_functions);
     nn.load_state("abcx_model.txt"); // Load the state (weights and biases) from file
 
-    /* 
+    /*
     // Get the data
     data_struct data = get_data(4, 11, "Data.txt"); //Todo: Why is this taking such a long time?
     std::vector <Matrix> x_labels = data.x_labels;
@@ -37,13 +38,22 @@ int main() {
     // Train the network
     nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size, true);
     */
-
     // Test the network on a single input
-    Matrix input = input_to_matrix({0, 6, 3, 1}); // Input to the network
-    std::vector<std::vector<Matrix>> prediction = nn.feed_forward_pass(input); // Feed forward pass
-    std::cout << "Prediction: \n" << prediction[0].back() << std::endl; // Print the prediction
-    visualize_feed_forward(prediction[0], input); // Visualize the feed forward pass with AnimationWindow
+    feed_forward_visualise nn_vis(100, 100, 1000, 700, "Feed forward pass"); // Create a window for visualization
 
-    nn.save_state("abcx_copy.txt"); // Save the weights and viases to a file in binary format
+    for (double b = 0; b < 4; ++b) {
+        for (double a = 0; a < 4; ++a) {
+            Matrix input = input_to_matrix({a, b, 0, 1}); // Input to the network
+            std::vector<std::vector<Matrix>> prediction = nn.feed_forward_pass(input); // Feed forward pass
+            std::cout << "Prediction for input \n" << input << "\n" << prediction[0].back() << std::endl; // Print the prediction
+             nn_vis.visualize_feed_forward(prediction[0], input); // Visualize the feed forward pass with AnimationWindow
+             usleep(2000000); // Wait for 2 second
+             nn_vis.next_frame(); // Show the window
+        }
+    }
+
+    nn_vis.wait_for_close(); // Wait for the window to close
+
+    nn.save_state("abcx_model_2.txt"); // Save the weights and viases to a file in binary format
     return 0;
 }
