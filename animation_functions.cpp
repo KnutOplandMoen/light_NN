@@ -2,6 +2,7 @@
 #include "network.h"
 #include <windows.h>
 #include <unistd.h>
+#include "widgets/Button.h"
 
 void training_visualise::update(std::vector <double>& epochs_n, std::vector <double>& loss_n, std::vector <double>& accuracy_n, double current_accuracy, double current_loss, int epochs) {
     for (int j = 0; j < epochs_n.size(); ++j) {
@@ -20,19 +21,19 @@ void training_visualise::update(std::vector <double>& epochs_n, std::vector <dou
 
     draw_text(TDT4102::Point(5, 20), "Accuracy: " + std::to_string(current_accuracy), TDT4102::Color::dark_orange, 20);
     draw_text(TDT4102::Point(5, 2), "Loss: " + std::to_string(current_loss), TDT4102::Color::navy, 20);
+
     next_frame();
 }
 
 void training_visualise::initialise() {
     draw_line(TDT4102::Point(50, height() - 50), TDT4102::Point(50, 50));
     draw_line(TDT4102::Point(50, height() - 50), TDT4102::Point(width() - 50, height() - 50));
-    draw_text(TDT4102::Point(52, 50), "100%", TDT4102::Color::black, 10);
-    next_frame();  
+    draw_text(TDT4102::Point(52, 50), "100%", TDT4102::Color::black, 10); 
 }
 
-void feed_forward_visualise::visualize_feed_forward(std::vector<Matrix> activated_layers, Matrix x_labels) {
+void feed_forward_visualise::visualize_feed_forward(std::vector<Matrix>& activated_layers, Matrix& x_labels) {
     activated_layers.insert(activated_layers.begin(), x_labels);
-    int circle_size = 15;
+    const int circle_size = 15;
 
     double max = 0;
     int max_index = 0;

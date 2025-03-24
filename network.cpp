@@ -165,7 +165,7 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
         window.close(); // Should close the window if animation is false -> not working!!!
     }
     
-
+        
     for (int i = 0; i < epochs; ++i) {
         std::cout << "Epoch: " << i + 1 << std::endl;
         std::cout << "---------" << std::endl;
@@ -221,9 +221,12 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
             window.update(epochs_n, loss_n, accuracy_n, current_accuracy, current_loss, epochs);
         }
 
+
         loss = 0; // Reset loss
     }
+std::cout << "Training complete!" << std::endl;
 }
+
 
 void network::visualise_network_terminal(Matrix& input, bool show_hidden) {
     // Print the results

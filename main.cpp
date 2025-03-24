@@ -36,7 +36,7 @@ int main() {
     std::vector<Matrix> weights = nn.get_weights();
 
     // Train the network
-    nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size, false);
+    nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size, true);
     
     // Test the network on a mutiple inputs
     feed_forward_visualise nn_vis(100, 100, 1000, 700, "Feed forward pass"); // Create a window for visualization
@@ -48,7 +48,7 @@ int main() {
             std::vector<std::vector<Matrix>> prediction = nn.feed_forward_pass(input); // Feed forward pass
             nn_vis.visualize_feed_forward(prediction[0], input); // Visualize the feed forward pass with AnimationWindow
             nn.visualise_network_terminal(input, true);
-            usleep(2000000); // Wait for 2 second
+            usleep(2000000); // Wait for 2 seconds
         }
     }
 
