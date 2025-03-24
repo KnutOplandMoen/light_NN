@@ -152,9 +152,9 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
     std::cout << "Batch size: " << batch_size << std::endl;
     std::cout << "----------------------------------" << std::endl;
 
-    std::vector <double> epochs_n;
-    std::vector <double> loss_n;
-    std::vector <double> accuracy_n;
+    double epochs_n[epochs];
+    double loss_n[epochs];
+    double accuracy_n[epochs];
 
     training_visualise window(100, 100, 1000, 500, "Training network");
     //TODO: find better way to do this -> atm creates window even when animation is false
@@ -212,13 +212,12 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
         std::cout << "Time taken for epoch: " << static_cast<double> (duration.count()) / 1000 << " s" << std::endl;
         std::cout << "Estimated time left: " << static_cast<double> (duration.count()) / 1000 * (epochs - i - 1) << " s" << std::endl;
         std::cout << "-----------------" << std::endl;
-        
-        epochs_n.push_back(i);
-        loss_n.push_back(current_loss);
-        accuracy_n.push_back(current_accuracy);
 
-        if (animation) {
-            window.update(epochs_n, loss_n, accuracy_n, current_accuracy, current_loss, epochs);
+        if (animation) { // Update the window
+            epochs_n[i] = i;
+            loss_n[i] = current_loss;
+            accuracy_n[i] = current_accuracy;
+            window.update(epochs_n, loss_n, accuracy_n, current_accuracy, current_loss, epochs, i+1);
         }
 
 

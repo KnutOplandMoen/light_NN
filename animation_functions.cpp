@@ -4,8 +4,9 @@
 #include <unistd.h>
 #include "widgets/Button.h"
 
-void training_visualise::update(std::vector <double>& epochs_n, std::vector <double>& loss_n, std::vector <double>& accuracy_n, double current_accuracy, double current_loss, int epochs) {
-    for (int j = 0; j < epochs_n.size(); ++j) {
+
+void training_visualise::update(double* epochs_n, double* loss_n, double* accuracy_n, double current_accuracy, double current_loss, int epochs, int i) {
+    for (int j = 0; j < i; ++j) {
         draw_circle(TDT4102::Point(50 + (width() - 100) / epochs * epochs_n[j], height() - 50 - (height() - 100) * loss_n[j]*0.1), 2, TDT4102::Color::navy);
         draw_circle(TDT4102::Point(50 + (width() - 100) / epochs * epochs_n[j], height() - 50 - (height() - 100) * accuracy_n[j]*0.01), 2, TDT4102::Color::dark_orange);
         draw_text(TDT4102::Point(50 + (width() - 100) / epochs * epochs_n[j], height() - 40), std::to_string(j + 1), TDT4102::Color::black, 10);
@@ -29,6 +30,7 @@ void training_visualise::initialise() {
     draw_line(TDT4102::Point(50, height() - 50), TDT4102::Point(50, 50));
     draw_line(TDT4102::Point(50, height() - 50), TDT4102::Point(width() - 50, height() - 50));
     draw_text(TDT4102::Point(52, 50), "100%", TDT4102::Color::black, 10); 
+    next_frame();
 }
 
 void feed_forward_visualise::visualize_feed_forward(std::vector<Matrix>& activated_layers, Matrix& x_labels) {
