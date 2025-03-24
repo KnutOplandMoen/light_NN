@@ -167,8 +167,6 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
     
         
     for (int i = 0; i < epochs; ++i) {
-        std::cout << "Epoch: " << i + 1 << std::endl;
-        std::cout << "---------" << std::endl;
         auto start = std::chrono::high_resolution_clock::now();
         // Train the network with the training data
         for (int j = 0; j < train_x_labels.size(); j += batch_size) {
@@ -207,25 +205,33 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
 
         double current_accuracy = get_accuracy(predictions, test_y_labels);
         double current_loss = loss / train_x_labels.size();
-        std::cout << "Accuracy: " << current_accuracy << "%" << std::endl;
-        std::cout << "loss: " << current_loss << std::endl;
-        std::cout << "Time taken for epoch: " << static_cast<double> (duration.count()) / 1000 << " s" << std::endl;
-        std::cout << "Estimated time left: " << static_cast<double> (duration.count()) / 1000 * (epochs - i - 1) << " s" << std::endl;
-        std::cout << "-----------------" << std::endl;
+        std::cout << "Epoch " << i + 1 << ": " << "\033[1;32mDone\033[0m\n";
+        std::cout << "---------" << "\n";
+        std::cout << "\033[1;30mAccuracy: \033[0m\n" << current_accuracy << "%\n";
+        std::cout << "\033[1;30mLoss: \033[0m\n" << current_loss << "\n";
+        std::cout << "\033[1;30mTime taken for epoch: \033[0m\n" << static_cast<double> (duration.count()) / 1000 << " s" << "\n";
+        std::cout << "\033[1;30mEstimated time left: \033[0m\n" << static_cast<double> (duration.count()) / 1000 * (epochs - i - 1) << " s" << "\n";
+        std::cout << "-----------------" << "\n";
 
         if (animation) { // Update the window
             epochs_n[i] = i;
             loss_n[i] = current_loss;
             accuracy_n[i] = current_accuracy;
             window.update(epochs_n, loss_n, accuracy_n, current_accuracy, current_loss, epochs, i+1);
+            window.next_frame();
         }
 
 
         loss = 0; // Reset loss
     }
+
 std::cout << "Training complete!" << std::endl;
-usleep(2000000); // Wait for 2 seconds
-window.finish();
+usleep(1000000); // Wait for 2 seconds
+if (animation) {
+    window.update(epochs_n, loss_n, accuracy_n, accuracy_n[epochs-1], loss_n[epochs-1], epochs, epochs);
+    window.finish();
+
+}
 }
 
 
@@ -262,9 +268,9 @@ void network::check_params() {
 
 void network::save_state(const std::string& filename) { //Saving the weights and biases to a file
     std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\TDT4102\\prosjekt\\models\\" + filename;
-    
+    std::cout << "\033[1;32mInfo:\033[0m" << "Saving model weights and biases to: " << filename << "...\n";
     if (std::filesystem::exists(file_n)) {
-        std::cout << filename <<" already exists! Are you sure you want to overwrite your previus model? [yes/no]\nAnswer: " << std::endl;
+        std::cout << "\033[1;31mWarning: \033[0m" << filename <<" already exists! Are you sure you want to overwrite your previus model? [yes/no]\nAnswer: " << std::endl;
         std::string answer;
         std::cin >> answer;
         while (answer != "yes" && answer != "no") {
@@ -276,7 +282,7 @@ void network::save_state(const std::string& filename) { //Saving the weights and
             return;
         }
         else {
-            std::cout << "Overwriting " << filename << std::endl;
+            std::cout << "Overwriting " << filename << "..." << std::endl;
         }
     };
 
@@ -297,7 +303,8 @@ void network::save_state(const std::string& filename) { //Saving the weights and
     for (auto& b : biases) {
         b.SaveToBin(file);
     }
-    std::cout << "Network state saved to " << filename << std::endl;
+    
+    std::cout << "Network weights and biases saved: " << "\033[1;32mDone\033[0m\n";
     file.close();
 }
 
@@ -307,7 +314,10 @@ void network::load_state(const std::string& filename) { //Loading the weights an
     if (!file.is_open()) {
         throw std::invalid_argument("Could not open file: " + filename);
     }
+
     // Load weights
+    std::cout << "\033[1;36mInfo: \033[0m" << "Loading model weights and biases from: " << filename << "..." << std::endl;
+
     int num_weights;
     file.read(reinterpret_cast<char*>(&num_weights), sizeof(num_weights));
     weights.clear();
@@ -325,6 +335,6 @@ void network::load_state(const std::string& filename) { //Loading the weights an
         m.LoadFromBin(file);
         biases.push_back(m);
     }
-    std::cout << "Network weights and biases loaded from " << filename << std::endl;
+    std::cout << "Network weights and biases loaded: " << "\033[1;32mDone\033[0m\n";
     file.close();
 }

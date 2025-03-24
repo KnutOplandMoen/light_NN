@@ -10,7 +10,7 @@ data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
     }
     else {
         data_struct data;
-        std::cout << "Loading data from: " << filename << "..." << std::endl;
+        std::cout << "\033[1;36mInfo: \033[0m" << "Loading data from: " << filename << "..." << std::endl;
         std::string line;
         while (std::getline(file, line)) {
             Matrix y_vector(dim_y, 1);
@@ -18,7 +18,7 @@ data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
             for (int i = 0; i < dim_y; ++i) {
                 char temp = line[i + dim_x];
                 if (!isdigit(temp)) {
-                    throw std::invalid_argument("The data file must only contain digits");
+                    throw std::invalid_argument("The data file can only contain digits");
                 }
                 y_vector[i][0] = line[i+dim_x] - '0'; // Convert characther to integr with - '0'
             }
@@ -34,6 +34,7 @@ data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
         }
         data.x_labels = x_labels;
         data.y_labels = y_labels;
+        std::cout << "Data loading: " << "\033[1;32mDone \033[0m\n";
         return {data};
     }
 }
@@ -54,6 +55,7 @@ data_struct get_test_train_split(std::vector <Matrix> x_labels, std::vector <Mat
     }
 
     else {
+        std::cout << "\033[1;36mInfo: \033[0m" << "Splitting data into train/test train and test set..." << std::endl;
         data_struct split_data;
         int split_index = x_labels.size() * split;
         std::vector <Matrix> x_labels_train;
@@ -73,6 +75,7 @@ data_struct get_test_train_split(std::vector <Matrix> x_labels, std::vector <Mat
         split_data.x_labels_test = x_labels_test;
         split_data.y_labels_test = y_labels_test;
 
+        std::cout << "Train-test splitting: " << "\033[1;32mDone\033[0m\n";
         return {split_data};
     }
 }

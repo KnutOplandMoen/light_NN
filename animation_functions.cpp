@@ -6,7 +6,6 @@
 
 
 void training_visualise::update(double* epochs_n, double* loss_n, double* accuracy_n, double current_accuracy, double current_loss, int epochs, int i) {
-    next_frame();
     for (int j = 0; j < i; ++j) {
         draw_circle(TDT4102::Point(50 + (width() - 100) / epochs * epochs_n[j], height() - 50 - (height() - 100) * loss_n[j]*0.1), 2, TDT4102::Color::navy);
         draw_circle(TDT4102::Point(50 + (width() - 100) / epochs * epochs_n[j], height() - 50 - (height() - 100) * accuracy_n[j]*0.01), 2, TDT4102::Color::dark_orange);

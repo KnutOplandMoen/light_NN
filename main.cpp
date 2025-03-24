@@ -29,7 +29,7 @@ int main() {
     std::vector <Matrix> y_labels_test = train_test_data.y_labels_test;
 
     // Set the training parameters
-    int epochs = 10;
+    int epochs = 5;
     double learning_rate = 0.001;
     double batch_size = 32;
 
