@@ -6,7 +6,7 @@
 
 int main() {
     // Define the sizes for input, hidden layers, and output layers
-    std::vector<int> hidden_layers_sizes = {10, 10};  // hidden layers and neurons in each layer
+    std::vector<int> hidden_layers_sizes = {5, 5};  // hidden layers and neurons in each layer
     int output_layer_size = 11; // Output layer with 11 neurons
     int input_layer_size = 4; // inout layer with 4 neurons
 
@@ -14,7 +14,7 @@ int main() {
 
     // Initialize the network with the layers
     network nn(input_layer_size, hidden_layers_sizes, output_layer_size, activation_functions);
-    nn.load_state("abcx_model.txt"); // Load the state (weights and biases) from file
+    nn.load_state("abcx_model_5_5.txt"); // Load the state (weights and biases) from file
 
     /*
     // Get the data
@@ -55,6 +55,6 @@ int main() {
 
     nn_vis.wait_for_close(); // Wait for the window to close
      // Visualize the network
-    nn.save_state("abcx_model_leaky_relu.txt"); // Save the weights and viases to a file in binary format
+    nn.save_state("abcx_model_5_5.txt"); // Save the weights and viases to a file in binary format
     return 0;
 }
