@@ -143,13 +143,15 @@ void network::gradient_descent_biases(std::vector<std::vector<Matrix>>& errors, 
 
 void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> train_y_labels, std::vector <Matrix> test_x_labels, std::vector <Matrix> test_y_labels, int epochs, double learning_rate, int batch_size, bool animation) {
     std::cout << "----------------------------------\n" << std::endl;
-    std::cout << "Initializing training of network with " << epochs << " epochs"<< std::endl;
+    std::cout << "\033[1;36mInfo: \033[0m" << "Initializing training of network\n";
     std::cout << "\n----------------------------------" << std::endl;
-    std::cout << "Number of hidden layers: " << hidden_layers.size() << std::endl;
-    std::cout << "Number of training samples: " << train_x_labels.size() << std::endl;
-    std::cout << "Number of test samples: " << test_x_labels.size() << std::endl;
-    std::cout << "Learning rate: " << learning_rate << std::endl;
-    std::cout << "Batch size: " << batch_size << std::endl;
+    std::cout << "\033[1;30m    Parameters \033[0m\n";
+    std::cout << "      Number of hidden layers     : " << hidden_layers.size() << std::endl;
+    std::cout << "      Number of training samples  : " << train_x_labels.size() << std::endl;
+    std::cout << "      Number of test samples      : " << test_x_labels.size() << std::endl;
+    std::cout << "      Learning rate               : " << learning_rate << std::endl;
+    std::cout << "      Batch size                  : " << batch_size << std::endl;
+    std::cout << "      Epochs                      : " << epochs << std::endl;
     std::cout << "----------------------------------" << std::endl;
 
     double epochs_n[epochs];
@@ -268,9 +270,9 @@ void network::check_params() {
 
 void network::save_state(const std::string& filename) { //Saving the weights and biases to a file
     std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\TDT4102\\prosjekt\\models\\" + filename;
-    std::cout << "\033[1;32mInfo:\033[0m" << "Saving model weights and biases to: " << filename << "...\n";
+    std::cout << "\033[1;36mInfo: \033[0m" << "Saving model weights and biases to: " << filename << "...\n";
     if (std::filesystem::exists(file_n)) {
-        std::cout << "\033[1;31mWarning: \033[0m" << filename <<" already exists! Are you sure you want to overwrite your previus model? [yes/no]\nAnswer: " << std::endl;
+        std::cout << "\033[1;31mWarning: \033[0m" << filename <<" already exists!\nAre you sure you want to overwrite your previus model? [yes/no]\nAnswer: " << std::endl;
         std::string answer;
         std::cin >> answer;
         while (answer != "yes" && answer != "no") {
@@ -282,7 +284,7 @@ void network::save_state(const std::string& filename) { //Saving the weights and
             return;
         }
         else {
-            std::cout << "Overwriting " << filename << "..." << std::endl;
+            std::cout << "\033[1;36mInfo: \033[0m\n" << "Overwriting " << filename << "..." << std::endl;
         }
     };
 
@@ -303,7 +305,7 @@ void network::save_state(const std::string& filename) { //Saving the weights and
     for (auto& b : biases) {
         b.SaveToBin(file);
     }
-    
+
     std::cout << "Network weights and biases saved: " << "\033[1;32mDone\033[0m\n";
     file.close();
 }
