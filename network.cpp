@@ -156,18 +156,13 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
     std::vector <double> loss_n;
     std::vector <double> accuracy_n;
 
-    int height = 500;
-    int width = 1000;
-    TDT4102::AnimationWindow window(100, 100, width, height, "Training network");
+    training_visualise window(100, 100, 1000, 500, "Training network");
     //TODO: find better way to do this -> atm creates window even when animation is false
     if (animation) {
-    window.draw_line(TDT4102::Point(50, height - 50), TDT4102::Point(50, 50));
-    window.draw_line(TDT4102::Point(50, height - 50), TDT4102::Point(width - 50, height - 50));
-    window.draw_text(TDT4102::Point(52, 50), "100%", TDT4102::Color::black, 10);
-    window.next_frame();    
+        window.initialise();
     }
     else {
-        window.close();
+        window.close(); // Should close the window if animation is false -> not working!!!
     }
     
 
@@ -223,9 +218,10 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
         accuracy_n.push_back(current_accuracy);
 
         if (animation) {
-            update(epochs_n, loss_n, accuracy_n, current_accuracy, current_loss, width, height, epochs, window);
+            window.update(epochs_n, loss_n, accuracy_n, current_accuracy, current_loss, epochs);
         }
-        loss = 0;
+
+        loss = 0; // Reset loss
     }
 }
 

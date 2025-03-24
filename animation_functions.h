@@ -3,7 +3,12 @@
 #include "network.h"
 #include "AnimationWindow.h"
 
-void update(std::vector <double>& epochs_n, std::vector <double>& loss_n, std::vector <double>& accuracy_n, double current_accuracy, double current_loss, int width, int height, int epochs, TDT4102::AnimationWindow& window);
+class training_visualise : public TDT4102::AnimationWindow {
+    public:
+    training_visualise(int x, int y, int width, int height, const std::string& title) : TDT4102::AnimationWindow(x, y, width, height, title) {}
+    void update(std::vector <double>& epochs_n, std::vector <double>& loss_n, std::vector <double>& accuracy_n, double current_accuracy, double current_loss, int epochs);
+    void initialise();
+};
 
 class feed_forward_visualise : public TDT4102::AnimationWindow {
     public:
