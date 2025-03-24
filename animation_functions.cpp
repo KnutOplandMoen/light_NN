@@ -62,7 +62,7 @@ void feed_forward_visualise::visualize_feed_forward(std::vector<Matrix> activate
                     }
             }
             else {
-                if (static_cast <int> (activated_layers[i][j-1][0]) > 10) {
+                if (static_cast <int> (activated_layers[i][j-1][0]) >= 10) {
                 draw_text(TDT4102::Point(35 + (i * width()/activated_layers.size()), height() - 65 - (((height() - 100 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), std::to_string(static_cast <int> (activated_layers[i][j-1][0])), TDT4102::Color::white, 20);
                 }
                 else {

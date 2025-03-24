@@ -242,15 +242,18 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
     }
 }
 
-void network::visualise_network(bool show_hidden) {
+void network::visualise_network_terminal(Matrix& input, bool show_hidden) {
     // Print the results
     std::cout << "Input Layer: \n" << input_layer << std::endl;
+
+    std::vector<std::vector<Matrix>> feed_forward = feed_forward_pass(input);
+    std::vector<Matrix> activated_layers = feed_forward[0];
 
     if (show_hidden) {
         std::cout << "Hidden layers in neural net with corresponding weights: \n" << std::endl;
         std::cout << "weigths Input -> first hidden:\n" << weights[0] << std::endl;
         for (int i = 0; i < hidden_layers.size(); i++) {
-            std::cout << "Layer " << i + 1 << " with " << activationFuncions[i] << " applied: \n\n" << hidden_layers[i] << std::endl;
+            std::cout << "Layer " << i + 1 << " with " << activationFuncions[i] << " applied: \n\n" << activated_layers[i] << std::endl;
             if (i == hidden_layers.size() - 1) {
                 std::cout << "Weights " << i+1 << ". -> Output layer \n" << weights[i+1] << std::endl;
             }
@@ -260,7 +263,7 @@ void network::visualise_network(bool show_hidden) {
         }
     }
     // Print the final output from the network
-    std::cout << "Output Layer with " << activationFuncions.back() << " applied: \n" << output_layer << std::endl;
+    std::cout << "Output Layer with " << activationFuncions.back() << " applied: \n" << activated_layers.back() << std::endl;
 }
 
 int network::get_prediction(Matrix output_layer) {

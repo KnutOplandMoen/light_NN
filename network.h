@@ -45,7 +45,7 @@ class network {
     void gradient_descent_weights(std::vector<std::vector<Matrix>>& errors, double& learning_rate, Matrix& x_labels, std::vector<std::vector<Matrix>>& batch_activated_layers);
     void gradient_descent_biases(std::vector<std::vector<Matrix>>& errors, double& learning_rate, Matrix& x_labels, std::vector<std::vector<Matrix>>& batch_activated_layers);
 
-    void visualise_network(bool show_hidden = false);
+    void visualise_network_terminal(Matrix& input, bool show_hidden = false);
     int get_prediction(Matrix output_layer);
     int get_prediction();
 
