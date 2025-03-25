@@ -35,9 +35,10 @@ Matrix Matrix::operator*(const Matrix &rhs) const {
     Matrix product(rows, rhs.cols);
 
     for (size_t i = 0; i < rows; i++){
-        for (size_t j = 0; j < rhs.cols; j++){
-            for (size_t k = 0; k < cols; k++){
-                product[i][j] += data[i][k] * rhs.data[k][j];
+        for (size_t k = 0; k < cols; k++){
+            double data_copy = data[i][k];
+            for (size_t j = 0; j < rhs.cols; j++){
+                product[i][j] +=  data_copy * rhs.data[k][j];
             }
         }
     }
@@ -138,7 +139,6 @@ Matrix Matrix::applyActivationFunction(std::string func){
         }
     }
     else if (func == "softmax") {
-        // Find the maximum value in the matrix to avoid overflow
         double max_val = data[0][0];
       
         for (size_t i = 0; i < rows; ++i) {
