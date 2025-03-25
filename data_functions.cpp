@@ -1,12 +1,14 @@
 #include "data_functions.h"
 
 data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
-    std::ifstream file("c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\" + filename); //Change path to your own
+    std::string path = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\";
+    std::ifstream file(path + filename); //Change path to your own
     std::vector <Matrix> y_labels;
     std::vector <Matrix> x_labels;
 
     if (!file) {
-        std::cerr << "\033[1;31mError: \033[0m" << "Could not open the file: " << filename << std::endl;
+        std::cerr << "\033[1;31mError: \033[0m" << "Could not open the file:\n" << path + filename << std::endl;
+        std::cout << "Please make sure the file is in the correct directory and that the name is correct" << std::endl;
         throw std::invalid_argument("Could not open the file!");
     }
     else {

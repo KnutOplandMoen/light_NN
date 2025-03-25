@@ -174,7 +174,6 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
             std::vector<std::vector<Matrix>> batch_activated_layers;
             std::vector<std::vector<Matrix>> batch_weighted_inputs; 
             std::vector<Matrix> batch_predictions;
-            #pragma omp parallel for
             for (int k = 0; k < batch_size && (j + k) < train_x_labels.size(); ++k) { // For each batch (in parallel)
                 int index = j + k;
                 std::vector<std::vector<Matrix>> feed_forward = feed_forward_pass(train_x_labels[index]);
@@ -267,8 +266,9 @@ void network::check_params() {
 }
 
 void network::save_state(const std::string& filename) { //Saving the weights and biases to a file
-    std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\models\\" + filename;
-    std::cout << "\033[1;36mInfo: \033[0m" << "Saving model weights and biases to: " << filename << "...\n";
+    std::string path = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\models\\";
+    std::string file_n =  path + filename;
+    std::cout << "\033[1;36mInfo: \033[0m" << "Saving model weights and biases to:\n" << path + filename << "...\n";
     if (std::filesystem::exists(file_n)) {
         std::cout << "\033[1;31mWarning: \033[0m" << filename <<" already exists!\nAre you sure you want to overwrite your previus model? [yes/no]\nAnswer: " << std::endl;
         std::string answer;
@@ -309,9 +309,12 @@ void network::save_state(const std::string& filename) { //Saving the weights and
 }
 
 void network::load_state(const std::string& filename) { //Loading the weights and biases from a file
-    std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\models\\" + filename;
+    std::string path = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\models\\";
+    std::string file_n = path + filename;
     std::ifstream file(file_n, std::ios::binary);
     if (!file.is_open()) {
+        std::cerr << "\033[1;31mError: \033[0m" << "Could not open the file:\n" << path + filename << std::endl;
+        std::cout << "Please make sure the file is in the correct directory and that the name is correct" << std::endl;
         throw std::invalid_argument("Could not open file: " + filename);
     }
 
