@@ -35,7 +35,7 @@ int main() {
 
     std::vector<Matrix> weights = nn.get_weights();;
     // Train the network
-    nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size, false);
+    nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size, true);
     
     
     //Test the network on a mutiple inputs

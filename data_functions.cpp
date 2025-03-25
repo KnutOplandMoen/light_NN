@@ -27,20 +27,19 @@ data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
                 }
                 y_vector[i][0] = line[i+dim_x] - '0'; // Convert characther to integr with - '0'
             }
-            try { //TODO: idk why this doesnt throw error with text in termianl...
-                for (int i = 0; i < dim_x; ++i) {
-                    char temp = line[i];
-                    std::cout << temp << std::endl;
-                    if (!isdigit(temp)) {
-                        std::cerr << "Invalid character detected: " << temp << " (ASCII: " << int(temp) << ")" << std::endl;
-                        throw std::invalid_argument("The data file can only contain digits");
-                    }
-                    x_vector[i][0] = temp - '0';
+             //TODO: idk why this doesnt throw error with text in termianl...
+            for (int i = 0; i < dim_x; ++i) {
+                char temp = line[i];
+                try{
+                if (!isdigit(temp)) {
+                    std::cerr << "\033[1;31mWarning: \033[0m" << "Potential invalid character detected: " << temp << " (ASCII: " << int(temp) << ")" << std::endl;
+                    throw std::invalid_argument("The data file should only contain digits");
+                }}
+                catch (std::invalid_argument& e) {
+                    std::cout << e.what() << std::endl;
                 }
-            } catch (const std::invalid_argument& e) {
-                std::cerr << e.what() << std::endl;
-              // Exit with an error (adjust based on your function)
-            }
+                x_vector[i][0] = temp - '0';
+                }
             y_labels.push_back(y_vector);
             x_labels.push_back(x_vector);
         }
