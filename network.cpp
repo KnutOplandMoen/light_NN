@@ -203,6 +203,7 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
             std::vector<std::vector<Matrix>> feed_forward = feed_forward_pass(test_x_labels[j]);
             predictions.push_back(feed_forward[0].back());
         }
+
         auto stop = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
