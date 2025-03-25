@@ -13,9 +13,8 @@ int main() {
     std::vector <std::string> activation_functions = {"leakyReLu", "leakyReLu", "softmax"}; //activation and output functions, should match be of dim: (1 + number of hidden layers)
 
     // Initialize the network with the layers
-    network nn(input_layer_size, hidden_layers_sizes, output_layer_size, activation_functions);
-    nn.load_state("abcx_model.txt"); // Load the state (weights and biases) from file
-
+    std::string model_name = "abcx_model.txt";
+    network nn(input_layer_size, hidden_layers_sizes, output_layer_size, activation_functions, model_name);
     
     // Get the data
     data_struct data = get_data(4, 11, "Data.txt"); 
@@ -33,7 +32,7 @@ int main() {
     double learning_rate = 0.01;
     double batch_size = 32;
 
-    std::vector<Matrix> weights = nn.get_weights();;
+    std::vector<Matrix> weights = nn.get_weights();
     // Train the network
     nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size, true);
     

@@ -1,7 +1,7 @@
 #include "data_functions.h"
 
 data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
-    std::string path = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\";
+    std::string path = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\"; //TODO: automate this
     std::ifstream file(path + filename); //Change path to your own
     std::vector <Matrix> y_labels;
     std::vector <Matrix> x_labels;

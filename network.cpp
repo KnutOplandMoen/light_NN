@@ -173,8 +173,11 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
             std::vector<std::vector<Matrix>> batch_errors;
             std::vector<std::vector<Matrix>> batch_activated_layers;
             std::vector<std::vector<Matrix>> batch_weighted_inputs; 
+            batch_errors.reserve(batch_size); // Reserve space for this batch
+            batch_activated_layers.reserve(batch_size);
+            batch_weighted_inputs.reserve(batch_size);
             std::vector<Matrix> batch_predictions;
-            for (int k = 0; k < batch_size && (j + k) < train_x_labels.size(); ++k) { // For each batch (in parallel)
+            for (int k = 0; k < batch_size && (j + k) < train_x_labels.size(); ++k) { // For each batch 
                 int index = j + k;
                 std::vector<std::vector<Matrix>> feed_forward = feed_forward_pass(train_x_labels[index]);
                 std::vector<Matrix> activated_layers = feed_forward[0];
@@ -195,10 +198,12 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
         
         // Test the network with the test data
         std::vector <Matrix> predictions;
+        predictions.reserve(test_x_labels.size());
         for (int j = 0; j < test_x_labels.size(); ++j) {
             std::vector<std::vector<Matrix>> feed_forward = feed_forward_pass(test_x_labels[j]);
             predictions.push_back(feed_forward[0].back());
         }
+
         auto stop = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
@@ -278,11 +283,11 @@ void network::save_state(const std::string& filename) { //Saving the weights and
             std::cin >> answer;
         }
         if (answer != "yes") {
-            std::cout << "\033[1;36mInfo: \033[0m\n" << "Model not saved" << std::endl;
+            std::cout << "\033[1;36mInfo: \033[0m" << "Model not saved\n";
             return;
         }
         else {
-            std::cout << "\033[1;36mInfo: \033[0m\n" << "Overwriting " << filename << "..." << std::endl;
+            std::cout << "\033[1;36mInfo: \033[0m" << "Overwriting " << filename << "..." << std::endl;
         }
     };
 
