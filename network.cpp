@@ -278,7 +278,7 @@ void network::save_state(const std::string& filename) { //Saving the weights and
             std::cin >> answer;
         }
         if (answer != "yes") {
-            std::cout << "Model not saved" << std::endl;
+            std::cout << "\033[1;36mInfo: \033[0m\n" << "Model not saved" << std::endl;
             return;
         }
         else {

@@ -48,7 +48,7 @@ int main() {
             Matrix input = input_to_matrix({a, b, 0, 1}); // Input to the network
             std::vector<std::vector<Matrix>> prediction = nn.feed_forward_pass(input); // Feed forward pass
             nn_vis.visualize_feed_forward(prediction[0], input); // Visualize the feed forward pass with AnimationWindow
-            nn.visualise_network_terminal(input, true);
+            //nn.visualise_network_terminal(input, true);
             usleep(2000000); // Wait for 2 seconds
         }
     }

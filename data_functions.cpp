@@ -6,7 +6,8 @@ data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
     std::vector <Matrix> x_labels;
 
     if (!file) {
-       throw std::invalid_argument("Could not open the file!");
+        std::cerr << "\033[1;31mError: \033[0m" << "Could not open the file: " << filename << std::endl;
+        throw std::invalid_argument("Could not open the file!");
     }
     else {
         data_struct data;
@@ -17,14 +18,14 @@ data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
             Matrix x_vector(dim_x, 1);
             for (int i = 0; i < dim_y; ++i) {
                 char temp = line[i + dim_x];
-                try {
+                try{
                     if (!isdigit(temp)) {
-                        throw std::invalid_argument("The data file can only contain digits, but found: " + temp);
+                        std::cerr << "\033[1;31mWarning: \033[0m" << "Potential invalid character detected: " << temp << " (ASCII: " << int(temp) << ")" << std::endl;
+                        throw std::invalid_argument("The data file should only contain digits");
+                    }}
+                    catch (std::invalid_argument& e) {
+                        std::cout << e.what() << std::endl;
                     }
-                }
-                catch (std::invalid_argument& e) {
-                    std::cout << e.what() << std::endl;
-                }
                 y_vector[i][0] = line[i+dim_x] - '0'; // Convert characther to integr with - '0'
             }
              //TODO: idk why this doesnt throw error with text in termianl...
