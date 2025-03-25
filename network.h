@@ -7,6 +7,7 @@
 #include <chrono>
 #include <filesystem>
 #include "AnimationWindow.h"
+#include <unistd.h>
 
 class network {
     private:

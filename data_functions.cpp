@@ -1,39 +1,54 @@
 #include "data_functions.h"
 
 data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
-    std::ifstream file("c:\\Users\\knuto\\Documents\\programering\\TDT4102\\prosjekt\\" + filename); //Change path to your own
+    std::string path = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\";
+    std::ifstream file(path + filename); //Change path to your own
     std::vector <Matrix> y_labels;
     std::vector <Matrix> x_labels;
 
     if (!file) {
-       throw std::invalid_argument("Could not open the file!");
+        std::cerr << "\033[1;31mError: \033[0m" << "Could not open the file:\n" << path + filename << std::endl;
+        std::cout << "Please make sure the file is in the correct directory and that the name is correct" << std::endl;
+        throw std::invalid_argument("Could not open the file!");
     }
     else {
         data_struct data;
-        std::cout << "Loading data from: " << filename << "..." << std::endl;
+        std::cout << "\033[1;36mInfo: \033[0m" << "Loading data from: " << filename << "..." << std::endl;
         std::string line;
         while (std::getline(file, line)) {
             Matrix y_vector(dim_y, 1);
             Matrix x_vector(dim_x, 1);
             for (int i = 0; i < dim_y; ++i) {
                 char temp = line[i + dim_x];
-                if (!isdigit(temp)) {
-                    throw std::invalid_argument("The data file must only contain digits");
-                }
+                try{
+                    if (!isdigit(temp)) {
+                        std::cerr << "\033[1;31mWarning: \033[0m" << "Potential invalid character detected: " << temp << " (ASCII: " << int(temp) << ")" << std::endl;
+                        throw std::invalid_argument("The data file should only contain digits");
+                    }}
+                    catch (std::invalid_argument& e) {
+                        std::cout << e.what() << std::endl;
+                    }
                 y_vector[i][0] = line[i+dim_x] - '0'; // Convert characther to integr with - '0'
             }
+             //TODO: idk why this doesnt throw error with text in termianl...
             for (int i = 0; i < dim_x; ++i) {
                 char temp = line[i];
+                try{
                 if (!isdigit(temp)) {
-                    throw std::invalid_argument("The data file must only contain digits");
+                    std::cerr << "\033[1;31mWarning: \033[0m" << "Potential invalid character detected: " << temp << " (ASCII: " << int(temp) << ")" << std::endl;
+                    throw std::invalid_argument("The data file should only contain digits");
+                }}
+                catch (std::invalid_argument& e) {
+                    std::cout << e.what() << std::endl;
                 }
                 x_vector[i][0] = temp - '0';
-            }
+                }
             y_labels.push_back(y_vector);
             x_labels.push_back(x_vector);
         }
         data.x_labels = x_labels;
         data.y_labels = y_labels;
+        std::cout << "Data loading: " << "\033[1;32mDone \033[0m\n";
         return {data};
     }
 }
@@ -54,6 +69,7 @@ data_struct get_test_train_split(std::vector <Matrix> x_labels, std::vector <Mat
     }
 
     else {
+        std::cout << "\033[1;36mInfo: \033[0m" << "Splitting data into train/test train and test set..." << std::endl;
         data_struct split_data;
         int split_index = x_labels.size() * split;
         std::vector <Matrix> x_labels_train;
@@ -73,6 +89,7 @@ data_struct get_test_train_split(std::vector <Matrix> x_labels, std::vector <Mat
         split_data.x_labels_test = x_labels_test;
         split_data.y_labels_test = y_labels_test;
 
+        std::cout << "Train-test splitting: " << "\033[1;32mDone\033[0m\n";
         return {split_data};
     }
 }

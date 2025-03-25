@@ -1,5 +1,5 @@
 #include "network.h"
-
+#include <unistd.h>
 /**
  * Initialise the weights for the neural network layers.
  * 
@@ -8,7 +8,7 @@
  * between each pair of consecutive hidden layers, and between the last hidden layer
  * and the output layer.
  */
-void network::initialise_weights() { //Initialising the weights for the network
+void network::initialise_weights() { //Initialising the weights for the network //TODO: this doenst need to run if weights are loaded...
 
     double limit = limit = sqrt(2.0 / input_layer_size);
     Matrix matrix1(hidden_layers[0].getRows(), input_layer_size);
@@ -38,13 +38,13 @@ std::vector<Matrix> network::get_weights() {
  *Initialise the hidden layers:
  *Making Nx1 size vectors depending on inputs given from user in hidden_layers_sizes param
  */
-void network::initialise_hidden_layers() {
+void network::initialise_hidden_layers() { 
     for (int i = 0; i < hidden_layers_sizes.size(); ++i) {
         hidden_layers.push_back(Matrix(hidden_layers_sizes[i], 1)); //making empty matrixes for the layers in network
     }
 }
 
-void network::initialise_biases() {
+void network::initialise_biases() { //TODO: this doenst need to run if biases are loaded from old model...
     for (int i = 0; i < hidden_layers_sizes.size(); i++){
         biases.push_back(Matrix(hidden_layers_sizes[i], 1));
     }
@@ -55,7 +55,7 @@ std::vector <std::vector<Matrix>> network::feed_forward_pass(const Matrix& x_lab
     std::vector<Matrix> hidden_layers_copy = hidden_layers;
     std::vector<Matrix> activation;
     std::vector<Matrix> weigted_inputs;
-    activation.reserve(hidden_layers.size() + 1);
+    activation.reserve(hidden_layers.size() + 1); //Reserving space for the hidden layers sice we know the size
     weigted_inputs.reserve(hidden_layers.size() + 1);
 
     hidden_layers_copy[0] = ((weights[0] * x_labels) + biases[0]).applyActivationFunction(activationFuncions[0]); //Computing first layer values
@@ -113,8 +113,6 @@ void network::gradient_descent_weights(std::vector<std::vector<Matrix>>& errors,
         for (int lag = 0; lag < errors[trening].size(); ++lag) { // Iterate over all layers
             int error_idx = errors[trening].size() - 1 - lag;
             Matrix gradient = errors[trening][error_idx] * activated_layers[lag].transposed(); // Compute the gradient
-            //std::cout << "error: \n" << errors[trening][error_idx] << std::endl;
-            //std::cout << "gradient: \n" << gradient << std::endl;
             sum[lag] = sum[lag] + gradient;
         }
     }
@@ -142,19 +140,21 @@ void network::gradient_descent_biases(std::vector<std::vector<Matrix>>& errors, 
 
 
 void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> train_y_labels, std::vector <Matrix> test_x_labels, std::vector <Matrix> test_y_labels, int epochs, double learning_rate, int batch_size, bool animation) {
-    std::cout << "----------------------------------\n" << std::endl;
-    std::cout << "Initializing training of network with " << epochs << " epochs"<< std::endl;
-    std::cout << "\n----------------------------------" << std::endl;
-    std::cout << "Number of hidden layers: " << hidden_layers.size() << std::endl;
-    std::cout << "Number of training samples: " << train_x_labels.size() << std::endl;
-    std::cout << "Number of test samples: " << test_x_labels.size() << std::endl;
-    std::cout << "Learning rate: " << learning_rate << std::endl;
-    std::cout << "Batch size: " << batch_size << std::endl;
-    std::cout << "----------------------------------" << std::endl;
+    std::cout << "\n----------------------------------\n" << std::endl;
+    std::cout << "\033[1;36mInfo: \033[0m" << "Initializing training of network\n";
+    std::cout << "\n-----------------------------------------" << std::endl;
+    std::cout << "\033[1;30m    Parameters \033[0m\n";
+    std::cout << "      Number of hidden layers     : " << hidden_layers.size() << std::endl;
+    std::cout << "      Number of training samples  : " << train_x_labels.size() << std::endl;
+    std::cout << "      Number of test samples      : " << test_x_labels.size() << std::endl;
+    std::cout << "      Learning rate               : " << learning_rate << std::endl;
+    std::cout << "      Batch size                  : " << batch_size << std::endl;
+    std::cout << "      Epochs                      : " << epochs << std::endl;
+    std::cout << "-------------------------------------------" << std::endl;
 
-    std::vector <double> epochs_n;
-    std::vector <double> loss_n;
-    std::vector <double> accuracy_n;
+    double epochs_n[epochs];
+    double loss_n[epochs];
+    double accuracy_n[epochs];
 
     training_visualise window(100, 100, 1000, 500, "Training network");
     //TODO: find better way to do this -> atm creates window even when animation is false
@@ -167,8 +167,6 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
     
         
     for (int i = 0; i < epochs; ++i) {
-        std::cout << "Epoch: " << i + 1 << std::endl;
-        std::cout << "---------" << std::endl;
         auto start = std::chrono::high_resolution_clock::now();
         // Train the network with the training data
         for (int j = 0; j < train_x_labels.size(); j += batch_size) {
@@ -176,7 +174,6 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
             std::vector<std::vector<Matrix>> batch_activated_layers;
             std::vector<std::vector<Matrix>> batch_weighted_inputs; 
             std::vector<Matrix> batch_predictions;
-            #pragma omp parallel for
             for (int k = 0; k < batch_size && (j + k) < train_x_labels.size(); ++k) { // For each batch (in parallel)
                 int index = j + k;
                 std::vector<std::vector<Matrix>> feed_forward = feed_forward_pass(train_x_labels[index]);
@@ -207,24 +204,33 @@ void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> trai
 
         double current_accuracy = get_accuracy(predictions, test_y_labels);
         double current_loss = loss / train_x_labels.size();
-        std::cout << "Accuracy: " << current_accuracy << "%" << std::endl;
-        std::cout << "loss: " << current_loss << std::endl;
-        std::cout << "Time taken for epoch: " << static_cast<double> (duration.count()) / 1000 << " s" << std::endl;
-        std::cout << "Estimated time left: " << static_cast<double> (duration.count()) / 1000 * (epochs - i - 1) << " s" << std::endl;
-        std::cout << "-----------------" << std::endl;
-        
-        epochs_n.push_back(i);
-        loss_n.push_back(current_loss);
-        accuracy_n.push_back(current_accuracy);
+        std::cout << "Epoch " << i + 1 << ": " << "\033[1;32mDone\033[0m\n";
+        std::cout << "---------" << "\n";
+        std::cout << "\033[1;30mAccuracy: \033[0m\n" << current_accuracy << "%\n";
+        std::cout << "\033[1;30mLoss: \033[0m\n" << current_loss << "\n";
+        std::cout << "\033[1;30mTime taken for epoch: \033[0m\n" << static_cast<double> (duration.count()) / 1000 << " s" << "\n";
+        std::cout << "\033[1;30mEstimated time left: \033[0m\n" << static_cast<double> (duration.count()) / 1000 * (epochs - i - 1) << " s" << "\n";
+        std::cout << "-----------------" << "\n";
 
-        if (animation) {
-            window.update(epochs_n, loss_n, accuracy_n, current_accuracy, current_loss, epochs);
+        if (animation) { // Update the window
+            epochs_n[i] = i;
+            loss_n[i] = current_loss;
+            accuracy_n[i] = current_accuracy;
+            window.update(epochs_n, loss_n, accuracy_n, current_accuracy, current_loss, epochs, i+1);
+            window.next_frame();
         }
 
 
         loss = 0; // Reset loss
     }
+
 std::cout << "Training complete!" << std::endl;
+usleep(1000000); // Wait for 2 seconds
+if (animation) {
+    window.update(epochs_n, loss_n, accuracy_n, accuracy_n[epochs-1], loss_n[epochs-1], epochs, epochs);
+    window.finish();
+
+}
 }
 
 
@@ -260,10 +266,11 @@ void network::check_params() {
 }
 
 void network::save_state(const std::string& filename) { //Saving the weights and biases to a file
-    std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\TDT4102\\prosjekt\\models\\" + filename;
-    
+    std::string path = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\models\\";
+    std::string file_n =  path + filename;
+    std::cout << "\033[1;36mInfo: \033[0m" << "Saving model weights and biases to:\n" << path + filename << "...\n";
     if (std::filesystem::exists(file_n)) {
-        std::cout << filename <<" already exists! Are you sure you want to overwrite your previus model? [yes/no]\nAnswer: " << std::endl;
+        std::cout << "\033[1;31mWarning: \033[0m" << filename <<" already exists!\nAre you sure you want to overwrite your previus model? [yes/no]\nAnswer: " << std::endl;
         std::string answer;
         std::cin >> answer;
         while (answer != "yes" && answer != "no") {
@@ -271,11 +278,11 @@ void network::save_state(const std::string& filename) { //Saving the weights and
             std::cin >> answer;
         }
         if (answer != "yes") {
-            std::cout << "Model not saved" << std::endl;
+            std::cout << "\033[1;36mInfo: \033[0m\n" << "Model not saved" << std::endl;
             return;
         }
         else {
-            std::cout << "Overwriting " << filename << std::endl;
+            std::cout << "\033[1;36mInfo: \033[0m\n" << "Overwriting " << filename << "..." << std::endl;
         }
     };
 
@@ -296,17 +303,24 @@ void network::save_state(const std::string& filename) { //Saving the weights and
     for (auto& b : biases) {
         b.SaveToBin(file);
     }
-    std::cout << "Network state saved to " << filename << std::endl;
+
+    std::cout << "Network weights and biases saved: " << "\033[1;32mDone\033[0m\n";
     file.close();
 }
 
 void network::load_state(const std::string& filename) { //Loading the weights and biases from a file
-    std::string file_n = "c:\\Users\\knuto\\Documents\\programering\\TDT4102\\prosjekt\\models\\" + filename;
+    std::string path = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\models\\";
+    std::string file_n = path + filename;
     std::ifstream file(file_n, std::ios::binary);
     if (!file.is_open()) {
+        std::cerr << "\033[1;31mError: \033[0m" << "Could not open the file:\n" << path + filename << std::endl;
+        std::cout << "Please make sure the file is in the correct directory and that the name is correct" << std::endl;
         throw std::invalid_argument("Could not open file: " + filename);
     }
+
     // Load weights
+    std::cout << "\033[1;36mInfo: \033[0m" << "Loading model weights and biases from: " << filename << "..." << std::endl;
+
     int num_weights;
     file.read(reinterpret_cast<char*>(&num_weights), sizeof(num_weights));
     weights.clear();
@@ -324,6 +338,6 @@ void network::load_state(const std::string& filename) { //Loading the weights an
         m.LoadFromBin(file);
         biases.push_back(m);
     }
-    std::cout << "Network weights and biases loaded from " << filename << std::endl;
+    std::cout << "Network weights and biases loaded: " << "\033[1;32mDone\033[0m\n";
     file.close();
 }

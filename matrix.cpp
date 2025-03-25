@@ -233,9 +233,9 @@ void Matrix::SaveToBin(std::ofstream& file){
     }
 }
 
-void Matrix::LoadFromBin(std::ifstream& file) {
-    file.read(reinterpret_cast<char*>(&rows), sizeof(rows));
-    file.read(reinterpret_cast<char*>(&cols), sizeof(cols));
+void Matrix::LoadFromBin(std::ifstream& file) { //Loading the weights and biases from a file
+    file.read(reinterpret_cast<char*>(&rows), sizeof(rows)); // Read the number of rows
+    file.read(reinterpret_cast<char*>(&cols), sizeof(cols)); // Read the number of cols
     data.resize(rows);
     for (size_t i = 0; i < rows; ++i) {
         data[i].resize(cols);
