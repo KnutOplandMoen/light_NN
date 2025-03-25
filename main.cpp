@@ -32,7 +32,7 @@ int main() {
     double learning_rate = 0.01;
     double batch_size = 32;
 
-    std::vector<Matrix> weights = nn.get_weights();;
+    std::vector<Matrix> weights = nn.get_weights();
     // Train the network
     nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size, true);
     

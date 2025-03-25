@@ -282,11 +282,11 @@ void network::save_state(const std::string& filename) { //Saving the weights and
             std::cin >> answer;
         }
         if (answer != "yes") {
-            std::cout << "\033[1;36mInfo: \033[0m\n" << "Model not saved" << std::endl;
+            std::cout << "\033[1;36mInfo: \033[0m" << "Model not saved\n";
             return;
         }
         else {
-            std::cout << "\033[1;36mInfo: \033[0m\n" << "Overwriting " << filename << "..." << std::endl;
+            std::cout << "\033[1;36mInfo: \033[0m" << "Overwriting " << filename << "..." << std::endl;
         }
     };
 
