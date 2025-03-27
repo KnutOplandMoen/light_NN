@@ -112,3 +112,28 @@ Matrix input_to_matrix(std::vector <double> input) {
     }
     return m;
 }
+
+std::vector<std::vector<Matrix>> get_data_xor(){
+    std::ifstream file("C:/Users/baklu/Documents/Kode/Project_neural_network/light_NN/Xor_Dataset.txt");
+    if (!file) {
+        throw std::invalid_argument("Could not open the file!");
+     }
+    
+    std::string line;
+    std::vector<std::vector<Matrix>> data{{},{}};
+    std::getline(file, line);
+    while(std::getline(file, line)){
+        std::vector<Matrix> set;
+        int a = line[0] - '0';
+        int b = line[2] - '0';
+        int c = line[4] - '0';
+        Matrix m1(2,1);
+        Matrix m2(1,1);
+        m1[0][0] = a;
+        m1[1][0] = b;
+        m2[0][0] = c;
+        data[0].push_back(m1);
+        data[1].push_back(m2);
+    }
+    return data;
+}

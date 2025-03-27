@@ -24,3 +24,5 @@ Matrix divideByNumber(Matrix m, double number);
 std::vector <std::vector<Matrix>> get_data(int dim_x, int dim_y);
 
 Matrix input_to_matrix(std::vector <double> input);
+
+std::vector<std::vector<Matrix>> get_data_xor();
