@@ -31,10 +31,12 @@ exe = executable(
 'activation_functions.cpp',
 'animation_functions.cpp',
 'data_functions.cpp',
+'game.cpp',
 'main.cpp',
 'math_functions.cpp',
 'matrix.cpp',
 'network.cpp',
+'q_network.cpp',
   dependencies : [animationwindow_dep, sdl2_dep, std_lib_facilities_dep],
   cpp_args : compiler_flags
 )
