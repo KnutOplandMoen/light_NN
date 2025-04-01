@@ -8,7 +8,7 @@
 
 int main() {
     // Define the sizes for input, hidden layers, and output layers
-    std::vector<int> hidden_layers_sizes = {64, 64};  // hidden layers and neurons in each layer
+    std::vector<int> hidden_layers_sizes = {64, 32};  // hidden layers and neurons in each layer
     int output_layer_size = 4; // Output layer with 11 neurons
     int input_layer_size = 16; // inout layer with 4 neurons
 
@@ -16,13 +16,15 @@ int main() {
     // Initialize the network with the layers
     q_network nn(input_layer_size, hidden_layers_sizes, output_layer_size, activation_functions);
 
-    nn.load_state("64x64weight.txt");
+    //nn.load_state("64x32weight_1.txt");
+    nn.set_epsilon(1);
     int games = 100;
+
     int batch_size = 1000;
     int mini_batch_size = 32;
     double learning_rate = 0.01;
     // Train the network
     nn.train(games, batch_size, mini_batch_size, learning_rate);
-    nn.save_state("64x64weight.txt");
+    nn.save_state("64x32weight_1.txt");
     return 0;
 }

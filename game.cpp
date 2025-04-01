@@ -19,7 +19,7 @@ int Game::is_over(){
 double Game::getReward(bool grow, bool collision, TDT4102::Point lastPos)
 {
     if (grow){
-        return 50;
+        return 100;
     }
     else if (collision){
         return -200;

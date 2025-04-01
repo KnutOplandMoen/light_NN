@@ -75,6 +75,8 @@ information q_network::get_information(Matrix& state, Game& game_play) {
     //std::cout << "collision: " << collision << std::endl;
     
     double reward = game_play.getReward(grow, collision, lastPos);
+    total_reward += reward;
+
     int done = game_play.is_over();
 
     Matrix new_state = game_play.getState();
@@ -127,6 +129,7 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
         std::cout << "Game: " << game+1 << std::endl;
         Game game_play;
         int move = 0;
+        total_reward = 0;
         while (!game_play.is_over()) {
 
             game_play.drawBoard();
@@ -153,10 +156,11 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
             experiences.push_back(info);
             game_play.next_frame();
         }
-        std::cout << "Score: " << game_play.snake.getSnakeBody().size() << std::endl;
-        game_play.close();
         std::cout << "game: " << game << "/ " << games << " finished" << std::endl; 
         std::cout << "snake size: " << game_play.snake.getSnakeBody().size() << std::endl;
+        std::cout << "total reward: " << total_reward << std::endl;
+        std::cout << "epsilon: " << epsilon << std::endl;
+        game_play.close();
 
     }
 }
