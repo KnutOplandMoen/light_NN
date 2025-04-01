@@ -5,12 +5,29 @@
 #include <deque>
 #include <unistd.h> 
 
-int q_network::select_action(Matrix& state) {
+int player_move(Game& game_play){
+    while (true) {
+    if (game_play.is_key_down(KeyboardKey::RIGHT)){
+        return 1;
+    }
+    else if (game_play.is_key_down(KeyboardKey::UP)){
+        return 0;
+    }
+    else if (game_play.is_key_down(KeyboardKey::DOWN)){
+        return 2;
+    }
+    else if (game_play.is_key_down(KeyboardKey::LEFT)){
+        return 3;
+    }
+}
+}
+
+int q_network::select_action(Matrix& state, Game& game_play) {
     double number = randDouble(0, 10000);
 
     bool from_user = true;
     
-    if (from_user) {
+    if (!from_user) {
     if (number / 10000 < epsilon) {  
         return rand() % action_space_size;  // Random action (explore)
     } else {
@@ -19,28 +36,11 @@ int q_network::select_action(Matrix& state) {
     }
     }
     else {
-        int dir = directionChange();
+        int dir = player_move(game_play);
         return dir;
     }
 
     
-}
-
-int directionChange(){
-    while (true) {
-    if (is_key_down(KeyboardKey::RIGHT)){
-        return 1;
-    }
-    else if (is_key_down(KeyboardKey::UP)){
-        return 0;
-    }
-    else if (is_key_down(KeyboardKey::DOWN)){
-        return 2;
-    }
-    else if (is_key_down(KeyboardKey::LEFT)){
-        return 3;
-    }
-}
 }
 
 information q_network::get_information(Matrix& state, Game& game_play) {
@@ -49,11 +49,10 @@ information q_network::get_information(Matrix& state, Game& game_play) {
     TDT4102::Point lastPos = game_play.snake.getSnakeHead();
     Matrix q_values = feed_forward_pass(state)[0].back();
 
-    int action = select_action(state);
+    int action = select_action(state, game_play);
     std::cout << "action: " << action << std::endl;
     double q_value = q_values[action][0];
     Matrix prev_state = game_play.getState();
-
 
     game_play.take_action(action); //TODO: Here next state needs to be made.. in environment
     if (game_play.snake.collisionFood(game_play.foodVec) != -1){

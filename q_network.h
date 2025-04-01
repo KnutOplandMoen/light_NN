@@ -27,6 +27,6 @@ class q_network : public network {
     double reward(Matrix current_state);
     void update_net(double learning_rate, int mini_batch_size, std::deque<information> experiences);
     void train(int games, int batch_size, int mini_batch_size, double learning_rate);
-    int select_action(Matrix& state);
+    int select_action(Matrix& state, Game& game_play);
 
 };
