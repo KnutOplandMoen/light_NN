@@ -5,27 +5,6 @@
 #include <deque>
 #include <unistd.h> 
 
-int player_move(Game& game_play){
-    while (true) {
-    if (game_play.is_key_down(KeyboardKey::RIGHT)){
-        std::cout << "right pressed" << std::endl;
-        return 1;
-    }
-    else if (game_play.is_key_down(KeyboardKey::UP)){
-        std::cout << "up pressed" << std::endl;
-        return 0;
-    }
-    else if (game_play.is_key_down(KeyboardKey::DOWN)){
-        std::cout << "down pressed" << std::endl;
-        return 2;
-    }
-    else if (game_play.is_key_down(KeyboardKey::LEFT)){
-        std::cout << "left pressed" << std::endl;
-        return 3;
-    }
-}
-}
-
 int q_network::select_action(Matrix& state, Game& game_play) {
     double number = randDouble(0, 10000);
 
@@ -40,12 +19,31 @@ int q_network::select_action(Matrix& state, Game& game_play) {
     }
     }
     else {
-        int dir = player_move(game_play);
-        return dir;
+        int move;
+        std::string move_l;
+        std::cout <<"move:\n:";
+        
+        cin >> move_l;
+        if (move_l == "w") {
+            move = 0;
+        }
+        else if (move_l == "d") {
+            move = 1;
+        }
+        else if (move_l == "a") {
+            move = 3;
+        }
+        else if (move_l == "s") {
+            move = 2;
+        }
+        else {
+            move = 0;
+        }
+        std::cout << "chose move: " << move << std::endl;
+        return move;
+        }
     }
 
-    
-}
 
 information q_network::get_information(Matrix& state, Game& game_play) {
     bool grow = false;
@@ -58,6 +56,7 @@ information q_network::get_information(Matrix& state, Game& game_play) {
     Matrix prev_state = game_play.getState();
 
     game_play.take_action(action); //TODO: Here next state needs to be made.. in environment
+
     if (game_play.snake.collisionFood(game_play.foodVec) != -1){
         grow = true;
         game_play.foodVec.clear();
@@ -71,7 +70,7 @@ information q_network::get_information(Matrix& state, Game& game_play) {
     }
 
     
-    collision = game_play.snake.collision() || (game_play.snake.getSnakeHead() == lastPos);
+    collision = game_play.snake.collision() || (game_play.snake.getSnakeHead() == lastPos.);
     //std::cout << "collision: " << collision << std::endl;
     
     double reward = game_play.getReward(grow, collision, lastPos);
@@ -131,10 +130,10 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
         int move = 0;
         total_reward = 0;
         while (!game_play.is_over()) {
-
-            game_play.drawBoard();
+            game_play.next_frame();
             Matrix state = game_play.getState();
             information info = get_information(state, game_play);
+            game_play.drawBoard();
 
             if (experiences.size() >= batch_size) {
                 experiences.pop_front();
@@ -152,10 +151,10 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
                 update_net(learning_rate, mini_batch_size, mini_batch);  // Train on a single mini-batch
             }
             
-            epsilon = std::max(0.1, epsilon * 0.9999); // Decay epsilon over time, with a minimum value of 0.1
+
             experiences.push_back(info);
-            game_play.next_frame();
         }
+        epsilon = std::max(0.1, epsilon * 0.99); // Decay epsilon over time, with a minimum value of 0.1
         std::cout << "game: " << game << "/ " << games << " finished" << std::endl; 
         std::cout << "snake size: " << game_play.snake.getSnakeBody().size() << std::endl;
         std::cout << "total reward: " << total_reward << std::endl;

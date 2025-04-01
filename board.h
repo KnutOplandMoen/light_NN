@@ -14,7 +14,7 @@ class Board : public AnimationWindow{
 protected:
     std::atomic<bool> running;
     std::thread inputThread;//start a seperate thread for continuous input handling
-    static constexpr int blockSize = 30;
+    static constexpr int blockSize =50;
     static constexpr int boardW = 600;
     static constexpr int boardH = 600;
     static constexpr int steps = 5;
