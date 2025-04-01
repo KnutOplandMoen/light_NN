@@ -40,19 +40,26 @@ information q_network::get_information(Matrix& state, Game& game_play) {
     Matrix q_values = feed_forward_pass(state)[0].back();
 
     int action = select_action(state);
-
-
+    std::cout << "action: " << action << std::endl;
     double q_value = q_values[action][0];
     Matrix prev_state = game_play.getState();
 
 
     game_play.take_action(action); //TODO: Here next state needs to be made.. in environment
-    game_play.snake.move(grow);
-    
-    collision = game_play.snake.collision();
     if (game_play.snake.collisionFood(game_play.foodVec) != -1){
         grow = true;
     }
+    game_play.snake.move(grow);
+    
+    collision = game_play.snake.collision();
+    std::cout << "collision: " << collision << std::endl;
+    if (game_play.snake.collisionFood(game_play.foodVec) != -1){
+        grow = true;
+    }
+    
+    collision = game_play.snake.collision();
+    //std::cout << "collision: " << collision << std::endl;
+    
     double reward = game_play.getReward(grow, collision, lastPos);
     int done = game_play.is_over();
 
@@ -103,6 +110,7 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
     std::cout << "starting training" << std::endl;
     std::deque<information> experiences;
     for (int game = 0; game < games; ++game) {
+        std::cout << "Game: " << game+1 << std::endl;
         Game game_play;
         int move = 0;
         while (!game_play.is_over()) {
@@ -131,6 +139,7 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
             experiences.push_back(info);
             game_play.next_frame();
         }
+        std::cout << "Score: " << game_play.snake.getSnakeBody().size() << std::endl;
         game_play.close();
         std::cout << "game: " << game << "/ " << games << " finished" << std::endl; 
         std::cout << "snake size: " << game_play.snake.getSnakeBody().size() << std::endl;

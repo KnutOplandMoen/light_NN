@@ -16,7 +16,6 @@ int main() {
 
     // Initialize the network with the layers
     q_network nn(input_layer_size, hidden_layers_sizes, output_layer_size, activation_functions);
-    nn.load_state("64x64weight.txt");
 
     int games = 200;
     int batch_size = 1000;
