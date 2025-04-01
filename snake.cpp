@@ -48,7 +48,7 @@ bool Snake::collision()
     if(!(snakeHead.y >= 0 && snakeHead.y < boardH)){
         return true;
     }
-    for(size_t i = 0; i < snakeBody.size(); i++){
+    for(size_t i = 0; i < snakeBody.size(); ++i){
         if (snakeBody.at(i) == snakeHead){
             return true;
         }

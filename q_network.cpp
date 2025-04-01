@@ -36,7 +36,6 @@ int q_network::select_action(Matrix& state, Game& game_play) {
         return static_cast<int>(number) % action_space_size;  // Random action (explore)
     } else {
         Matrix q_values = feed_forward_pass(state)[0].back();
-        std::cout << "chosen: " << q_values << std::endl;
         return q_values.getMaxRow();  // Best action (exploit)
     }
     }
@@ -64,7 +63,7 @@ information q_network::get_information(Matrix& state, Game& game_play) {
         game_play.foodVec.clear();
         game_play.newFood();
     }
-    
+
     game_play.snake.move(grow);
     
     collision = game_play.snake.collision();
