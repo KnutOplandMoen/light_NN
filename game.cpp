@@ -24,10 +24,18 @@ double Game::getReward(bool grow, bool collision, TDT4102::Point lastPos)
     else if (collision){
         return -200;
     }
-    else if(distanceToFood(snake.getSnakeHead()) < distanceToFood(lastPos)){
-        return 10;
+
+    double currentDist = distanceToFood(snake.getSnakeHead());
+    double lastDist = distanceToFood(lastPos);
+    double distChange = lastDist - currentDist;
+
+    if (distChange > 0) {
+        return 10.0 * distChange + 1.0; // Reward proportional to distance reduction + survival bonus
     }
-    else{
-        return -20;
+    else if (distChange < 0) {
+        return -10.0 * distChange - 1.0; // Penalty proportional to distance increase
+    }
+    else {
+        return 1.0; // Small survival bonus for neutral move
     }
 }

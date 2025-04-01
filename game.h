@@ -12,7 +12,6 @@ const unordered_map<int, std::string> intToDirection = {
 
 class Game : public Board { //each new game class, for instance pong or snake should inherit this class in some way, or use the same functions..
 private:
-    Board board;
     Matrix state;
     int game_over = 0;
 public:

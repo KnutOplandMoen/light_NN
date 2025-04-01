@@ -17,7 +17,7 @@ int main() {
     q_network nn(input_layer_size, hidden_layers_sizes, output_layer_size, activation_functions);
 
     //nn.load_state("64x32weight_1.txt");
-    nn.set_epsilon(1);
+    nn.set_epsilon(0.36);
     int games = 100;
 
     int batch_size = 1000;
