@@ -29,9 +29,10 @@ int q_network::select_action(Matrix& state, Game& game_play) {
     
     if (!from_user) {
     if (number / 10000 < epsilon) {  
-        return rand() % action_space_size;  // Random action (explore)
+        return static_cast<int>(number) % action_space_size;  // Random action (explore)
     } else {
         Matrix q_values = feed_forward_pass(state)[0].back();
+        std::cout << "chosen: " << q_values << std::endl;
         return q_values.getMaxRow();  // Best action (exploit)
     }
     }
@@ -50,7 +51,6 @@ information q_network::get_information(Matrix& state, Game& game_play) {
     Matrix q_values = feed_forward_pass(state)[0].back();
 
     int action = select_action(state, game_play);
-    std::cout << "action: " << action << std::endl;
     double q_value = q_values[action][0];
     Matrix prev_state = game_play.getState();
 
@@ -61,7 +61,6 @@ information q_network::get_information(Matrix& state, Game& game_play) {
     game_play.snake.move(grow);
     
     collision = game_play.snake.collision();
-    std::cout << "collision: " << collision << std::endl;
     if (game_play.snake.collisionFood(game_play.foodVec) != -1){
         grow = true;
     }
@@ -144,7 +143,7 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
                 update_net(learning_rate, mini_batch_size, mini_batch);  // Train on a single mini-batch
             }
             
-            epsilon = std::max(0.1, epsilon * 0.995); // Decay epsilon over time, with a minimum value of 0.1
+            epsilon = std::max(0.1, epsilon * 0.9999); // Decay epsilon over time, with a minimum value of 0.1
             experiences.push_back(info);
             game_play.next_frame();
         }

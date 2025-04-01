@@ -19,7 +19,7 @@ struct information {
 class q_network : public network {
     private:
     double gamma = 0.9;
-    double epsilon = 0.5;
+    double epsilon;
     int action_space_size = 4;
     public:
     q_network(int input_layer_size, std::vector <int> hidden_layers_sizes, int output_layer_size, std::vector <std::string> activationFuncions) : network(input_layer_size, hidden_layers_sizes, output_layer_size, activationFuncions) {};

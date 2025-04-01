@@ -22,7 +22,7 @@ double Game::getReward(bool grow, bool collision, TDT4102::Point lastPos)
         return 50;
     }
     else if (collision){
-        return -100;
+        return -200;
     }
     else if(distanceToFood(snake.getSnakeHead()) < distanceToFood(lastPos)){
         return 10;
