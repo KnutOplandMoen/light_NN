@@ -1,14 +1,25 @@
+#pragma once
 #include "matrix.h"
+#include "board.h"
+#include "q_network.h"
 
-class game { //each new game class, for instance pong or snake should inherit this class in some way, or use the same functions..
-    private:
+const unordered_map<int, std::string> intToDirection = {
+    {0, "UP"},
+    {1, "RIGHT"},
+    {2, "DOWN"},
+    {3, "LEFT"}
+};
+
+
+class Game : public Board { //each new game class, for instance pong or snake should inherit this class in some way, or use the same functions..
+private:
+    Board board;
     Matrix state;
     int game_over = 0;
-    public:
-    Matrix get_state() {return state;}
+public:
+    Game();
     void take_action(int action);
-    double get_reward();
     int is_over();
-    void train();
-    void initialize();
+    double getReward(bool grow, bool collision, TDT4102::Point lastPos);
+    void resetGame();
 };
