@@ -61,3 +61,4 @@ public:
 TDT4102::Point operator*(const TDT4102::Point& p1, const TDT4102::Point& p2);
 void operator+=(TDT4102::Point& p1, const TDT4102::Point& p2);
 
+TDT4102::Point operator+(const TDT4102::Point& p1, const TDT4102::Point& p2);

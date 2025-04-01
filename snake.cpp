@@ -10,6 +10,11 @@ void operator+=(TDT4102::Point& p1, const TDT4102::Point& p2){
     p1.y += p2.y;
 }
 
+TDT4102::Point operator+(const TDT4102::Point &p1, const TDT4102::Point &p2)
+{
+    return {p1.x+p2.x, p1.y+p2.y};
+}
+
 Snake::Snake(int blockSize, int boardW, int boardH) : blockSize(blockSize), boardW(boardW), boardH(boardH){
     //starting snake centered
     snakeHead = {((boardW/blockSize)/2)*blockSize, ((boardH/blockSize)/2)*blockSize};
