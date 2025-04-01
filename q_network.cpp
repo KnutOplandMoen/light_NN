@@ -41,7 +41,7 @@ The net should be updates for when enough minibatches is done
 
 void q_network::update_net(int epochs, double learning_rate, int batch_size, std::vector<std::map<std::string, Matrix>> experiences) {
     double epochs_n[epochs];
-    double loss_n[epochs];
+    double loss_n[epochs];//bacon
     double accuracy_n[epochs];
     auto start = std::chrono::high_resolution_clock::now();
     std::vector<Matrix> batch_activated_layers;
