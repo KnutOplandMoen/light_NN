@@ -6,7 +6,7 @@
 #include "unordered_set"
 #include <thread>
 #include <atomic>
-#include "C://Users//baklu//Documents//Kode//Project_neural_network//light_nn//Matrix.h"
+#include "Matrix.h"
 
 extern "C" __declspec(dllimport) void __stdcall Sleep(unsigned long dwMilliseconds);
 
