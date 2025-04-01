@@ -14,7 +14,7 @@ int q_network::select_action(Matrix& state) {
     }
 }
 
-information q_network::get_information(Matrix& state, int done, game& game_play) {
+information q_network::get_information(Matrix& state, int done) {
 
     Matrix q_values = feed_forward_pass(state)[0].back();
 
