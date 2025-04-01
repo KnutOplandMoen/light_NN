@@ -22,7 +22,7 @@ int main() {
         std::cout << weight << std::endl;
     }
 
-    int games = 200;
+    int games = 5000;
 
     int batch_size = 50000;
     int mini_batch_size = 32;
