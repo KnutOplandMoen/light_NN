@@ -6,8 +6,9 @@ class game { //each new game class, for instance pong or snake should inherit th
     int game_over = 0;
     public:
     Matrix get_state() {return state;}
-    void take_action(Matrix action);
+    void take_action(int action);
     double get_reward();
     int is_over();
     void train();
+    void initialize();
 };
