@@ -8,15 +8,19 @@
 int player_move(Game& game_play){
     while (true) {
     if (game_play.is_key_down(KeyboardKey::RIGHT)){
+        std::cout << "right pressed" << std::endl;
         return 1;
     }
     else if (game_play.is_key_down(KeyboardKey::UP)){
+        std::cout << "up pressed" << std::endl;
         return 0;
     }
     else if (game_play.is_key_down(KeyboardKey::DOWN)){
+        std::cout << "down pressed" << std::endl;
         return 2;
     }
     else if (game_play.is_key_down(KeyboardKey::LEFT)){
+        std::cout << "left pressed" << std::endl;
         return 3;
     }
 }
@@ -25,7 +29,7 @@ int player_move(Game& game_play){
 int q_network::select_action(Matrix& state, Game& game_play) {
     double number = randDouble(0, 10000);
 
-    bool from_user = true;
+    bool from_user = false;
     
     if (!from_user) {
     if (number / 10000 < epsilon) {  
@@ -57,6 +61,7 @@ information q_network::get_information(Matrix& state, Game& game_play) {
     game_play.take_action(action); //TODO: Here next state needs to be made.. in environment
     if (game_play.snake.collisionFood(game_play.foodVec) != -1){
         grow = true;
+        game_play.newFood();
     }
     game_play.snake.move(grow);
     

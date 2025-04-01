@@ -21,7 +21,6 @@ protected:
     static constexpr int verticalBlocks = boardH/blockSize;
     static constexpr int horizontalBlocks = boardW/blockSize;
     
-    void newFood();
     void directionChange();
 public:
     std::vector<TDT4102::Point> foodVec;
@@ -33,4 +32,5 @@ public:
     void playSnake();
     int distanceToFood(TDT4102::Point p);
     void drawBoard();
+    void newFood();
 };
