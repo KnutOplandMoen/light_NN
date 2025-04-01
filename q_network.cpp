@@ -14,6 +14,7 @@ int q_network::select_action(Matrix& state) {
     }
 }
 
+
 information q_network::get_information(Matrix& state, int done, game& game_play) {
     bool grow = false;
     bool collision = false;
