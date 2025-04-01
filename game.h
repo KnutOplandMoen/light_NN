@@ -1,6 +1,6 @@
 #include "matrix.h"
 
-class game {
+class game { //each new game class, for instance pong or snake should inherit this class in some way, or use the same functions..
     private:
     Matrix state;
     int game_over = 0;

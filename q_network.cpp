@@ -2,14 +2,12 @@
 #include "game.h"
 #include "map"
 
-std::map<std::string, Matrix> q_network::get_loss(Matrix input, int done, game game_play) {
+information q_network::get_information(Matrix input, int done, game game_play) {
 
     Matrix q_values = feed_forward_pass(input)[0].back();
     double q_value = q_values[q_values.getMaxRow()][0];
 
-    //TODO: Here next state needs to be made.. in environment
-
-    game_play.take_action(q_values);
+    game_play.take_action(q_values); //TODO: Here next state needs to be made.. in environment
     Matrix prev_state = game_play.get_state();
     double reward = game_play.get_reward();
     int done = game_play.is_over();
@@ -21,9 +19,20 @@ std::map<std::string, Matrix> q_network::get_loss(Matrix input, int done, game g
 
     Matrix q_target = q_values;
     q_target[q_values.getMaxRow()][0] = q_target_value;
-    std::map <std::string, Matrix> m{{"state", input}, {"reward", }}
+    information info;
+    
     return m;
 
+}
+
+struct information {
+    Matrix q_values;
+    double q_value;
+    double reward;
+    int done;
+    double q_target_value;
+    Matrix q_target;
+    information()
 }
 
 /* 
@@ -39,9 +48,10 @@ void q_network::update_net(int epochs, double learning_rate, int batch_size, std
     std::vector<Matrix> batch_weighted_inputs;
     std::vector<Matrix> batch_predictions;
     std::vector<Matrix> batch_errors;
-    for (int k = 0; k < batch_size && (j + k) < experiences.size(); ++k) { // For each batch (in parallel)
+    for (int k = 0; k < batch_size && (j + k) < experiences.size(); ++k) { 
         int index = j + k;
-        std::vector<std::vector<Matrix>> feed_forward = feed_forward_pass(experiences[index]["state"]);
+        //here lets get the information we need from current state:
+
         std::vector<Matrix> activated_layers = feed_forward[0];
         activated_layers.insert(activated_layers.begin(), experiences[index]);
         std::vector<Matrix> weighted_inputs = feed_forward[1]; // Extract weighted inputs
