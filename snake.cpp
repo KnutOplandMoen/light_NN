@@ -30,7 +30,7 @@ void Snake::move(bool grow){
 
     // if the snake should not grow, remove last
     //this implementation is more effective than moving every part of the snakebody, 
-    //the only visual movements are at the fron and back
+    //the only visual movements are at the front and back
     if (!grow) {
         snakeBody.pop_back();
     }
