@@ -66,12 +66,12 @@ information q_network::get_information(Matrix& state, Game& game_play) {
 
     game_play.snake.move(grow);
     
-    collision = game_play.snake.collision();
     if (game_play.snake.collisionFood(game_play.foodVec) != -1){
         grow = true;
     }
+
     
-    collision = game_play.snake.collision();
+    collision = game_play.snake.collision() || (game_play.snake.getSnakeHead() == lastPos);
     //std::cout << "collision: " << collision << std::endl;
     
     double reward = game_play.getReward(grow, collision, lastPos);
