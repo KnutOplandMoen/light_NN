@@ -266,7 +266,7 @@ void network::check_params() {
 }
 
 void network::save_state(const std::string& filename) { //Saving the weights and biases to a file
-    std::string path = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\models\\";
+    std::string path = "c:\\Users\\baklu\\Documents\\Kode\\Project_neural_network\\light_NN\\models\\";
     std::string file_n =  path + filename;
     std::cout << "\033[1;36mInfo: \033[0m" << "Saving model weights and biases to:\n" << path + filename << "...\n";
     if (std::filesystem::exists(file_n)) {
@@ -309,7 +309,7 @@ void network::save_state(const std::string& filename) { //Saving the weights and
 }
 
 void network::load_state(const std::string& filename) { //Loading the weights and biases from a file
-    std::string path = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\models\\";
+    std::string path = "c:\\Users\\baklu\\Documents\\Kode\\Project_neural_network\\light_NN\\models\\";
     std::string file_n = path + filename;
     std::ifstream file(file_n, std::ios::binary);
     if (!file.is_open()) {

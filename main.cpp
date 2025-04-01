@@ -16,14 +16,13 @@ int main() {
 
     // Initialize the network with the layers
     q_network nn(input_layer_size, hidden_layers_sizes, output_layer_size, activation_functions);
-    nn.load_state("64x64weight.txt");
 
-    int epochs = 2;
+    int games = 5000;
     int batch_size = 100;
     int mini_batch_size = 32;
     double learning_rate = 0.01;
     // Train the network
-    nn.train(epochs, batch_size, mini_batch_size, learning_rate);
+    nn.train(games, batch_size, mini_batch_size, learning_rate);
     nn.save_state("64x64weight.txt");
     return 0;
 }
