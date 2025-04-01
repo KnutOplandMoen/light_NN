@@ -30,6 +30,7 @@ exe = executable(
   src,
 'activation_functions.cpp',
 'animation_functions.cpp',
+'board.cpp',
 'data_functions.cpp',
 'game.cpp',
 'main.cpp',
@@ -37,6 +38,8 @@ exe = executable(
 'matrix.cpp',
 'network.cpp',
 'q_network.cpp',
+'snake.cpp',
+'utils.cpp',
   dependencies : [animationwindow_dep, sdl2_dep, std_lib_facilities_dep],
   cpp_args : compiler_flags
 )

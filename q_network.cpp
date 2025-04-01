@@ -29,58 +29,36 @@ information q_network::get_information(Matrix input, int done, game game_play) {
 The net should be updates for when enough minibatches is done
 */
 
-void q_network::update_net(int epochs, double learning_rate, int batch_size, std::vector<std::map<std::string, Matrix>> experiences) {
-    double epochs_n[epochs];
-    double loss_n[epochs];//bacon
-    double accuracy_n[epochs];
-    auto start = std::chrono::high_resolution_clock::now();
-    std::vector<Matrix> batch_activated_layers;
-    std::vector<Matrix> batch_weighted_inputs;
-    std::vector<Matrix> batch_predictions;
-    std::vector<Matrix> batch_errors;
-    for (int k = 0; k < batch_size && (j + k) < experiences.size(); ++k) { 
-        int index = j + k;
-        //here lets get the information we need from current state:
+void q_network::update_net(int epochs, double learning_rate, int batch_size, std::deque<information> experiences) {
+    for (int epoch = 0; epoch < epochs; ++epoch) {
+        auto start = std::chrono::high_resolution_clock::now();
 
-        std::vector<Matrix> activated_layers = feed_forward[0];
-        activated_layers.insert(activated_layers.begin(), experiences[index]);
-        std::vector<Matrix> weighted_inputs = feed_forward[1]; // Extract weighted inputs
-        std::vector<Matrix> error = get_errors(experiences[index]["state"], experiences[index]["state"]);
-        batch_errors.push_back(error);
-        batch_activated_layers.push_back(activated_layers);
-        batch_weighted_inputs.push_back(weighted_inputs); // Store weighted inputs
-        batch_predictions.push_back(feed_forward[0].back());
-    }
-        gradient_descent_weights(batch_errors, learning_rate, train_x_labels[j], batch_activated_layers);
-        gradient_descent_biases(batch_errors, learning_rate, train_x_labels[j], batch_activated_layers);
-        for (int k = 0; k < batch_predictions.size(); ++k) {
-            update_loss(batch_predictions[k], train_y_labels[j + k]);
+        std::random_shuffle(experiences.begin(), experiences.end());
+
+        for (int j = 0; j < experiences.size(); j += batch_size) {
+            std::vector<std::vector<Matrix>> batch_errors;
+            std::vector<std::vector<Matrix>> batch_activated_layers;
+
+            for (int k = 0; k < batch_size && (j + k) < experiences.size(); ++k) {
+                information& info = experiences[j + k];
+
+                std::vector<std::vector<Matrix>> ff = feed_forward_pass(info.state);
+                std::vector<Matrix> activated_layers = ff[0];
+                activated_layers.insert(activated_layers.begin(), info.state); 
+                std::vector<Matrix> error = get_errors(info.state, info.q_target); 
+                batch_errors.push_back(error);
+                batch_activated_layers.push_back(activated_layers);
+            }
+
+            gradient_descent_weights(batch_errors, learning_rate, experiences[j].state, batch_activated_layers);
+            gradient_descent_biases(batch_errors, learning_rate, experiences[j].state, batch_activated_layers);
         }
-    }
-        
-        // Test the network with the test data
-        std::vector <Matrix> predictions;
-        for (int j = 0; j < test_x_labels.size(); ++j) {
-            std::vector<std::vector<Matrix>> feed_forward = feed_forward_pass(test_x_labels[j]);
-            predictions.push_back(feed_forward[0].back());
-        }
+
         auto stop = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-
-        double current_accuracy = get_accuracy(predictions, test_y_labels);
-        double current_loss = loss / train_x_labels.size();
-        std::cout << "Epoch " << i + 1 << ": " << "\033[1;32mDone\033[0m\n";
-        std::cout << "---------" << "\n";
-        std::cout << "\033[1;30mAccuracy: \033[0m\n" << current_accuracy << "%\n";
-        std::cout << "\033[1;30mLoss: \033[0m\n" << current_loss << "\n";
-        std::cout << "\033[1;30mTime taken for epoch: \033[0m\n" << static_cast<double> (duration.count()) / 1000 << " s" << "\n";
-        std::cout << "\033[1;30mEstimated time left: \033[0m\n" << static_cast<double> (duration.count()) / 1000 * (epochs - i - 1) << " s" << "\n";
-        std::cout << "-----------------" << "\n";
-
-    
-
-        loss = 0; // Reset loss
-    }}}
+        std::cout << "Q-learning Epoch " << epoch + 1 << " finished in " << duration.count() / 1000.0 << " seconds.\n";
+    }
+}
 
 void q_network::train() {
 
