@@ -3,14 +3,10 @@
 #include <thread>
 #include <chrono>
 
-Game::Game(){
-    board = Board();
-
-}
 
 void Game::take_action(int action)
 {
-    directionChange(intToDirection.at(action));
+    snake.direction = directionMap.at(intToDirection.at(action));
 }
 
 int Game::is_over(){

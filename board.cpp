@@ -106,12 +106,12 @@ Matrix Board::getState(){
     }else if(pos + directionMap.at("UP")*moveIncrement == foodVec[0]){
         state[4][0] = 1;
     }
-    if(occupiedPositions.contains(pos + directionMap.at("RIGHT")*moveIncrement) || pos.x + moveIncrement == boardW){
+    if(occupiedPositions.contains(pos + directionMap.at("RIGHT")*moveIncrement) || pos.x + blockSize == boardW){
         state[1][0] = 1;
     }else if(pos + directionMap.at("RIGHT")*moveIncrement == foodVec[0]){
         state[5][0] = 1;
     }
-    if(occupiedPositions.contains(pos + directionMap.at("DOWN")*moveIncrement) || pos.y + moveIncrement == boardH){
+    if(occupiedPositions.contains(pos + directionMap.at("DOWN")*moveIncrement) || pos.y + blockSize == boardH){
         state[2][0] = 1;
     }else if(pos + directionMap.at("DOWN")*moveIncrement == foodVec[0]){
         state[6][0] = 1;

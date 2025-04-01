@@ -43,7 +43,6 @@ private:
     TDT4102::Point moveIncrement = {blockSize, blockSize};
     TDT4102::Point snakeHead;
     std::deque<TDT4102::Point> snakeBody; //needed a deque for push_front
-    TDT4102::Point direction;
 public:
     Snake(int blockSize, int boardW, int boardH);
     void changeDirection(std::string key);
@@ -53,6 +52,7 @@ public:
     std::deque<TDT4102::Point> getSnakeBody() {return snakeBody;}
     TDT4102::Point getSnakeHead() {return snakeHead;}
     TDT4102::Point getDirection() {return direction;}
+    TDT4102::Point direction;
 };
 
 
