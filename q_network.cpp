@@ -7,12 +7,22 @@
 
 int q_network::select_action(Matrix& state) {
     double number = randDouble(0, 10000);
+
+    bool from_user = true;
+    
+    if (from_user) {
     if (number / 10000 < epsilon) {  
         return rand() % action_space_size;  // Random action (explore)
     } else {
         Matrix q_values = feed_forward_pass(state)[0].back();
         return q_values.getMaxRow();  // Best action (exploit)
     }
+    }
+    else {
+        int dir = directionChange();
+        return dir;
+    }
+
     
 }
 
