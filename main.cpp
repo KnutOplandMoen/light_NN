@@ -4,12 +4,13 @@
 #include "network.h"
 #include <unistd.h>
 #include "q_network.h"
+#include "game.h"
 
 int main() {
     // Define the sizes for input, hidden layers, and output layers
     std::vector<int> hidden_layers_sizes = {10, 10};  // hidden layers and neurons in each layer
     int output_layer_size = 4; // Output layer with 11 neurons
-    int input_layer_size = 4; // inout layer with 4 neurons
+    int input_layer_size = 12; // inout layer with 4 neurons
 
     std::vector <std::string> activation_functions = {"leakyReLu", "leakyReLu", "softmax"}; //activation and output functions, should match be of dim: (1 + number of hidden layers)
 
@@ -21,7 +22,8 @@ int main() {
     double batch_size = 32;
 
     // Train the network
-    nn.train(2, 100);
+    Game my_game;
+    nn.train(2, 100, my_game);
 
     return 0;
 }
