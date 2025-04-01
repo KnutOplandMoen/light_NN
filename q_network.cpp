@@ -19,20 +19,10 @@ information q_network::get_information(Matrix input, int done, game game_play) {
 
     Matrix q_target = q_values;
     q_target[q_values.getMaxRow()][0] = q_target_value;
-    information info;
-    
-    return m;
+    information info(q_values, q_value, reward, done, q_target_value, q_target);
 
-}
+    return info;
 
-struct information {
-    Matrix q_values;
-    double q_value;
-    double reward;
-    int done;
-    double q_target_value;
-    Matrix q_target;
-    information()
 }
 
 /* 
