@@ -1,7 +1,6 @@
 #pragma once
 #include "matrix.h"
 #include "board.h"
-#include "q_network.h"
 
 const unordered_map<int, std::string> intToDirection = {
     {0, "UP"},
@@ -17,7 +16,6 @@ private:
     Matrix state;
     int game_over = 0;
 public:
-    Game();
     void take_action(int action);
     int is_over();
     double getReward(bool grow, bool collision, TDT4102::Point lastPos);

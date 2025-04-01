@@ -19,15 +19,15 @@ int Game::is_over(){
 double Game::getReward(bool grow, bool collision, TDT4102::Point lastPos)
 {
     if (grow){
-        return 10;
+        return 50;
     }
     else if (collision){
         return -100;
     }
     else if(distanceToFood(snake.getSnakeHead()) < distanceToFood(lastPos)){
-        return 1;
+        return 10;
     }
     else{
-        return -1;
+        return -10;
     }
 }

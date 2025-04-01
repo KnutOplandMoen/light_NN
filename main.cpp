@@ -8,21 +8,22 @@
 
 int main() {
     // Define the sizes for input, hidden layers, and output layers
-    std::vector<int> hidden_layers_sizes = {10, 10};  // hidden layers and neurons in each layer
+    std::vector<int> hidden_layers_sizes = {64, 64};  // hidden layers and neurons in each layer
     int output_layer_size = 4; // Output layer with 11 neurons
     int input_layer_size = 12; // inout layer with 4 neurons
 
-    std::vector <std::string> activation_functions = {"leakyReLu", "leakyReLu", "softmax"}; //activation and output functions, should match be of dim: (1 + number of hidden layers)
+    std::vector <std::string> activation_functions = {"reLu", "reLu", "softmax"}; //activation and output functions, should match be of dim: (1 + number of hidden layers)
 
     // Initialize the network with the layers
     q_network nn(input_layer_size, hidden_layers_sizes, output_layer_size, activation_functions);
+    nn.load_state("64x64weight.txt");
 
-    int epochs = 10;
+    int epochs = 2;
+    int batch_size = 100;
+    int mini_batch_size = 32;
     double learning_rate = 0.01;
-    double batch_size = 32;
-
     // Train the network
-    nn.train(2, 100);
-
+    nn.train(epochs, batch_size, mini_batch_size, learning_rate);
+    nn.save_state("64x64weight.txt");
     return 0;
 }
