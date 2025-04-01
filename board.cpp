@@ -84,56 +84,53 @@ void Board::drawBoard(){
     
 }
 
-Matrix Board::getState(){
+Matrix Board::getState() {
     /*
     [
-    danger_up, right, down, left,  // [0, 0, 1, 0, #one-hot
-    food_up, right, down, left,    //  0, 1, 0, 0, #one-hot
-    dir_up, right, down, left      //  0, 0, 1, 0] #one-hot
+    danger_up, right, down, left,    // [0, 0, 1, 0] # Danger one step away
+    food_adj_up, right, down, left,  // [0, 1, 0, 0] # Food one step away
+    dir_up, right, down, left,       // [0, 0, 1, 0] # Current direction
+    food_dir_up, right, down, left   // [1, 0, 0, 0] # Food direction (relative to head)
     ]
     */
-    Matrix state(12, 1);
+    Matrix state(16, 1); // Increased from 12 to 16
     std::unordered_set<TDT4102::Point> occupiedPositions;
     TDT4102::Point pos = snake.getSnakeHead();
+    TDT4102::Point food = foodVec[0]; // Assuming foodVec has at least one food item
     TDT4102::Point moveIncrement = {blockSize, blockSize};
     TDT4102::Point dir = snake.getDirection();
-    
+
+    // Populate occupied positions (snake body)
     for (const TDT4102::Point& part : snake.getSnakeBody()) {
         occupiedPositions.insert(part);
     }
-    if(occupiedPositions.contains(pos + directionMap.at("UP")*moveIncrement) || pos.y == 0){
-        state[0][0] = 1;
-    }else if(pos + directionMap.at("UP")*moveIncrement == foodVec[0]){
-        state[4][0] = 1;
-    }
-    if(occupiedPositions.contains(pos + directionMap.at("RIGHT")*moveIncrement) || pos.x + blockSize == boardW){
-        state[1][0] = 1;
-    }else if(pos + directionMap.at("RIGHT")*moveIncrement == foodVec[0]){
-        state[5][0] = 1;
-    }
-    if(occupiedPositions.contains(pos + directionMap.at("DOWN")*moveIncrement) || pos.y + blockSize == boardH){
-        state[2][0] = 1;
-    }else if(pos + directionMap.at("DOWN")*moveIncrement == foodVec[0]){
-        state[6][0] = 1;
-    }
-    if(occupiedPositions.contains(pos + directionMap.at("LEFT")*moveIncrement) || pos.x == 0){
-        state[3][0] = 1;
-    }else if(pos + directionMap.at("LEFT")*moveIncrement == foodVec[0]){
-        state[7][0] = 1;
-    }
-    if (dir == directionMap.at("UP")){
-        state[8][0] = 1;
-    }else if (dir == directionMap.at("RIGHT")){
-        state[9][0] = 1;
-    }else if (dir == directionMap.at("DOWN")){
-        state[10][0] = 1;
-    }else {
-        state[11][0] = 1;
-    }
-    
+    occupiedPositions.insert(pos); // Include head in occupied positions
+
+    // Danger indicators (indices 0-3)
+    state[0][0] = (occupiedPositions.contains(pos + directionMap.at("UP") * moveIncrement) || pos.y == 0) ? 1 : 0;
+    state[1][0] = (occupiedPositions.contains(pos + directionMap.at("RIGHT") * moveIncrement) || pos.x + blockSize == boardW) ? 1 : 0;
+    state[2][0] = (occupiedPositions.contains(pos + directionMap.at("DOWN") * moveIncrement) || pos.y + blockSize == boardH) ? 1 : 0;
+    state[3][0] = (occupiedPositions.contains(pos + directionMap.at("LEFT") * moveIncrement) || pos.x == 0) ? 1 : 0;
+
+    // Adjacent food indicators (indices 4-7)
+    state[4][0] = (pos + directionMap.at("UP") * moveIncrement == food) ? 1 : 0;
+    state[5][0] = (pos + directionMap.at("RIGHT") * moveIncrement == food) ? 1 : 0;
+    state[6][0] = (pos + directionMap.at("DOWN") * moveIncrement == food) ? 1 : 0;
+    state[7][0] = (pos + directionMap.at("LEFT") * moveIncrement == food) ? 1 : 0;
+
+    // Current direction (indices 8-11)
+    state[8][0] = (dir == directionMap.at("UP")) ? 1 : 0;
+    state[9][0] = (dir == directionMap.at("RIGHT")) ? 1 : 0;
+    state[10][0] = (dir == directionMap.at("DOWN")) ? 1 : 0;
+    state[11][0] = (dir == directionMap.at("LEFT")) ? 1 : 0;
+
+    // Food direction indicators (indices 12-15)
+    state[12][0] = (food.y < pos.y) ? 1 : 0; // Food is above
+    state[13][0] = (food.x > pos.x) ? 1 : 0; // Food is right
+    state[14][0] = (food.y > pos.y) ? 1 : 0; // Food is below
+    state[15][0] = (food.x < pos.x) ? 1 : 0; // Food is left
+
     return state;
-    
-    
 }
 
 void Board::playSnake(){

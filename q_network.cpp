@@ -61,8 +61,10 @@ information q_network::get_information(Matrix& state, Game& game_play) {
     game_play.take_action(action); //TODO: Here next state needs to be made.. in environment
     if (game_play.snake.collisionFood(game_play.foodVec) != -1){
         grow = true;
+        game_play.foodVec.clear();
         game_play.newFood();
     }
+    
     game_play.snake.move(grow);
     
     collision = game_play.snake.collision();
