@@ -1,24 +1,41 @@
 #include "q_network.h"
 #include "game.h"
 #include "map"
+#include "math_functions.h"
+#include <deque>
 
-information q_network::get_information(Matrix input, int done, game game_play) {
+int q_network::select_action(Matrix& state) {
+    double number = randDouble(0, 10000);
+    if (number / 10000 < epsilon) {  
+        return rand() % action_space_size;  // Random action (explore)
+    } else {
+        Matrix q_values = feed_forward_pass(state)[0].back();
+        return q_values.getMaxRow();  // Best action (exploit)
+    }
+}
 
-    Matrix q_values = feed_forward_pass(input)[0].back();
-    double q_value = q_values[q_values.getMaxRow()][0];
+information q_network::get_information(Matrix& state, int done, game& game_play) {
 
-    game_play.take_action(q_values); //TODO: Here next state needs to be made.. in environment
+    Matrix q_values = feed_forward_pass(state)[0].back();
+
+    int action = select_action(state);
+
+    double q_value = q_values[action][0];
     Matrix prev_state = game_play.get_state();
+
+    game_play.take_action(action); //TODO: Here next state needs to be made.. in environment
     double reward = game_play.get_reward();
     int done = game_play.is_over();
 
-    Matrix next_action = feed_forward_pass(prev_state)[0].back();
+    Matrix new_state = game_play.get_state();
+
+    Matrix next_action = feed_forward_pass(new_state)[0].back();
     double max_next_q_value = next_action[next_action.getMaxRow()][0];
 
     double q_target_value = reward + (1 - done) * gamma * max_next_q_value;
 
     Matrix q_target = q_values;
-    q_target[q_values.getMaxRow()][0] = q_target_value;
+    q_target[action][0] = q_target_value;
     information info(q_values, q_value, reward, done, q_target_value, q_target);
 
     return info;
@@ -29,12 +46,13 @@ information q_network::get_information(Matrix input, int done, game game_play) {
 The net should be updates for when enough minibatches is done
 */
 
+
 void q_network::update_net(int epochs, double learning_rate, int batch_size, std::deque<information> experiences) {
     for (int epoch = 0; epoch < epochs; ++epoch) {
         auto start = std::chrono::high_resolution_clock::now();
 
         std::random_shuffle(experiences.begin(), experiences.end());
-
+        
         for (int j = 0; j < experiences.size(); j += batch_size) {
             std::vector<std::vector<Matrix>> batch_errors;
             std::vector<std::vector<Matrix>> batch_activated_layers;
@@ -60,11 +78,9 @@ void q_network::update_net(int epochs, double learning_rate, int batch_size, std
     }
 }
 
-void q_network::train() {
 
+void q_network::train(int games, int batch_size, game& game_play) {
     /*
-    Plan: 
-
     Initialize loop with number of games
         For each game initialize a game
         do actions
@@ -73,4 +89,24 @@ void q_network::train() {
             train network on experiences using update_network
         
     */
+
+    for (int game = 0; game < games; ++game) {
+        game_play.initialize();
+
+        std::deque<information> experiences;
+        int move = 0;
+        while (!game_play.is_over()) {
+
+            Matrix state = game_play.get_state();
+            int done = game_play.is_over();
+            information info = get_information(state, done, game_play);
+
+            if (experiences.size() >= batch_size) {
+                update_net(games, 0.8, batch_size, experiences);
+                experiences.pop_front();
+            } 
+            experiences.push_back(info);
+        }
+
+    }
 }
