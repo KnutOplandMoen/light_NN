@@ -15,7 +15,7 @@ int q_network::select_action(Matrix& state) {
 }
 
 
-information q_network::get_information(Matrix& state, int done, game& game_play) {
+information q_network::get_information(Matrix& state, Game& game_play) {
     bool grow = false;
     bool collision = false;
     TDT4102::Point lastPos = game_play.snake.getSnakeHead();
@@ -24,19 +24,19 @@ information q_network::get_information(Matrix& state, int done, game& game_play)
     int action = select_action(state);
 
     double q_value = q_values[action][0];
-    Matrix prev_state = game_play.get_state();
+    Matrix prev_state = game_play.getState();
 
     game_play.take_action(action); //TODO: Here next state needs to be made.. in environment
     game_play.snake.move(grow);
 
     collision = game_play.snake.collision();
-    if (game_play.snake.collisionFood() != -1){
+    if (game_play.snake.collisionFood(game_play.foodVec) != -1){
         grow = true;
     }
-    double reward = game_play.get_reward(grow, collision, lastPos);
+    double reward = game_play.getReward(grow, collision, lastPos);
     int done = game_play.is_over();
 
-    Matrix new_state = game_play.get_state();
+    Matrix new_state = game_play.getState();
 
     Matrix next_action = feed_forward_pass(new_state)[0].back();
     double max_next_q_value = next_action[next_action.getMaxRow()][0];
@@ -88,18 +88,17 @@ void q_network::update_net(int epochs, double learning_rate, int batch_size, std
 }
 
 
-void q_network::train(int games, int batch_size, Game& game_play) {
+void q_network::train(int games, int batch_size) {
     
     for (int game = 0; game < games; ++game) {
-        game_play.resetGame();
+        Game game_play;
 
         std::deque<information> experiences;
         int move = 0;
         while (!game_play.is_over()) {
 
-            Matrix state = game_play.get_state();
-            int done = game_play.is_over();
-            information info = get_information(state, done, game_play);
+            Matrix state = game_play.getState();
+            information info = get_information(state, game_play);
 
             if (experiences.size() >= batch_size) {
                 update_net(games, 0.8, batch_size, experiences);

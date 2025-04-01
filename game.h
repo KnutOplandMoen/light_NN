@@ -21,5 +21,4 @@ public:
     void take_action(int action);
     int is_over();
     double getReward(bool grow, bool collision, TDT4102::Point lastPos);
-    void resetGame();
 };

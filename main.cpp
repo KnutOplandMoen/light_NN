@@ -22,8 +22,7 @@ int main() {
     double batch_size = 32;
 
     // Train the network
-    Game my_game;
-    nn.train(2, 100, my_game);
+    nn.train(2, 100);
 
     return 0;
 }

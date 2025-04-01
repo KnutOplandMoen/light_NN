@@ -21,11 +21,11 @@ protected:
     static constexpr int verticalBlocks = boardH/blockSize;
     static constexpr int horizontalBlocks = boardW/blockSize;
     
-    std::vector<TDT4102::Point> foodVec;
     void drawBoard();
     void newFood();
     void directionChange();
 public:
+    std::vector<TDT4102::Point> foodVec;
     Snake snake;
     Board();
     ~Board();//need destructor for proper handling of the inputThread
