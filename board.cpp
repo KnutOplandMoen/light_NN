@@ -162,3 +162,10 @@ void Board::playSnake(){
 
     }
 }
+
+
+int Board::distanceToFood(TDT4102::Point p){
+    TDT4102::Point f = foodVec[0];
+
+    return std::abs(p.x - f.x) + std::abs(p.y - f.y);
+}
