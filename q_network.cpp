@@ -69,8 +69,15 @@ information q_network::get_information(Matrix& state, Game& game_play) {
         grow = true;
     }
 
-    
-    collision = game_play.snake.collision() || (game_play.snake.getSnakeHead() == lastPos.);
+    std::deque<TDT4102::Point> body = game_play.snake.getSnakeBody();
+
+    for (TDT4102::Point& part : body) {
+        if ((part.x == game_play.snake.getSnakeHead().x) && (part.y == game_play.snake.getSnakeHead().y)) {
+            collision = true;
+        }
+    }
+
+    collision = game_play.snake.collision() || collision;
     //std::cout << "collision: " << collision << std::endl;
     
     double reward = game_play.getReward(grow, collision, lastPos);
