@@ -13,8 +13,25 @@ int q_network::select_action(Matrix& state) {
         Matrix q_values = feed_forward_pass(state)[0].back();
         return q_values.getMaxRow();  // Best action (exploit)
     }
+    
 }
 
+int directionChange(){
+    while (true) {
+    if (is_key_down(KeyboardKey::RIGHT)){
+        return 1;
+    }
+    else if (is_key_down(KeyboardKey::UP)){
+        return 0;
+    }
+    else if (is_key_down(KeyboardKey::DOWN)){
+        return 2;
+    }
+    else if (is_key_down(KeyboardKey::LEFT)){
+        return 3;
+    }
+}
+}
 
 information q_network::get_information(Matrix& state, Game& game_play) {
     bool grow = false;
@@ -23,15 +40,16 @@ information q_network::get_information(Matrix& state, Game& game_play) {
     Matrix q_values = feed_forward_pass(state)[0].back();
 
     int action = select_action(state);
-    std::cout << "action: " << action << std::endl;
+
+
     double q_value = q_values[action][0];
     Matrix prev_state = game_play.getState();
+
 
     game_play.take_action(action); //TODO: Here next state needs to be made.. in environment
     game_play.snake.move(grow);
     
     collision = game_play.snake.collision();
-    std::cout << "collision: " << collision << std::endl;
     if (game_play.snake.collisionFood(game_play.foodVec) != -1){
         grow = true;
     }
@@ -79,7 +97,6 @@ void q_network::update_net(double learning_rate, int mini_batch_size, std::deque
 
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-    std::cout << "Q-learning update finished in " << duration.count() / 1000.0 << " seconds.\n";
 }
 
 void q_network::train(int games, int batch_size, int mini_batch_size, double learning_rate) {
@@ -110,12 +127,13 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
                 update_net(learning_rate, mini_batch_size, mini_batch);  // Train on a single mini-batch
             }
             
-            gamma = 1.0 - (static_cast<double>(move) / (move + 10)); // Decay gamma over time
             epsilon = std::max(0.1, epsilon * 0.995); // Decay epsilon over time, with a minimum value of 0.1
             experiences.push_back(info);
             game_play.next_frame();
         }
         game_play.close();
+        std::cout << "game: " << game << "/ " << games << " finished" << std::endl; 
+        std::cout << "snake size: " << game_play.snake.getSnakeBody().size() << std::endl;
 
     }
 }

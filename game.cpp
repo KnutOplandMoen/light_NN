@@ -28,6 +28,6 @@ double Game::getReward(bool grow, bool collision, TDT4102::Point lastPos)
         return 10;
     }
     else{
-        return -10;
+        return -20;
     }
 }
