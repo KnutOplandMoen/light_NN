@@ -11,7 +11,7 @@
 extern "C" __declspec(dllimport) void __stdcall Sleep(unsigned long dwMilliseconds);
 
 class Board : public AnimationWindow{
-private:
+protected:
     std::atomic<bool> running;
     std::thread inputThread;//start a seperate thread for continuous input handling
     static constexpr int blockSize = 30;
@@ -20,15 +20,17 @@ private:
     static constexpr int steps = 5;
     static constexpr int verticalBlocks = boardH/blockSize;
     static constexpr int horizontalBlocks = boardW/blockSize;
-    Snake snake;
+    
     std::vector<TDT4102::Point> foodVec;
     void drawBoard();
     void newFood();
     void directionChange();
 public:
+    Snake snake;
     Board();
     ~Board();//need destructor for proper handling of the inputThread
     Matrix getState();
     void handleInput();
     void playSnake();
+    int distanceToFood(TDT4102::Point p);
 };

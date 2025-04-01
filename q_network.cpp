@@ -14,8 +14,11 @@ int q_network::select_action(Matrix& state) {
     }
 }
 
-information q_network::get_information(Matrix& state, int done) {
 
+information q_network::get_information(Matrix& state, int done, game& game_play) {
+    bool grow = false;
+    bool collision = false;
+    TDT4102::Point lastPos = game_play.snake.getSnakeHead();
     Matrix q_values = feed_forward_pass(state)[0].back();
 
     int action = select_action(state);
@@ -24,7 +27,13 @@ information q_network::get_information(Matrix& state, int done) {
     Matrix prev_state = game_play.get_state();
 
     game_play.take_action(action); //TODO: Here next state needs to be made.. in environment
-    double reward = game_play.get_reward();
+    game_play.snake.move(grow);
+
+    collision = game_play.snake.collision();
+    if (game_play.snake.collisionFood() != -1){
+        grow = true;
+    }
+    double reward = game_play.get_reward(grow, collision, lastPos);
     int done = game_play.is_over();
 
     Matrix new_state = game_play.get_state();
@@ -79,19 +88,10 @@ void q_network::update_net(int epochs, double learning_rate, int batch_size, std
 }
 
 
-void q_network::train(int games, int batch_size, game& game_play) {
-    /*
-    Initialize loop with number of games
-        For each game initialize a game
-        do actions
-        save experiences
-        when enough actions is take (experience_size = X): 
-            train network on experiences using update_network
-        
-    */
-
+void q_network::train(int games, int batch_size, Game& game_play) {
+    
     for (int game = 0; game < games; ++game) {
-        game_play.initialize();
+        game_play.resetGame();
 
         std::deque<information> experiences;
         int move = 0;
