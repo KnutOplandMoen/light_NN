@@ -10,7 +10,7 @@
 #include <unistd.h>
 
 class network {
-    private:
+    protected:
     std::vector <Matrix> hidden_layers; //A vector containing the hidden layers
     std::vector <int> hidden_layers_sizes; //A vector with the sizes of each hiddenlayer
     int input_layer_size;

@@ -1,4 +1,5 @@
 #include "network.h"
+#include "game.h"
 
 struct information {
     Matrix q_values;
@@ -15,9 +16,13 @@ struct information {
 class q_network : public network {
     private:
     double gamma;
+    double epsilon;
+    int action_space_size;
     public:
     q_network(int input_layer_size, std::vector <int> hidden_layers_sizes, int output_layer_size, std::vector <std::string> activationFuncions) : network(input_layer_size, hidden_layers_sizes, output_layer_size, activationFuncions) {};
-    information get_information(Matrix input, int done, game game_play);
+    information get_information(Matrix& input, int done, game& game_play);
     double q_network::reward(Matrix current_state);
     void update_net(int epochs, double learning_rate, int batch_size, std::vector<Matrix> experiences);
+    void train(int games, int batch_size, game& game_play);
+    int select_action(Matrix& state);
 };

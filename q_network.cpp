@@ -1,14 +1,28 @@
 #include "q_network.h"
 #include "game.h"
 #include "map"
+#include "math_functions.h"
 
-information q_network::get_information(Matrix input, int done, game game_play) {
+int q_network::select_action(Matrix& state) {
+    double number = randDouble(0, 10000);
+    if (number / 10000 < epsilon) {  
+        return rand() % action_space_size;  // Random action (explore)
+    } else {
+        Matrix q_values = feed_forward_pass(state)[0].back();
+        return q_values.getMaxRow();  // Best action (exploit)
+    }
+}
 
-    Matrix q_values = feed_forward_pass(input)[0].back();
-    double q_value = q_values[q_values.getMaxRow()][0];
+information q_network::get_information(Matrix& state, int done, game& game_play) {
+
+    Matrix q_values = feed_forward_pass(state)[0].back();
+
+    int action = select_action(state);
+
+    double q_value = q_values[action][0];
+    Matrix prev_state = game_play.get_state();
 
     game_play.take_action(q_values); //TODO: Here next state needs to be made.. in environment
-    Matrix prev_state = game_play.get_state();
     double reward = game_play.get_reward();
     int done = game_play.is_over();
 
@@ -18,7 +32,7 @@ information q_network::get_information(Matrix input, int done, game game_play) {
     double q_target_value = reward + (1 - done) * gamma * max_next_q_value;
 
     Matrix q_target = q_values;
-    q_target[q_values.getMaxRow()][0] = q_target_value;
+    q_target[action][0] = q_target_value;
     information info(q_values, q_value, reward, done, q_target_value, q_target);
 
     return info;
@@ -28,6 +42,8 @@ information q_network::get_information(Matrix input, int done, game game_play) {
 /* 
 The net should be updates for when enough minibatches is done
 */
+
+/*
 
 void q_network::update_net(int epochs, double learning_rate, int batch_size, std::vector<std::map<std::string, Matrix>> experiences) {
     double epochs_n[epochs];
@@ -82,11 +98,10 @@ void q_network::update_net(int epochs, double learning_rate, int batch_size, std
         loss = 0; // Reset loss
     }}}
 
-void q_network::train() {
+    */
 
+void q_network::train(int games, int batch_size, game& game_play) {
     /*
-    Plan: 
-
     Initialize loop with number of games
         For each game initialize a game
         do actions
@@ -95,4 +110,19 @@ void q_network::train() {
             train network on experiences using update_network
         
     */
+
+    for (int game = 0; game < games; ++game) {
+        game_play.initialize();
+
+        std::vector<information> experiences(batch_size);
+
+        for (int action = 0; action < batch_size; ++action) {
+            Matrix state = game_play.get_state();
+            int done = game_play.is_over();
+            information info = get_information(state, done, game_play);
+            experiences[action] = info;
+        }
+
+        update_net();
+    }
 }

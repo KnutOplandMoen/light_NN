@@ -10,4 +10,5 @@ class game { //each new game class, for instance pong or snake should inherit th
     double get_reward();
     int is_over();
     void train();
+    void initialize();
 };
