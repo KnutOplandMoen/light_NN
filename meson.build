@@ -27,10 +27,10 @@ src = []
 exe = executable(
   'program',
   src,
-  'game_files/board.cpp',
-  'game_files/board.h',
-  'game_files/snake.cpp',
-  'game_files/snake.h',
+  'snake_game_files/board.cpp',
+  'snake_game_files/board.h',
+  'snake_game_files/snake.cpp',
+  'snake_game_files/snake.h',
   'functions/activation_functions.cpp',
   'functions/activation_functions.h',
   'functions/animation_functions.cpp',
@@ -46,7 +46,7 @@ exe = executable(
 'network.cpp',
 'q_network.cpp',
 'utils.cpp',
-  include_directories : include_directories('game_files', 'functions'),
+  include_directories : include_directories('snake_game_files', 'functions'),
   dependencies : [animationwindow_dep, sdl2_dep, std_lib_facilities_dep],
   cpp_args : compiler_flags
 )
