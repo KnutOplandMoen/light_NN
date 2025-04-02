@@ -260,7 +260,7 @@ void q_network::play(int games) {
     
     set_epsilon(0);
     
-    feed_forward_visualise nn_vis(0, 20, 600, 800, "Feed forward pass"); //Initialize visualization
+    feed_forward_visualise nn_vis(0, 20, 600, 750, "Feed forward pass"); //Initialize visualization
 
     for (int game = 0; game < games; ++ game) {
         Game game_play;
