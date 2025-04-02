@@ -184,6 +184,8 @@ int main() {
 
 <details>
 <summary>Click to expand</summary>
+
+```cpp
 #include "q_network.h"
 
 int main() {
