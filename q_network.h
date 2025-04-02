@@ -20,6 +20,8 @@ class q_network : public network {
     private:
     double gamma = 0.99;
     double epsilon = 1.0;
+    double epsilon_decay = 0.99;
+    double min_epsilon = 0.01;
     int action_space_size = 4;
     double total_reward = 0;
     public:
@@ -27,10 +29,25 @@ class q_network : public network {
     information get_information(Matrix& input, Game& game_play);
     double reward(Matrix current_state);
     void update_net(double learning_rate, int mini_batch_size, std::deque<information> experiences);
-    void train(int games, int batch_size, int mini_batch_size, double learning_rate);
+    void train(int games, int batch_size, int mini_batch_size, double learning_rate, std::map<std::string, int> autosave_file = {});
     int select_action(Matrix& state, Game& game_play);
     double get_epsilon() {return epsilon;}
+
+    /**
+     * @brief Set desiered epsilon (0->1)
+     * 
+     * @param epsilon_set Epsilon to be set.
+     */
     void set_epsilon(double epsilon_set) {epsilon = epsilon_set;}
+
+    /**
+     * @brief Set desiered minimum epsilon (0->1)
+     * 
+     * @param epsilon_set Minimum epsilon to be set.
+     */
+    void set_epsilon_min(double epsilon_min_set) {min_epsilon = epsilon_min_set;}
+
+
     void play(int games);
 
 };

@@ -4,7 +4,20 @@
 #include "math_functions.h"
 #include <deque>
 #include <unistd.h> 
+#include "animation_functions.h"
 
+/**
+ * @brief Select an action from one of the following:
+ * 
+ * 1. Random -> if epsilon is close to 1 this is likely
+ * 
+ * 2. Network -> if epsilon is close to 0 this is more likely
+ * 
+ * 3. User -> from_user needs to be togled manually to true
+ * 
+ * @param state Current state of the game.
+ * @param game_play Game class with game information.
+ */
 int q_network::select_action(Matrix& state, Game& game_play) {
     double number = randDouble(0, 10000);
 
@@ -44,7 +57,13 @@ int q_network::select_action(Matrix& state, Game& game_play) {
         }
     }
 
-
+/**
+ * @brief Gets information by taking in the state, doing a action in this state with select action, 
+ * then adding information needed for later training to an information struct
+ * 
+ * @param state Current state of game.
+ * @param game_play Game class with game information.
+ */
 information q_network::get_information(Matrix& state, Game& game_play) {
     bool grow = false;
     bool collision = false;
@@ -109,11 +128,14 @@ information q_network::get_information(Matrix& state, Game& game_play) {
 
 }
 
-/* 
-The net should be updates for when enough minibatches is done
-*/
 
-
+/**
+ * @brief Updates network using normal backpropagation
+ * 
+ * @param Learning_rate Learning rate (0-1).
+ * @param mini_batch Deque with information structs to train on.
+ * @param mini_batch_size The size of the mini-batch used for training the network.
+ */
 void q_network::update_net(double learning_rate, int mini_batch_size, std::deque<information> mini_batch) {
     auto start = std::chrono::high_resolution_clock::now();
 
@@ -137,7 +159,24 @@ void q_network::update_net(double learning_rate, int mini_batch_size, std::deque
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 }
 
-void q_network::train(int games, int batch_size, int mini_batch_size, double learning_rate) {
+
+/**
+ * @brief Trains the Q-network using the reinforcement learning paradigm.
+ * 
+ * This function simulates a specified number of games, collects experiences 
+ * during gameplay, and updates the Q-network using mini-batches of experiences. 
+ * It also applies epsilon-greedy exploration, decays epsilon over time, and 
+ * optionally saves the network state at specified intervals.
+ * 
+ * @param games The number of games to simulate for training.
+ * @param batch_size The maximum size of the experience replay buffer.
+ * @param mini_batch_size The size of the mini-batch used for training the network.
+ * @param learning_rate The learning rate for updating the network.
+ * @param autosave_file A map containing file paths as keys and save intervals 
+ *                      (in terms of games) as values. If provided, the network 
+ *                      state is saved to the specified files at the given intervals.
+ */
+void q_network::train(int games, int batch_size, int mini_batch_size, double learning_rate, std::map<std::string, int> autosave_file) {
     std::cout << "starting training" << std::endl;
     std::deque<information> experiences;
     for (int game = 0; game < games; ++game) {
@@ -170,32 +209,83 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
 
             experiences.push_back(info);
         }
-        epsilon = std::max(0.01, epsilon * 0.99); // Decay epsilon over time, with a minimum value of 0.1
+
+        epsilon = std::max(min_epsilon, epsilon * epsilon_decay); // Decay epsilon over time, with a minimum value of 0.1
         std::cout << "game: " << game << "/ " << games << " finished" << std::endl; 
         std::cout << "snake size: " << game_play.snake.getSnakeBody().size() << std::endl;
         std::cout << "total reward: " << total_reward << std::endl;
         std::cout << "epsilon: " << epsilon << std::endl;
-        if (game % 50 == 0) {
-            save_state("good_snake_128x64.txt", true);
+
+        if (!autosave_file.empty()) {
+            for (const auto& [key, value] : autosave_file) {
+            if (game % value == 0) {
+                save_state(key, true);
+            }
+            }
         }
+
         game_play.close();
 
     }
 }
 
-void q_network::play(int games) {
+/**
+ * @brief Test a network and play the game snake with model
+ * 
+ * @param games The number of games to simulate for training.
+ */
+void q_network::play(int games) { 
     
+    feed_forward_visualise nn_vis(50, 50, 1000, 700, "Feed forward pass"); //Initialize visualization
+
     for (int game = 0; game < games; ++ game) {
         Game game_play;
         int move = 0;
         total_reward = 0;
         while (!game_play.is_over()) {
+            nn_vis.next_frame();
             game_play.next_frame();
+
             Matrix state = game_play.getState();
-            Matrix q_values = feed_forward_pass(state)[0].back();
-            int action = select_action(state, game_play);
+
+            std::vector<std::vector<Matrix>> ff = feed_forward_pass(state);
+            std::vector<Matrix> activated_layers = ff[0];
+            Matrix output = activated_layers.back();
+            
+            bool grow = false;
+            bool collision = false;
+            int action = output.getMaxRow();
             game_play.take_action(action);
-            game_play.drawBoard();            
+            if (game_play.snake.collisionFood(game_play.foodVec) != -1){
+                grow = true;
+                game_play.foodVec.clear();
+                game_play.newFood();
+            }
+        
+            game_play.snake.move(grow);
+            
+            if (game_play.snake.collisionFood(game_play.foodVec) != -1){
+                grow = true;
+            }
+        
+            std::deque<TDT4102::Point> body = game_play.snake.getSnakeBody();
+        
+            for (TDT4102::Point& part : body) {
+                if ((part.x == game_play.snake.getSnakeHead().x) && (part.y == game_play.snake.getSnakeHead().y)) {
+                    collision = true;
+                    std::cout << "crashed into itself! " << std::endl;
+                }
+            }
+        
+            if(!(game_play.snake.getSnakeHead().x >= 0 && game_play.snake.getSnakeHead().x < game_play.getWidth())){
+                std::cout << "crashed into wall! " << std::endl;
+            }
+            else if(!(game_play.snake.getSnakeHead().y >= 0 && game_play.snake.getSnakeHead().y < game_play.getHeight())){
+                std::cout << "crashed into wall! " << std::endl;
+            }
+        
+            game_play.drawBoard();
+            nn_vis.visualize_feed_forward(activated_layers, state); //Vis feed forward     
         }
         std::cout << "game: " << game << "/ " << games << " finished" << std::endl; 
         std::cout << "snake size: " << game_play.snake.getSnakeBody().size() << std::endl;

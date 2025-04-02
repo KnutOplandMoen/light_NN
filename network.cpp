@@ -1,6 +1,7 @@
 #include "network.h"
 #include <unistd.h>
 #include "data_functions.h"
+
 /**
  * Initialise the weights for the neural network layers.
  * 
@@ -9,7 +10,7 @@
  * between each pair of consecutive hidden layers, and between the last hidden layer
  * and the output layer.
  */
-void network::initialise_weights() { //Initialising the weights for the network //TODO: this doenst need to run if weights are loaded...
+void network::initialise_weights() { //Initialising the weights for the network //@TODO: this doenst need to run if weights are loaded...
 
     double limit = limit = sqrt(2.0 / input_layer_size);
     Matrix matrix1(hidden_layers[0].getRows(), input_layer_size);
@@ -32,10 +33,13 @@ void network::initialise_weights() { //Initialising the weights for the network 
     weights.push_back(matrix3);
 }
 
+//Return weights
 std::vector<Matrix> network::get_weights() {
     return weights;
 }
+
 /**
+ * @brief
  *Initialise the hidden layers:
  *Making Nx1 size vectors depending on inputs given from user in hidden_layers_sizes param
  */
@@ -45,13 +49,36 @@ void network::initialise_hidden_layers() {
     }
 }
 
-void network::initialise_biases() { //TODO: this doenst need to run if biases are loaded from old model...
+/** 
+ * @brief Initializes biases for all layers in the network.
+ * 
+ * This function creates bias matrices for each hidden layer and the output layer. 
+ * Each bias matrix is initialized with the appropriate dimensions: 
+ * one row per neuron and a single column.
+ */
+
+void network::initialise_biases() { 
     for (int i = 0; i < hidden_layers_sizes.size(); i++){
         biases.push_back(Matrix(hidden_layers_sizes[i], 1));
     }
     biases.push_back(Matrix(output_layer_size, 1));
 }
 
+
+/**
+ * @brief Performs a feed-forward pass through the neural network.
+ * 
+ * This function computes the activations and weighted inputs for each layer
+ * of the neural network, starting from the input layer and propagating through
+ * the hidden layers to the output layer. The activations are computed using
+ * the specified activation functions for each layer.
+ * 
+ * @param x_labels The input matrix representing the input data to the network.
+ * 
+ * @return A vector containing two vectors of matrices:
+ *         - The first vector contains the activations for each layer, including the output layer.
+ *         - The second vector contains the weighted inputs (pre-activation values) for each layer.
+ */
 std::vector <std::vector<Matrix>> network::feed_forward_pass(const Matrix& x_labels) const{
     std::vector<Matrix> hidden_layers_copy = hidden_layers;
     std::vector<Matrix> activation;
@@ -74,6 +101,20 @@ std::vector <std::vector<Matrix>> network::feed_forward_pass(const Matrix& x_lab
     return {activation, weigted_inputs}; //To do: Add a output function option here on the output layer: for instance softmax
 }
 
+/** 
+ * @brief Computes the error for each layer using backpropagation.
+ * 
+ * This function performs a backward pass through the network to calculate 
+ * the error matrices for each layer. It first computes the output layer error 
+ * and then propagates the error backward through the hidden layers using 
+ * the derivative of the activation function and the transposed weight matrices.
+ * 
+ * @param x_labels The input data (not directly used in error computation).
+ * @param y_labels The ground truth labels for the output layer.
+ * @return A vector of matrices representing the error for each layer.
+ * @note Should propably just dont pass in x_labels...
+ */
+
 std::vector <Matrix> network::get_errors(Matrix& x_labels, Matrix& y_labels) const{ //Backpropagating through network to get errors for each layer
     //Making copy
     std::vector <std::vector<Matrix>> feed_forward = feed_forward_pass(x_labels);
@@ -91,6 +132,16 @@ std::vector <Matrix> network::get_errors(Matrix& x_labels, Matrix& y_labels) con
     return errors;
 }
 
+/** 
+ * @brief Updates the total loss using cross-entropy loss.
+ * 
+ * This function calculates the batch loss by summing the negative log 
+ * of predicted probabilities for the true class (assuming one-hot encoding). 
+ * The computed batch loss is then accumulated into the total loss.
+ * 
+ * @param predicted A matrix containing predicted probabilities for each class.
+ * @param correct A one-hot encoded matrix indicating the correct class labels.
+ */
 void network::update_loss(Matrix& predicted, Matrix& correct) {
     double batch_loss = 0;
     for (int i = 0; i < predicted.getRows(); ++i) {  // Iterate over samples
@@ -103,7 +154,18 @@ void network::update_loss(Matrix& predicted, Matrix& correct) {
     loss += batch_loss;
 }
 
-// Gradient descent for weights
+/** 
+ * @brief Updates the weights of the network using gradient descent.
+ * 
+ * This function computes the weight gradients by iterating over all training samples, 
+ * accumulating the gradients for each layer, and applying the updates to the weights.
+ * 
+ * @param errors A 2D vector of matrices containing error values for each layer and each sample.
+ * @param learning_rate The learning rate used for gradient descent.
+ * @param x_labels Unused parameter (potentially for future modifications).
+ * @param batch_activated_layer A 2D vector of matrices storing the activated outputs of each layer 
+ *                              for all samples in the batch.
+ */
 void network::gradient_descent_weights(std::vector<std::vector<Matrix>>& errors, double& learning_rate, Matrix& x_labels, std::vector<std::vector<Matrix>>& batch_activated_layer) {
     std::vector<Matrix> sum(weights.size());
     for (int i = 0; i < weights.size(); ++i) { // Initialize sum
@@ -122,6 +184,17 @@ void network::gradient_descent_weights(std::vector<std::vector<Matrix>>& errors,
     }
 }
 
+/** 
+ * @brief Updates the biases of the network using gradient descent.
+ * 
+ * This function iterates through the errors for each training sample 
+ * and accumulates the gradients to update the biases in each layer.
+ * 
+ * @param errors A 2D vector of matrices containing error values for each layer and each sample.
+ * @param learning_rate The learning rate used for gradient descent.
+ * @param x_labels Unused parameter (potentially for future modifications).
+ * @param batch_activated_layers Unused parameter (potentially for future modifications).
+ */
 void network::gradient_descent_biases(std::vector<std::vector<Matrix>>& errors, double& learning_rate, Matrix& x_labels, std::vector<std::vector<Matrix>>& batch_activated_layers) {
     int L = biases.size(); // Number of layers with biases (hidden + output = 3)
     std::vector<Matrix> sum(L);
@@ -139,7 +212,18 @@ void network::gradient_descent_biases(std::vector<std::vector<Matrix>>& errors, 
     }
 }
 
-
+/**
+ * @brief Train the neural net
+ * 
+ * @param train_x_labels Training input data.
+ * @param train_y_labels Training output labels.
+ * @param test_x_labels Testing input data.
+ * @param test_y_labels Testing output labels.
+ * @param epochs Number of training epochs.
+ * @param learning_rate Learning rate for gradient descent.
+ * @param batch_size Size of each training batch.
+ * @param animation Bool -> true if training visualization should be displayed.
+ */
 void network::train(std::vector<Matrix> train_x_labels, std::vector<Matrix> train_y_labels, std::vector <Matrix> test_x_labels, std::vector <Matrix> test_y_labels, int epochs, double learning_rate, int batch_size, bool animation) {
     std::cout << "\n----------------------------------\n" << std::endl;
     std::cout << "\033[1;36mInfo: \033[0m" << "Initializing training of network\n";
@@ -234,7 +318,12 @@ if (animation) {
 }
 }
 
-
+/**
+ * @brief Visualise network in terminal.
+ * 
+ * @param input input layer to do feed forward from.
+ * @param show_hidden Bool -> true if hidden layers and weights should be displayed in terminal.
+ */
 void network::visualise_network_terminal(Matrix& input, bool show_hidden) {
     // Print the results
     std::cout << "Input Layer: \n" << input << std::endl;
@@ -266,6 +355,13 @@ void network::check_params() {
     }
 }
 
+
+/**
+ * @brief Save the state of the network to binary txt file
+ * 
+ * @param filename The file to write to.
+ * @param overwrite Bool -> true if the file automaticly should be overwriten.
+ */
 void network::save_state(const std::string& filename, bool overwrite) { //Saving the weights and biases to a file
     std::string path = getModelPath();
     std::string file_n =  path + filename;
@@ -309,6 +405,11 @@ void network::save_state(const std::string& filename, bool overwrite) { //Saving
     file.close();
 }
 
+/**
+ * @brief Load the state of the network (weights and biases) to binary txt file
+ * 
+ * @param filename The file to load from.
+ */
 void network::load_state(const std::string& filename) { //Loading the weights and biases from a file
     std::cout << getModelPath() <<std::endl;
     std::string path = getModelPath();
