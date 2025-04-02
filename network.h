@@ -23,11 +23,17 @@ class network {
 
     public:
     
-    network(int input_layer_size, std::vector <int> hidden_layers_sizes, int output_layer_size, std::vector <std::string> activationFuncions)
+    network(int input_layer_size, std::vector <int> hidden_layers_sizes, int output_layer_size, std::vector <std::string> activationFuncions, std::string filename = "")
         : activationFuncions(activationFuncions), input_layer_size(input_layer_size), output_layer_size(output_layer_size), hidden_layers_sizes(hidden_layers_sizes) {
+        
+        if (filename != "") {
+            load_state(filename);
+        }
+        else {
         initialise_biases();
-        initialise_hidden_layers();
         initialise_weights();
+        }
+        initialise_hidden_layers();
         check_params();
     }
     std::vector<Matrix> get_weights();
