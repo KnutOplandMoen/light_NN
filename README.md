@@ -73,6 +73,15 @@ Given activated layers in the network and the input that gave those activated la
 Here trying to predict the input [1, 0, 7, 3] corresponding to **x** = 1, **c** = 0, **b** = 7 and **a** = 3 in the function:  
 **a**x^2 + **b**x + **c**. Here the network predict output neuron 9, which is correct :star_struck::star_struck: 
 # Setup
+
+Below is an explanation that highlights the two classes—network and q_network—and shows how their training and prediction workflows differ. In general:
+
+**network:**
+This class is designed for supervised learning tasks. It maps inputs to known outputs using labeled training data. Its training involves minimizing a loss function (like cross-entropy or mean squared error) through gradient descent.
+
+**q_network:**
+This class is typically used in reinforcement learning contexts, where the goal is to learn a Q-value function that estimates the quality (expected cumulative reward) of taking a certain action in a given state. Training involves interacting with an environment (or using stored experience), updating Q-values using temporal difference learning rules, and sometimes using techniques such as experience replay.
+
 ## Training the Neural Network
 
 To set up and train the network, use the following code:
@@ -116,22 +125,45 @@ int main() {
 
     // Train the network
     nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size, true);
-    
-    // Test the network with multiple inputs (for visualization)
-    feed_forward_visualise nn_vis(100, 100, 1000, 700, "Feed forward pass");
-
-    for (double b = 0; b <= 7; ++b) { //Loop through some potential outputs
-        for (double a = 0; a <= 3; ++a) {
-            nn_vis.next_frame();
-            Matrix input = input_to_matrix({a, b, 0, 1});
-            std::vector<std::vector<Matrix>> prediction = nn.feed_forward_pass(input);
-            nn_vis.visualize_feed_forward(prediction[0], input);
-            usleep(2000000); // Wait for 2 seconds
-        }
-    }
 
     nn_vis.wait_for_close(); // Wait for the window to close
     nn.save_state("file_to_save.txt"); // Save model state to file
+    return 0;
+}
+```
+</details>
+
+### Predicting with the network
+<details>
+  <summary>Click to expand</summary>
+
+```cpp
+#include "std_lib_facilities.h"
+#include "functions.h"
+#include "matrix.h"
+#include "network.h"
+#include <iostream>
+
+int main() {
+    // Define the network architecture (must match the training configuration)
+    int input_layer_size = 4;           // Input layer with 4 neurons
+    std::vector<int> hidden_layers_sizes = {10, 10};  // Hidden layers
+    int output_layer_size = 11;         // Output layer with 11 neurons
+    std::vector<std::string> activation_functions = {"leakyReLu", "leakyReLu", "softmax"};
+
+    // Load the trained model by providing the filename
+    std::string model_name = "file_to_save.txt";
+    network nn(input_layer_size, hidden_layers_sizes, output_layer_size, activation_functions, model_name);
+
+    // Prepare a new input for prediction
+    // For example, we use an input vector: {value1, value2, value3, value4}
+    Matrix input = input_to_matrix({2.5, 3.0, 0.5, 1.0});
+
+    // Perform a feed-forward pass to get the prediction
+    std::vector<std::vector<Matrix>> prediction = nn.feed_forward_pass(input);
+
+    // Display the prediction result (Index with highest value)
+    std::cout << "Prediction: " << prediction[0].back().getMaxRow() << std::endl;
     return 0;
 }
 ```
