@@ -4,6 +4,7 @@
 #include "math_functions.h"
 #include <deque>
 #include <unistd.h> 
+#include "animation_functions.h"
 
 int q_network::select_action(Matrix& state, Game& game_play) {
     double number = randDouble(0, 10000);
@@ -176,7 +177,7 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
         std::cout << "total reward: " << total_reward << std::endl;
         std::cout << "epsilon: " << epsilon << std::endl;
         if (game % 50 == 0) {
-            save_state("good_snake_128x64.txt", true);
+            save_state("good_snake_128x64.txt", false);
         }
         game_play.close();
 
@@ -185,17 +186,55 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
 
 void q_network::play(int games) {
     
+    feed_forward_visualise nn_vis(0, 0, 1000, 700, "Feed forward pass");
+
     for (int game = 0; game < games; ++ game) {
         Game game_play;
         int move = 0;
         total_reward = 0;
         while (!game_play.is_over()) {
             game_play.next_frame();
+            nn_vis.next_frame();
+
             Matrix state = game_play.getState();
-            Matrix q_values = feed_forward_pass(state)[0].back();
-            int action = select_action(state, game_play);
+
+            std::vector<std::vector<Matrix>> ff = feed_forward_pass(state);
+            std::vector<Matrix> activated_layers = ff[0];
+            Matrix output = activated_layers.back();
+            nn_vis.visualize_feed_forward(activated_layers, state); //Vis feed forward
+            bool grow = false;
+            bool collision = false;
+            int action = output.getMaxRow();
             game_play.take_action(action);
-            game_play.drawBoard();            
+            if (game_play.snake.collisionFood(game_play.foodVec) != -1){
+                grow = true;
+                game_play.foodVec.clear();
+                game_play.newFood();
+            }
+        
+            game_play.snake.move(grow);
+            
+            if (game_play.snake.collisionFood(game_play.foodVec) != -1){
+                grow = true;
+            }
+        
+            std::deque<TDT4102::Point> body = game_play.snake.getSnakeBody();
+        
+            for (TDT4102::Point& part : body) {
+                if ((part.x == game_play.snake.getSnakeHead().x) && (part.y == game_play.snake.getSnakeHead().y)) {
+                    collision = true;
+                    std::cout << "crashed into itself! " << std::endl;
+                }
+            }
+        
+            if(!(game_play.snake.getSnakeHead().x >= 0 && game_play.snake.getSnakeHead().x < game_play.getWidth())){
+                std::cout << "crashed into wall! " << std::endl;
+            }
+            else if(!(game_play.snake.getSnakeHead().y >= 0 && game_play.snake.getSnakeHead().y < game_play.getHeight())){
+                std::cout << "crashed into wall! " << std::endl;
+            }
+        
+            game_play.drawBoard();     
         }
         std::cout << "game: " << game << "/ " << games << " finished" << std::endl; 
         std::cout << "snake size: " << game_play.snake.getSnakeBody().size() << std::endl;
