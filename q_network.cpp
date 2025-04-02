@@ -186,22 +186,22 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
 
 void q_network::play(int games) {
     
-    feed_forward_visualise nn_vis(0, 0, 1000, 700, "Feed forward pass");
+    feed_forward_visualise nn_vis(50, 50, 1000, 700, "Feed forward pass"); //Initialize visualization
 
     for (int game = 0; game < games; ++ game) {
         Game game_play;
         int move = 0;
         total_reward = 0;
         while (!game_play.is_over()) {
-            game_play.next_frame();
             nn_vis.next_frame();
+            game_play.next_frame();
 
             Matrix state = game_play.getState();
 
             std::vector<std::vector<Matrix>> ff = feed_forward_pass(state);
             std::vector<Matrix> activated_layers = ff[0];
             Matrix output = activated_layers.back();
-            nn_vis.visualize_feed_forward(activated_layers, state); //Vis feed forward
+            
             bool grow = false;
             bool collision = false;
             int action = output.getMaxRow();
@@ -234,7 +234,8 @@ void q_network::play(int games) {
                 std::cout << "crashed into wall! " << std::endl;
             }
         
-            game_play.drawBoard();     
+            game_play.drawBoard();
+            nn_vis.visualize_feed_forward(activated_layers, state); //Vis feed forward     
         }
         std::cout << "game: " << game << "/ " << games << " finished" << std::endl; 
         std::cout << "snake size: " << game_play.snake.getSnakeBody().size() << std::endl;
