@@ -266,11 +266,11 @@ void network::check_params() {
     }
 }
 
-void network::save_state(const std::string& filename) { //Saving the weights and biases to a file
+void network::save_state(const std::string& filename, bool overwrite) { //Saving the weights and biases to a file
     std::string path = getModelPath();
     std::string file_n =  path + filename;
     std::cout << "\033[1;36mInfo: \033[0m" << "Saving model weights and biases to:\n" << path + filename << "...\n";
-    if (std::filesystem::exists(file_n)) {
+    if (std::filesystem::exists(file_n) && !overwrite) {
         std::cout << "\033[1;31mWarning: \033[0m" << filename <<" already exists!\nAre you sure you want to overwrite your previus model? [yes/no]\nAnswer: " << std::endl;
         std::string answer;
         std::cin >> answer;

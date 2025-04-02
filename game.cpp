@@ -6,6 +6,11 @@
 
 void Game::take_action(int action)
 {
+    TDT4102::Point newDir = directionMap.at(intToDirection.at(action));
+
+    if (newDir == snake.direction * TDT4102::Point{-1, -1}) {
+        return;
+    }
     snake.direction = directionMap.at(intToDirection.at(action));
 }
 
@@ -36,6 +41,6 @@ double Game::getReward(bool grow, bool collision, TDT4102::Point lastPos)
         return 1 * distChange - 1.0; // Penalty proportional to distance increase
     }
     else {
-        return 0.5; // Small survival bonus for neutral move
+        return 0.1; // Small survival bonus for neutral move
     }
 }

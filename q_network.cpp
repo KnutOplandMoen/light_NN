@@ -74,9 +74,18 @@ information q_network::get_information(Matrix& state, Game& game_play) {
     for (TDT4102::Point& part : body) {
         if ((part.x == game_play.snake.getSnakeHead().x) && (part.y == game_play.snake.getSnakeHead().y)) {
             collision = true;
+            std::cout << "crashed into itself! " << std::endl;
         }
     }
 
+    if(!(game_play.snake.getSnakeHead().x >= 0 && game_play.snake.getSnakeHead().x < game_play.getWidth())){
+        std::cout << "crashed into wall! " << std::endl;
+    }
+    else if(!(game_play.snake.getSnakeHead().y >= 0 && game_play.snake.getSnakeHead().y < game_play.getHeight())){
+        std::cout << "crashed into wall! " << std::endl;
+    }
+
+    
     collision = game_play.snake.collision() || collision;
     //std::cout << "collision: " << collision << std::endl;
     
@@ -161,11 +170,14 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
 
             experiences.push_back(info);
         }
-        epsilon = std::max(0.1, epsilon * 0.99); // Decay epsilon over time, with a minimum value of 0.1
+        epsilon = std::max(0.01, epsilon * 0.99); // Decay epsilon over time, with a minimum value of 0.1
         std::cout << "game: " << game << "/ " << games << " finished" << std::endl; 
         std::cout << "snake size: " << game_play.snake.getSnakeBody().size() << std::endl;
         std::cout << "total reward: " << total_reward << std::endl;
         std::cout << "epsilon: " << epsilon << std::endl;
+        if (game % 50 == 0) {
+            save_state("good_snake_128x64.txt", true);
+        }
         game_play.close();
 
     }

@@ -14,7 +14,7 @@ class Board : public AnimationWindow{
 protected:
     std::atomic<bool> running;
     std::thread inputThread;//start a seperate thread for continuous input handling
-    static constexpr int blockSize =50;
+    static constexpr int blockSize = 40;
     static constexpr int boardW = 600;
     static constexpr int boardH = 600;
     static constexpr int steps = 5;
@@ -33,4 +33,6 @@ public:
     int distanceToFood(TDT4102::Point p);
     void drawBoard();
     void newFood();
+    int getHeight() {return boardH;}
+    int getWidth() {return boardW;}
 };
