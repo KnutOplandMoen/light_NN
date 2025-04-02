@@ -1,7 +1,14 @@
 #include "data_functions.h"
+#include <filesystem>
+namespace fs = std::filesystem;
+
+std::string getModelPath() {
+    std::string relativePath = "models/"; // Assumes "models" folder is in the same directory as the executable
+    return (fs::current_path() / relativePath).string();
+}
 
 data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
-    std::string path = "c:\\Users\\knuto\\Documents\\programering\\NN\\light_NN\\"; //TODO: automate this
+    std::string path = getModelPath();
     std::ifstream file(path + filename); //Change path to your own
     std::vector <Matrix> y_labels;
     std::vector <Matrix> x_labels;

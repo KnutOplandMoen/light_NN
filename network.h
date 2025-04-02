@@ -10,7 +10,7 @@
 #include <unistd.h>
 
 class network {
-    private:
+    protected:
     std::vector <Matrix> hidden_layers; //A vector containing the hidden layers
     std::vector <int> hidden_layers_sizes; //A vector with the sizes of each hiddenlayer
     int input_layer_size;
@@ -51,7 +51,7 @@ class network {
     void visualise_network_terminal(Matrix& input, bool show_hidden = false);
 
     void update_loss(Matrix& predicted, Matrix& correct);
-    void save_state(const std::string& filename);
+    void save_state(const std::string& filename, bool overwrite = false);
     void load_state(const std::string& filename);
 
     void train(std::vector <Matrix> train_x_labels, std::vector <Matrix> train_y_labels, std::vector <Matrix> test_x_labels, std::vector <Matrix> test_y_labels, int epochs, double learning_rate, int batch_size, bool animation = false);
