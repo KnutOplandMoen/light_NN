@@ -31,5 +31,6 @@ class q_network : public network {
     int select_action(Matrix& state, Game& game_play);
     double get_epsilon() {return epsilon;}
     void set_epsilon(double epsilon_set) {epsilon = epsilon_set;}
+    void play(int games);
 
 };

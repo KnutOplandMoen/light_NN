@@ -182,3 +182,22 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
 
     }
 }
+
+void q_network::play(int games) {
+    
+    for (int game = 0; game < games; ++ game) {
+        Game game_play;
+        int move = 0;
+        total_reward = 0;
+        while (!game_play.is_over()) {
+            game_play.next_frame();
+            Matrix state = game_play.getState();
+            Matrix q_values = feed_forward_pass(state)[0].back();
+            int action = select_action(state, game_play);
+            game_play.take_action(action);
+            game_play.drawBoard();            
+        }
+        std::cout << "game: " << game << "/ " << games << " finished" << std::endl; 
+        std::cout << "snake size: " << game_play.snake.getSnakeBody().size() << std::endl;
+    }
+}
