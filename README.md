@@ -84,7 +84,7 @@ This class is typically used in reinforcement learning contexts, where the goal 
 
 ## Training the Neural Network
 
-To set up and train the network, use the following code:
+### Set up and train:
 
 <details>
   <summary>Click to expand</summary>
