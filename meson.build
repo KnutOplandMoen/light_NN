@@ -16,7 +16,6 @@ endif
 animationwindow_dep = dependency('animationwindow', fallback: ['animationwindow', 'animationwindow_dep'])
 std_lib_facilities_dep = dependency('std_lib_facilities', fallback: ['std_lib_facilities', 'std_lib_facilities_dep'])
 
-
 if host_machine.system() == 'linux'
   compiler_flags = ['-Wconversion', '-fdiagnostics-color=always', '-Werror=return-type']
 else
@@ -28,18 +27,31 @@ src = []
 exe = executable(
   'program',
   src,
-'activation_functions.cpp',
-'animation_functions.cpp',
-'board.cpp',
-'data_functions.cpp',
-'game.cpp',
-'main.cpp',
-'math_functions.cpp',
-'matrix.cpp',
-'network.cpp',
-'q_network.cpp',
-'snake.cpp',
-'utils.cpp',
+  'snake_game_files/board.cpp',
+  'snake_game_files/board.h',
+  'snake_game_files/snake.cpp',
+  'snake_game_files/snake.h',
+  'functions/activation_functions.cpp',
+  'functions/activation_functions.h',
+  'functions/animation_functions.cpp',
+  'functions/animation_functions.h',
+  'functions/data_functions.cpp',
+  'functions/data_functions.h',
+  'functions/math_functions.cpp',
+  'functions/math_functions.h',
+  'functions/functions.h',
+  'main.cpp',
+  'Utils/game.cpp',
+  'Utils/game.h',
+  'Utils/utils.cpp',
+  'Utils/utils.h',
+  'Utils/matrix.cpp',
+  'Utils/matrix.h',
+  'networks/network.cpp',
+  'networks/network.h',
+  'networks/q_network.cpp',
+  'networks/q_network.h',
+  include_directories : include_directories('snake_game_files', 'functions', 'Utils', 'networks'),
   dependencies : [animationwindow_dep, sdl2_dep, std_lib_facilities_dep],
   cpp_args : compiler_flags
 )

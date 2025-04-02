@@ -7,7 +7,7 @@ std::string getModelPath(std::string relativePath) {
 }
 
 data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
-    std::string path = getModelPath();
+    std::string path = getModelPath("Data/");
     std::ifstream file(path + filename); //Change path to your own
     std::vector <Matrix> y_labels;
     std::vector <Matrix> x_labels;
