@@ -252,4 +252,10 @@ int main() {
     return 0;
 }
 ```
+
+when Running this the following screen will show:  
+
+<img width="917" alt="image" src="https://github.com/user-attachments/assets/67579357-ad70-4ff6-8ff6-b211472d2bf8" />  
+
+This shows the network predicting and playing the game in real time.
 </details> 
