@@ -18,7 +18,7 @@ const unordered_map<int, std::string> intToDirection = {
 
     @note Each new game class, for instance pong or snake should inherit this class in some way, or use the same functions..
 
-    @warning  now it inherits from `Board`, which is a specific class for game functionality for snake. The most 
+    @warning Now it inherits from `Board`, which is a specific class for game functionality for snake. The most 
     important thing is that `take_action`, `is_over` and `getReward` member functions are working.
 */
 class Game : public Board { 
