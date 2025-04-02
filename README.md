@@ -147,7 +147,13 @@ This section explains how to train and play using the Q-learning network.
   <summary>Click to expand</summary>
 
 ```cpp
+#include "std_lib_facilities.h"
+#include "functions.h"
+#include "matrix.h"
+#include "network.h"
+#include <unistd.h>
 #include "q_network.h"
+#include "game.h"
 
 int main() {
     // Define the sizes for input, hidden layers, and output layers
@@ -187,6 +193,12 @@ int main() {
 
 ```cpp
 #include "q_network.h"
+#include "std_lib_facilities.h"
+#include "functions.h"
+#include "matrix.h"
+#include "network.h"
+#include <unistd.h>
+#include "game.h"
 
 int main() {
     // Define the sizes for input, hidden layers, and output layers
