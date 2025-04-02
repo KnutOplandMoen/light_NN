@@ -24,7 +24,7 @@ const unordered_map<int, std::string> intToDirection = {
 class Game : public Board { 
 private:
     Matrix state;
-    int game_over = 0;
+    int game_over = 0; //-> 0 if not over, 1 if over
 public:
     void take_action(int action);
     int is_over();

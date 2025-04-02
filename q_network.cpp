@@ -31,7 +31,7 @@ int q_network::select_action(Matrix& state, Game& game_play) {
         return q_values.getMaxRow();  // Best action (exploit)
     }
     }
-    else { //Take move from user
+    else { //Take move from user 
         int move;
         std::string move_l;
         std::cout <<"move:\n:";
