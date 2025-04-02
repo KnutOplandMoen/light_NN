@@ -25,13 +25,13 @@ int q_network::select_action(Matrix& state, Game& game_play) {
     
     if (!from_user) {
     if (number / 10000 < epsilon) {  
-        return static_cast<int>(number) % action_space_size;  // Random action (explore)
+        return static_cast<int>(number) % output_layer_size;  // Random action (explore)
     } else {
         Matrix q_values = feed_forward_pass(state)[0].back();
         return q_values.getMaxRow();  // Best action (exploit)
     }
     }
-    else {
+    else { //Take move from user
         int move;
         std::string move_l;
         std::cout <<"move:\n:";
@@ -63,6 +63,11 @@ int q_network::select_action(Matrix& state, Game& game_play) {
  * 
  * @param state Current state of game.
  * @param game_play Game class with game information.
+ * 
+ * @note This is a game specific function, for instance this is one for snake, make new one or change this one for specific game
+ * 
+ * @return A information struct with:
+ * `q_values`, `q_value`, `reward`, `done`, `q_target_value`, `q_target` and `state`
  */
 information q_network::get_information(Matrix& state, Game& game_play) {
     bool grow = false;
