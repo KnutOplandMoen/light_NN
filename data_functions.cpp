@@ -2,8 +2,7 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
-std::string getModelPath() {
-    std::string relativePath = "models/"; // Assumes "models" folder is in the same directory as the executable
+std::string getModelPath(std::string relativePath) {
     return (fs::current_path() / relativePath).string();
 }
 
