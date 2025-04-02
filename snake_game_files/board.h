@@ -25,7 +25,7 @@ protected:
 public:
     std::vector<TDT4102::Point> foodVec;
     Snake snake;
-    Board();
+    Board(int x = 300, int y = 100);
     ~Board();//need destructor for proper handling of the inputThread
     Matrix getState();
     void handleInput();

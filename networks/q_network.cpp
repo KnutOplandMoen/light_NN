@@ -200,7 +200,7 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
     std::deque<information> experiences;
     for (int game = 0; game < games; ++game) {
         std::cout << "Game: " << game+1 << std::endl;
-        Game game_play;
+        Game game_play(300, 100);
         int move = 0;
         total_reward = 0;
         while (!game_play.is_over()) {
@@ -263,7 +263,7 @@ void q_network::play(int games) {
     feed_forward_visualise nn_vis(0, 20, 600, 750, "Feed forward pass"); //Initialize visualization
 
     for (int game = 0; game < games; ++ game) {
-        Game game_play;
+        Game game_play(650, 100);
         int move = 0;
         total_reward = 0;
         while (!game_play.is_over()) {

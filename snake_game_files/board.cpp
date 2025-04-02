@@ -18,8 +18,8 @@ void Board::newFood(){
     //but hinders random spikes in frame time when snake is big.
     foodVec.push_back(foodPos);
 }
-Board::Board() : 
-    AnimationWindow{300, 100, boardW, boardH, "SnakeGame"},
+Board::Board(int x, int y) : 
+    AnimationWindow{x, y, boardW, boardH, "SnakeGame"},
     snake(blockSize, boardW, boardH),
     running(true)
 {

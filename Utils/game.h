@@ -26,6 +26,8 @@ private:
     Matrix state;
     int game_over = 0; //-> 0 if not over, 1 if over
 public:
+    Game(int x = 300, int y = 100) : Board(x, y) {}
+    Game() : Board() {}
     void take_action(int action);
     int is_over();
     double getReward(bool grow, bool collision, TDT4102::Point lastPos);
