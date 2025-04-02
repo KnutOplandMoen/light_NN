@@ -55,7 +55,7 @@ void training_visualise::initialise() {
 void feed_forward_visualise::visualize_feed_forward(std::vector<Matrix>& activated_layers, Matrix& x_labels) {
     activated_layers.insert(activated_layers.begin(), x_labels);
     const int circle_size = 15;
-
+    
     double max = 0;
     int max_index = 0;
     for (int idx = 0; idx < activated_layers.back().getRows(); ++idx) {

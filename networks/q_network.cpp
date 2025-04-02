@@ -260,7 +260,7 @@ void q_network::play(int games) {
     
     set_epsilon(0);
     
-    feed_forward_visualise nn_vis(50, 50, 1000, 700, "Feed forward pass"); //Initialize visualization
+    feed_forward_visualise nn_vis(0, 20, 600, 800, "Feed forward pass"); //Initialize visualization
 
     for (int game = 0; game < games; ++ game) {
         Game game_play;
@@ -274,8 +274,8 @@ void q_network::play(int games) {
             
             information info = get_information(state, game_play, false); //Use state -> make move and get info
 
-            game_play.drawBoard(); //Draw board
-            nn_vis.visualize_feed_forward(info.activated_layers, state); //Vis feed forward     
+            nn_vis.visualize_feed_forward(info.activated_layers, state); //Vis feed forward 
+            game_play.drawBoard(); //Draw board    
         }
         std::cout << "game: " << game << "/ " << games << " finished" << std::endl; 
         std::cout << "snake size: " << game_play.snake.getSnakeBody().size() << std::endl;
