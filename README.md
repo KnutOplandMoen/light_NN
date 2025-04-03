@@ -74,13 +74,13 @@ Here trying to predict the input [1, 0, 7, 3] corresponding to **x** = 1, **c** 
 **a**x^2 + **b**x + **c**. Here the network predict output neuron 9, which is correct :star_struck::star_struck: 
 # Setup
 
-Below is an explanation that highlights the two classes—network and q_network—and shows how their training and prediction workflows differ. In general:
+In general:
 
 **network:**
 This class is designed for supervised learning tasks. It maps inputs to known outputs using labeled training data. Its training involves minimizing a loss function (like cross-entropy or mean squared error) through gradient descent.
 
 **q_network:**
-This class is typically used in reinforcement learning contexts, where the goal is to learn a Q-value function that estimates the quality (expected cumulative reward) of taking a certain action in a given state. Training involves interacting with an environment (or using stored experience), updating Q-values using temporal difference learning rules, and sometimes using techniques such as experience replay.
+This class is used in reinforcement learning contexts, where the goal is to learn a Q-value function that estimates the quality (expected cumulative reward) of taking a certain action in a given state. Training involves interacting with an environment (or using stored experience), to then update Q-values.
 
 ## Training the Neural Network
 
