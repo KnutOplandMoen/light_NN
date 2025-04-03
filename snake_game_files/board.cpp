@@ -73,7 +73,7 @@ void Board::drawBoard(){
     
     //Draw food items
     for (size_t i = 0; i < foodVec.size(); i++){
-        draw_image({foodVec.at(i)}, snake.apple, blockSize, blockSize)
+        draw_image({foodVec.at(i)}, snake.apple, blockSize, blockSize);
         //draw_rectangle({foodVec.at(i)}, blockSize, blockSize, TDT4102::Color::red);
     }
 
