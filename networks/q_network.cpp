@@ -264,7 +264,7 @@ void q_network::play(int games) {
     
     set_epsilon(0);
     
-    feed_forward_visualise nn_vis(0, 20, 1000, 750, "Feed forward pass"); //Initialize visualization
+    feed_forward_visualise nn_vis(0, 20, 650, 750, "Feed forward pass"); //Initialize visualization
     std::vector<std::string> x_labels_names = {};
     std::vector<std::string> y_labels_names = {"Up", "Right", "Down", "Left"};
 
