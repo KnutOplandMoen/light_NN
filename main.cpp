@@ -19,7 +19,7 @@ int main() {
 
     nn.load_state("128x64weight_1.txt"); // Load trained model
 
-    int games = 10;  // Number of games to play
+    int games = 2;  // Number of games to play
 
     nn.play(games); // Play the game using the trained model
 
