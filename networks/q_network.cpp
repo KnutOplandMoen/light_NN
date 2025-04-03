@@ -63,7 +63,7 @@ int q_network::select_action(Matrix& state, Game& game_play) {
  * 
  * @param state Current state of game.
  * @param game_play Game class with game information.
- * 
+ * @param nextState boolean representing if nextstate after new state should be predicted or not
  * @note This is a game specific function, for instance this is one for snake, make new one or change this one for specific game
  * 
  * @return A information struct with:
