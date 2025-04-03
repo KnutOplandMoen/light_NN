@@ -67,11 +67,12 @@ Lets user load and save models (The weights and biases)
 ## Other functionality:
 ### feed_forward_visualise class
 Given activated layers in the network and the input that gave those activated layers, feed_forward_visualise::visualize_feed_forward(activated_layers, input) will give a nice visualisation like this:
-![image](https://github.com/user-attachments/assets/94a61829-f464-4bd0-8437-6961b240990e)
+<img src="https://github.com/user-attachments/assets/eae8856e-6982-4acd-8230-55a69572f975" alt="Neural Network Feed-Forward Visualization" width="800">  
+  
+Here trying to predict the input [2, 0, 2, 2] corresponding to **x** = 2, **c** = 0, **b** = 2 and **a** = 2 in the function:   
+  
+**a**x^2 + **b**x + **c**. Here the network predict output neuron 10, which is correct :star_struck::star_struck: 
 
-
-Here trying to predict the input [1, 0, 7, 3] corresponding to **x** = 1, **c** = 0, **b** = 7 and **a** = 3 in the function:  
-**a**x^2 + **b**x + **c**. Here the network predict output neuron 9, which is correct :star_struck::star_struck: 
 # Setup
 
 In general:
