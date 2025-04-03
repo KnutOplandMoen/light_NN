@@ -4,6 +4,7 @@
 #include "algorithm"
 #include "deque"
 #include <functional> 
+#include "data_functions.h"
 
 //needed hash function for a TDT point, used to check if the random location of new food
 //is at the same place as the snakebody
@@ -53,6 +54,8 @@ public:
     TDT4102::Point getSnakeHead() {return snakeHead;}
     TDT4102::Point getDirection() {return direction;}
     TDT4102::Point direction;
+    TDT4102::Image image{getModelPath() + "snake_game_files/" + "head.png"};
+    TDT4102::Image apple{getModelPath() + "snake_game_files/" + "apple.jpg"};
 };
 
 

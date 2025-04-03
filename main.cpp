@@ -17,9 +17,9 @@ int main() {
     // Initialize the network
     q_network nn(input_layer_size, hidden_layers_sizes, output_layer_size, activation_functions);
 
-    nn.load_state("good_snake_128x64.txt"); // Load trained model
+    nn.load_state("128x64weight_1.txt"); // Load trained model
 
-    int games = 200;  // Number of games to play
+    int games = 10;  // Number of games to play
 
     nn.play(games); // Play the game using the trained model
 

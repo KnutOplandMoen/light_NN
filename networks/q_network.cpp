@@ -233,10 +233,14 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
         }
 
         epsilon = std::max(min_epsilon, epsilon * epsilon_decay); // Decay epsilon over time
-        std::cout << "game: " << game << "/ " << games << " finished" << std::endl; 
-        std::cout << "snake size: " << game_play.snake.getSnakeBody().size() << std::endl;
-        std::cout << "total reward: " << total_reward << std::endl;
-        std::cout << "epsilon: " << epsilon << std::endl;
+
+        //Print stats
+        std::cout << "Game: " << game + 1 << ": " << "\033[1;32mDone\033[0m\n";
+        std::cout << "---------" << "\n";
+        std::cout << "\033[1;30mSnake size:: \033[0m\n" << game_play.snake.getSnakeBody().size() << "\n";
+        std::cout << "\033[1;30mTotal reward: \033[0m\n" << total_reward << "\n";
+        std::cout << "\033[1;30mEpsilon: \033[0m\n" << epsilon << "\n";
+        std::cout << "-----------------" << "\n";
 
         if (!autosave_file.empty()) { 
             for (const auto& [key, value] : autosave_file) {
@@ -258,14 +262,17 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
  */
 void q_network::play(int games) { 
     
-    set_epsilon(0);
+    set_epsilon(0); //No random moves with epsilon = 0
+     //Initialize visualization
+    std::vector<std::string> x_labels_names = {"D_UP", "D_RIGHT", "D_DOWN", "D_LEFT", "FOOD_UP", "FOOD_RIGHT", "FOOD_DOWN", "FOOD_LEFT", "DIR_UP", "DIR_RIGHT", "DIR_DOWN", "DIR_LEFT", "FOOD_DIR_UP", "FOOD_DIR_RIGHT", "FOOD_DIR_DOWN", "FOOD_DIR_LEFT"};
+    std::vector<std::string> y_labels_names = {"Up", "Right", "Down", "Left"};
+    feed_forward_visualise nn_vis(0, 20, 650, 750, "Feed forward pass");
     
-    feed_forward_visualise nn_vis(0, 20, 600, 750, "Feed forward pass"); //Initialize visualization
-
     for (int game = 0; game < games; ++ game) {
-        Game game_play(650, 100);
         int move = 0;
         total_reward = 0;
+        Game game_play(650, 100);
+        { 
         while (!game_play.is_over()) {
             nn_vis.next_frame();
             game_play.next_frame();
@@ -273,11 +280,18 @@ void q_network::play(int games) {
             Matrix state = game_play.getState(); //Get state
             
             information info = get_information(state, game_play, false); //Use state -> make move and get info
+            total_reward += info.reward;
 
-            nn_vis.visualize_feed_forward(info.activated_layers, state); //Vis feed forward 
             game_play.drawBoard(); //Draw board    
+            nn_vis.visualize_feed_forward(info.activated_layers, state, x_labels_names, y_labels_names, true); //Vis feed forward
         }
-        std::cout << "game: " << game << "/ " << games << " finished" << std::endl; 
-        std::cout << "snake size: " << game_play.snake.getSnakeBody().size() << std::endl;
+
+        std::cout << "Game: " << game + 1 << ": " << "\033[1;32mDone\033[0m\n";
+        std::cout << "---------" << "\n";
+        std::cout << "\033[1;30mSnake size:: \033[0m\n" << game_play.snake.getSnakeBody().size() << "\n";
+        std::cout << "\033[1;30mTotal reward: \033[0m\n" << total_reward << "\n";
+        std::cout << "-----------------" << "\n";
     }
+    }
+
 }
