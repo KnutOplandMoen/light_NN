@@ -99,7 +99,7 @@ Matrix input_to_matrix(std::vector <double> input) {//transforming n sized vecto
  */
 data_struct get_test_train_split(std::vector <Matrix> x_labels, std::vector <Matrix> y_labels, double split) {
     if(split > 1.0 || split < 0.0){
-        throw std::invalid_argument("Data must be split between 0 and 1")
+        throw std::invalid_argument("Data must be split between 0 and 1");
     }
     if (x_labels.size() != y_labels.size()) {
         throw std::invalid_argument("The number of x_labels must match the number of y_labels");
