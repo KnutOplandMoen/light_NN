@@ -29,11 +29,6 @@ Board::Board(int x, int y) :
 }
 
 Board::~Board(){
-    running = false;
-    if(inputThread.joinable()){
-        inputThread.join();
-    }
-    //properly joining the second thread
 }
 
 void Board::handleInput(){
