@@ -2,10 +2,26 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
+/**
+ * @brief Returns absolute path to a file
+ * 
+ * @param relativePath Relative path to file
+ */
 std::string getModelPath(std::string relativePath) {
     return (fs::current_path() / relativePath).string();
 }
 
+/**
+ * @brief Returns x- and y-labels for neural net training, gathered from a txt file.
+ * 
+ * Datapoints are integers 0-9, non-seperated.
+ * 
+ * If input is 5 7 3 and output is 0 1, it should be saved in txt file as 57301
+ * 
+ * @param dim_x Dimension of input
+ * 
+ * @param dim_y Dimension of output
+ */
 data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
     std::string path = getModelPath("Data/");
     std::ifstream file(path + filename); //Change path to your own
@@ -59,6 +75,11 @@ data_struct get_data(int dim_x, int dim_y, const std::string& filename) {
     }
 }
 
+/**
+ * @brief Converts an n sized vector to a nx1 sized matrix.
+ * 
+ * Matrix type is needed to use in Network class.
+ */
 Matrix input_to_matrix(std::vector <double> input) {//transforming n sized vector to nx1 matrix
     Matrix m(input.size(), 1);
     for (int i = 0; i < input.size(); ++i) {
@@ -67,9 +88,19 @@ Matrix input_to_matrix(std::vector <double> input) {//transforming n sized vecto
     return m;
 }
 
-
+/**
+ * @brief Splits dataset between training and test set 
+ * 
+ * Returns data_struct with members x/y_labels_train and x/y_labels_test
+ * 
+ * @param x_labels Entire set of x-labels(network inputs)
+ * @param y_labels Entire set of y-labels(Desired network outputs)
+ * @param split "Percentage" of data to use as training set. 0.7 = 70%
+ */
 data_struct get_test_train_split(std::vector <Matrix> x_labels, std::vector <Matrix> y_labels, double split) {
-    
+    if(split > 1.0 || split < 0.0){
+        throw std::invalid_argument("Data must be split between 0 and 1")
+    }
     if (x_labels.size() != y_labels.size()) {
         throw std::invalid_argument("The number of x_labels must match the number of y_labels");
     }
