@@ -237,7 +237,7 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
         //Print stats
         std::cout << "Game: " << game + 1 << ": " << "\033[1;32mDone\033[0m\n";
         std::cout << "---------" << "\n";
-        std::cout << "\033[1;30mSnake size:: \033[0m\n" << game_play.snake.getSnakeBody().size() << "%\n";
+        std::cout << "\033[1;30mSnake size:: \033[0m\n" << game_play.snake.getSnakeBody().size() << "\n";
         std::cout << "\033[1;30mTotal reward: \033[0m\n" << total_reward << "\n";
         std::cout << "\033[1;30mEpsilon: \033[0m\n" << epsilon << "\n";
         std::cout << "-----------------" << "\n";
@@ -264,7 +264,10 @@ void q_network::play(int games) {
     
     set_epsilon(0);
     
-    feed_forward_visualise nn_vis(0, 20, 600, 750, "Feed forward pass"); //Initialize visualization
+    feed_forward_visualise nn_vis(0, 20, 1000, 750, "Feed forward pass"); //Initialize visualization
+    std::vector<std::string> x_labels_names = {};
+    std::vector<std::string> y_labels_names = {"Up", "Right", "Down", "Left"};
+
     for (int game = 0; game < games; ++ game) {
         int move = 0;
         total_reward = 0;
@@ -279,12 +282,12 @@ void q_network::play(int games) {
             total_reward += info.reward;
 
             game_play.drawBoard(); //Draw board    
-            nn_vis.visualize_feed_forward(info.activated_layers, state); //Vis feed forward
+            nn_vis.visualize_feed_forward(info.activated_layers, state, x_labels_names, y_labels_names, false); //Vis feed forward
         }
 
         std::cout << "Game: " << game + 1 << ": " << "\033[1;32mDone\033[0m\n";
         std::cout << "---------" << "\n";
-        std::cout << "\033[1;30mSnake size:: \033[0m\n" << game_play.snake.getSnakeBody().size() << "%\n";
+        std::cout << "\033[1;30mSnake size:: \033[0m\n" << game_play.snake.getSnakeBody().size() << "\n";
         std::cout << "\033[1;30mTotal reward: \033[0m\n" << total_reward << "\n";
         std::cout << "-----------------" << "\n";
     }
