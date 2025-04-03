@@ -262,7 +262,7 @@ int main() {
 
 when Running this the following screen will show:  
 
-<img width="917" alt="image" src="https://github.com/user-attachments/assets/67579357-ad70-4ff6-8ff6-b211472d2bf8" />  
+![image](https://github.com/user-attachments/assets/5e377081-90ab-480e-a771-d44984d3739a)
 
 This shows the network predicting and playing the game in real time.
 </details> 
