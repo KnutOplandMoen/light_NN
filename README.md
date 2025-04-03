@@ -173,7 +173,7 @@ int main() {
 
 This section explains how to train and play using the Q-learning network.
 
-### Training the Q-Network
+### Training the Network
 
 <details>
   <summary>Click to expand</summary>
