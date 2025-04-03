@@ -78,6 +78,7 @@ void Board::drawBoard(){
 
     //Draw snake head and body
     draw_rectangle({snake.getSnakeHead()}, blockSize, blockSize, TDT4102::Color::black);
+    draw_image({snake.getSnakeHead()}, snake.image, blockSize, blockSize);
     for (const TDT4102::Point& bodyPiece : snake.getSnakeBody()){
         draw_rectangle({bodyPiece}, blockSize, blockSize, TDT4102::Color::green);
     }

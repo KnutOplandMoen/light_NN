@@ -273,9 +273,9 @@ void q_network::play(int games) {
             Matrix state = game_play.getState(); //Get state
             
             information info = get_information(state, game_play, false); //Use state -> make move and get info
-
-            nn_vis.visualize_feed_forward(info.activated_layers, state); //Vis feed forward 
+ 
             game_play.drawBoard(); //Draw board    
+            nn_vis.visualize_feed_forward(info.activated_layers, state); //Vis feed forward
         }
         std::cout << "game: " << game << "/ " << games << " finished" << std::endl; 
         std::cout << "snake size: " << game_play.snake.getSnakeBody().size() << std::endl;
