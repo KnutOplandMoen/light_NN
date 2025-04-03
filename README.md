@@ -20,7 +20,7 @@
 
 ## Project setup:
 
-### Optinion 1 (Using TDT4102 template):
+### Option 1 (Using TDT4102 template):
 1. Download as zip -> VScode
 2. Install TDT4102 extention
 3. CTRL + Shift + p
