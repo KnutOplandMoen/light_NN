@@ -1,5 +1,11 @@
 #include "board.h"
 
+/**
+ * @brief Adding a new food-element to a random location on the board
+ * 
+ * Is stored in class member foodVec
+ */
+
 void Board::newFood(){
     std::unordered_set<TDT4102::Point> occupiedPositions;
     occupiedPositions.insert(snake.getSnakeHead());
@@ -18,6 +24,13 @@ void Board::newFood(){
     //but hinders random spikes in frame time when snake is big.
     foodVec.push_back(foodPos);
 }
+
+
+/**
+ * @brief Board constructor, initializing both the AnimationWindow and Snake object
+ * 
+ * @param x, y (x,y) position of snake game window on screen(top-left corner)
+ */
 Board::Board(int x, int y) : 
     AnimationWindow{x, y, boardW, boardH, "SnakeGame"},
     snake(blockSize, boardW, boardH),
@@ -31,14 +44,20 @@ Board::Board(int x, int y) :
 Board::~Board(){
 }
 
+/**
+ * @brief Function to be run on seperate thread to ensure continous input registration
+ * 
+ */
 void Board::handleInput(){
-    //this ensures input is being checked 200 times a second and
-    //reduces risk of ghosting
     while(running){
         directionChange();
-        Sleep(5);//must have some delay to dampen cpu usage
+        Sleep(5);
     }
 }
+
+/**
+ * @brief Registers key-input and changes snake direction via map
+ */
 
 void Board::directionChange(){
     if (is_key_down(KeyboardKey::RIGHT)){
@@ -56,6 +75,12 @@ void Board::directionChange(){
 }
 
 
+
+/**
+ * @brief Draws entire snake scene, grid lines, food, snakehead and body
+ * 
+ * Must draw entire scene every time due to AnimationWindow functionality
+ */
 void Board::drawBoard(){
     //Draw grid lines
     for (int i = 1; i < horizontalBlocks; i++){
@@ -81,6 +106,14 @@ void Board::drawBoard(){
     
 }
 
+
+/**
+ * @brief Returns abstracted state of snake-game as a 16x1 matrix at any given point
+ * 
+ * Is to be used as input to neural net
+ * 
+ * State is one-hot e.g. food is above -> 1, food is not above -> 0
+ */
 Matrix Board::getState() {
     /*
     [
@@ -90,10 +123,10 @@ Matrix Board::getState() {
     food_dir_up, right, down, left   // [1, 0, 0, 0] # Food direction (relative to head)
     ]
     */
-    Matrix state(16, 1); // Increased from 12 to 16
+    Matrix state(16, 1); 
     std::unordered_set<TDT4102::Point> occupiedPositions;
     TDT4102::Point pos = snake.getSnakeHead();
-    TDT4102::Point food = foodVec[0]; // Assuming foodVec has at least one food item
+    TDT4102::Point food = foodVec[0]; 
     TDT4102::Point moveIncrement = {blockSize, blockSize};
     TDT4102::Point dir = snake.getDirection();
 
@@ -122,14 +155,21 @@ Matrix Board::getState() {
     state[11][0] = (dir == directionMap.at("LEFT")) ? 1 : 0;
 
     // Food direction indicators (indices 12-15)
-    state[12][0] = (food.y < pos.y) ? 1 : 0; // Food is above
-    state[13][0] = (food.x > pos.x) ? 1 : 0; // Food is right
-    state[14][0] = (food.y > pos.y) ? 1 : 0; // Food is below
-    state[15][0] = (food.x < pos.x) ? 1 : 0; // Food is left
+    state[12][0] = (food.y < pos.y) ? 1 : 0; 
+    state[13][0] = (food.x > pos.x) ? 1 : 0; 
+    state[14][0] = (food.y > pos.y) ? 1 : 0; 
+    state[15][0] = (food.x < pos.x) ? 1 : 0; 
 
     return state;
 }
 
+/**
+ * @brief Function for manually playing snake.
+ * 
+ * Seperate thread is started to ensure continous input handling
+ * 
+ * Entire scene is drawn each iteration due to next_frame() functionality
+ */
 void Board::playSnake(){
     inputThread = std::thread(&Board::handleInput, this);
     int foodCollision = -1;
@@ -157,7 +197,13 @@ void Board::playSnake(){
     }
 }
 
-
+/**
+ * @brief Returns distance between a point and the current food item
+ * 
+ * Distance is computed as dx + dy
+ * 
+ * @param p The point to calculate distance to food
+ */
 int Board::distanceToFood(TDT4102::Point p){
     TDT4102::Point f = foodVec[0];
 

@@ -1,5 +1,12 @@
 #include "math_functions.h"
 
+/**
+ * @brief returns total accuracy of a number of neural net predictions
+ * 
+ * @param predictions Vector holding neural net predictions(matrices)
+ * 
+ * @param correct Vector holding the correct answers
+ */
 double get_accuracy(std::vector <Matrix>& predictions, std::vector <Matrix>& correct) {
     if (predictions.size() != correct.size()) {
         throw std::invalid_argument("The number of predictions must match the number of correct labels");
@@ -17,6 +24,9 @@ double get_accuracy(std::vector <Matrix>& predictions, std::vector <Matrix>& cor
     }
 }
 
+/**
+ * @brief Returns a pseudo-random double in a bound
+ */
 double randDouble(double lowerBound, double upperBound){
     std::random_device rnd;
     std::default_random_engine generator(rnd());
@@ -24,6 +34,11 @@ double randDouble(double lowerBound, double upperBound){
     return distribution(generator);
 }
 
+/**
+ * @brief Returns cost of a neural net prediction.
+ * 
+ * Computed as sum of: (predicted - correct)^2 for all output nodes.
+ */
 double cost(std::vector <double>& output_layer, std::vector <double>& correct_output_layer) {
     if (output_layer.size() != correct_output_layer.size()) {
         throw std::invalid_argument("output_layer and correct output layer must have same dimensions");
@@ -38,6 +53,9 @@ double cost(std::vector <double>& output_layer, std::vector <double>& correct_ou
     
 }
 
+/**
+ * @brief Element wise multiplication of matrices with equal dimensions
+ */
 Matrix hadamard(Matrix m1, Matrix m2) {
     int cols = m1.getCols();
     int rows = m1.getRows();
