@@ -56,13 +56,7 @@ void training_visualise::initialise() {
 /**
  * @brief Visualizes the feed-forward process of a neural network.
  * 
- * This function generates a graphical representation of the feed-forward 
- * process in a neural network, including the connections between neurons 
- * across layers and the activation values of each neuron. It also highlights 
- * the output neuron with the highest activation value.
- * 
- * @param activated_layers A vector of matrices representing the activation 
- *        values of neurons in each layer of the neural network.
+ * @param activated_layers A vector of matrices 
  * @param x_labels A matrix representing the input layer's activation values.
  * @param x_labels_names A vector of strings representing the names of the 
  *        input features (optional).
@@ -70,6 +64,9 @@ void training_visualise::initialise() {
  *        output labels (optional).
  * @param show_text A boolean flag indicating whether to display text 
  *        annotations (e.g., activation values and labels) in the visualization.
+ * 
+ * @note I apologize to anyone actualy reading this trying to understand this function, its a complete mess. I would just make a new one at this point..
+ * 
  */
 void feed_forward_visualise::visualize_feed_forward(std::vector<Matrix>& activated_layers, Matrix& x_labels, std::vector<std::string> x_labels_names, std::vector<std::string> y_labels_names, bool show_text) {
     activated_layers.insert(activated_layers.begin(), x_labels);
