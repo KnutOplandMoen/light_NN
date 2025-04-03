@@ -15,7 +15,7 @@
 - [Setup](#setup)
   - [Training the Neural Network](#training-the-neural-network)
   - [Q-Learning for Training and Playing](#q-learning-for-training-and-playing)
-      - [Training the Q-Network](#training-the-q-network)
+      - [Training the Network](#Training-the-Network)
       - [Playing Using a Saved Model](#playing-using-a-saved-model)
 
 ## Project setup:
