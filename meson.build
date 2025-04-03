@@ -40,7 +40,6 @@ exe = executable(
   'functions/math_functions.cpp',
   'functions/math_functions.h',
   'functions/functions.h',
-  'main.cpp',
   'Utils/game.cpp',
   'Utils/game.h',
   'Utils/utils.cpp',
@@ -51,6 +50,7 @@ exe = executable(
   'networks/network.h',
   'networks/q_network.cpp',
   'networks/q_network.h',
+  'main.cpp',
   include_directories : include_directories('snake_game_files', 'functions', 'Utils', 'networks'),
   dependencies : [animationwindow_dep, sdl2_dep, std_lib_facilities_dep],
   cpp_args : compiler_flags
