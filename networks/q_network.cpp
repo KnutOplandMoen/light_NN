@@ -72,6 +72,7 @@ int q_network::select_action(Matrix& state, Game& game_play) {
 information q_network::get_information(Matrix& state, Game& game_play, bool nextState) {
     bool grow = false;
     bool collision = false;
+    information info;
     TDT4102::Point lastPos = game_play.snake.getSnakeHead();
     std::vector<std::vector<Matrix>> ff = feed_forward_pass(state);
     Matrix q_values = ff[0].back();
@@ -99,15 +100,15 @@ information q_network::get_information(Matrix& state, Game& game_play, bool next
     for (TDT4102::Point& part : body) {
         if ((part.x == game_play.snake.getSnakeHead().x) && (part.y == game_play.snake.getSnakeHead().y)) {
             collision = true;
-            std::cout << "crashed into itself! " << std::endl;
+            info.death_reason = "crashed into wall";
         }
     }
 
     if(!(game_play.snake.getSnakeHead().x >= 0 && game_play.snake.getSnakeHead().x < game_play.getWidth())){
-        std::cout << "crashed into wall! " << std::endl;
+        info.death_reason = "crashed into wall";
     }
     else if(!(game_play.snake.getSnakeHead().y >= 0 && game_play.snake.getSnakeHead().y < game_play.getHeight())){
-        std::cout << "crashed into wall! " << std::endl;
+        info.death_reason = "crashed into wall";
     }
 
     
@@ -119,12 +120,12 @@ information q_network::get_information(Matrix& state, Game& game_play, bool next
 
     int done = game_play.is_over();
 
-    information info;
     info.q_values = q_values;
     info.q_value = q_value;
     info.reward = reward;
     info.done = done;
     info.state = state;
+
 
     if (nextState) {
     Matrix new_state = game_play.getState();
@@ -271,8 +272,9 @@ void q_network::play(int games) {
     for (int game = 0; game < games; ++ game) {
         int move = 0;
         total_reward = 0;
+
         Game game_play(650, 100);
-        { 
+
         while (!game_play.is_over()) {
             nn_vis.next_frame();
             game_play.next_frame();
@@ -291,7 +293,6 @@ void q_network::play(int games) {
         std::cout << "\033[1;30mSnake size:: \033[0m\n" << game_play.snake.getSnakeBody().size() << "\n";
         std::cout << "\033[1;30mTotal reward: \033[0m\n" << total_reward << "\n";
         std::cout << "-----------------" << "\n";
-    }
     }
 
 }

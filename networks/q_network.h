@@ -12,6 +12,7 @@ struct information {
     double q_target_value;
     Matrix q_target;
     std::vector<Matrix> activated_layers;
+    std::string death_reason;
     information(Matrix q_values, double q_value, double reward, int done, double q_target_value, Matrix q_target, Matrix state)
         : q_values(q_values), q_value(q_value), reward(reward), done(done), 
           q_target_value(q_target_value), q_target(q_target), state(state) {}
