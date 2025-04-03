@@ -181,7 +181,7 @@ void q_network::update_net(double learning_rate, int mini_batch_size, std::deque
 
 
 /**
- * @brief Trains the Q-network using the reinforcement learning paradigm.
+ * @brief Trains the Network using the reinforcement learning paradigm.
  * 
  * This function simulates a specified number of games, collects experiences 
  * during gameplay, and updates the Q-network using mini-batches of experiences. 
