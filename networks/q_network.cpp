@@ -262,16 +262,17 @@ void q_network::train(int games, int batch_size, int mini_batch_size, double lea
  */
 void q_network::play(int games) { 
     
-    set_epsilon(0);
-    
-    feed_forward_visualise nn_vis(0, 20, 650, 750, "Feed forward pass"); //Initialize visualization
-    std::vector<std::string> x_labels_names = {};
+    set_epsilon(0); //No random moves with epsilon = 0
+     //Initialize visualization
+    std::vector<std::string> x_labels_names = {"D_UP", "D_RIGHT", "D_DOWN", "D_LEFT", "FOOD_UP", "FOOD_RIGHT", "FOOD_DOWN", "FOOD_LEFT", "DIR_UP", "DIR_RIGHT", "DIR_DOWN", "DIR_LEFT", "FOOD_DIR_UP", "FOOD_DIR_RIGHT", "FOOD_DIR_DOWN", "FOOD_DIR_LEFT"};
     std::vector<std::string> y_labels_names = {"Up", "Right", "Down", "Left"};
 
     for (int game = 0; game < games; ++ game) {
         int move = 0;
         total_reward = 0;
         Game game_play(650, 100);
+        {
+        feed_forward_visualise nn_vis(0, 20, 650, 750, "Feed forward pass");
         while (!game_play.is_over()) {
             nn_vis.next_frame();
             game_play.next_frame();
@@ -282,13 +283,15 @@ void q_network::play(int games) {
             total_reward += info.reward;
 
             game_play.drawBoard(); //Draw board    
-            nn_vis.visualize_feed_forward(info.activated_layers, state, x_labels_names, y_labels_names, false); //Vis feed forward
+            nn_vis.visualize_feed_forward(info.activated_layers, state, x_labels_names, y_labels_names, true); //Vis feed forward
         }
-
+        nn_vis.close();
         std::cout << "Game: " << game + 1 << ": " << "\033[1;32mDone\033[0m\n";
         std::cout << "---------" << "\n";
         std::cout << "\033[1;30mSnake size:: \033[0m\n" << game_play.snake.getSnakeBody().size() << "\n";
         std::cout << "\033[1;30mTotal reward: \033[0m\n" << total_reward << "\n";
         std::cout << "-----------------" << "\n";
     }
+    }
+
 }

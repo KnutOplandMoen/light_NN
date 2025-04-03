@@ -22,5 +22,6 @@ class feed_forward_visualise : public TDT4102::AnimationWindow {
         this -> x = x;
         this -> y = y;
     }
+    ~feed_forward_visualise() {}
     void visualize_feed_forward(std::vector<Matrix>& activated_layers, Matrix& x_labels, std::vector<std::string> x_labels_names = {}, std::vector<std::string> y_labels_names = {}, bool show_text = true);
 };
