@@ -52,7 +52,7 @@ void training_visualise::initialise() {
     next_frame();
 }
 
-void feed_forward_visualise::visualize_feed_forward(std::vector<Matrix>& activated_layers, Matrix& x_labels) {
+void feed_forward_visualise::visualize_feed_forward(std::vector<Matrix>& activated_layers, Matrix& x_labels, std::vector<std::string> x_labels_names, std::vector<std::string> y_labels_names) {
     activated_layers.insert(activated_layers.begin(), x_labels);
     const int circle_size = 15;
     
@@ -65,55 +65,78 @@ void feed_forward_visualise::visualize_feed_forward(std::vector<Matrix>& activat
         }
     }
 
+    bool x_labels_names_show = false;
+    if (x_labels_names.size() > 0) {
+        x_labels_names_show = true;
+    }
+    bool y_labels_names_show = false;
+    if (y_labels_names.size() > 0) {
+        y_labels_names_show = true;
+    }
+
+
     int y_padding = 70;
+    int x_padding = 100;
 
     for (int i = 0; i < activated_layers.size(); ++i) {
         for (int j = 1; j <= activated_layers[i].getRows(); ++j) {
 
             for (int k = 1; k <= activated_layers[i+1].getRows(); ++k) { //lines between neurons
                 if (!static_cast <double> (std::round(activated_layers[i+1][k-1][0] * 10) / 10) > 0 || !static_cast <double> (std::round(activated_layers[i][j-1][0] * 10) / 10) > 0) { 
-                    draw_line(TDT4102::Point(50 + (i * width()/activated_layers.size()), height() - y_padding - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), TDT4102::Point(50 + ((i +1) * width()/activated_layers.size()), height() - y_padding - (((height() - y_padding*2 - 2* circle_size * activated_layers[i + 1].getRows()))/(activated_layers[i + 1].getRows() + 1))*k - (circle_size * 2 * k)), TDT4102::Color::light_gray);
+                    draw_line(TDT4102::Point(x_padding + (i * width()/activated_layers.size()), height() - y_padding - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), TDT4102::Point(x_padding + ((i +1) * width()/activated_layers.size()), height() - y_padding - (((height() - y_padding*2 - 2* circle_size * activated_layers[i + 1].getRows()))/(activated_layers[i + 1].getRows() + 1))*k - (circle_size * 2 * k)), TDT4102::Color::light_gray);
                 }
 
                 else {//drwaing green lines between neurons
-                    draw_line(TDT4102::Point(50 + (i * width()/activated_layers.size()), height() - y_padding - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), TDT4102::Point(50 + ((i +1) * width()/activated_layers.size()), height() - y_padding - (((height() - y_padding*2 - 2* circle_size * activated_layers[i + 1].getRows()))/(activated_layers[i + 1].getRows() + 1))*k - (circle_size * 2 * k)), TDT4102::Color::dark_green);
+                    draw_line(TDT4102::Point(x_padding + (i * width()/activated_layers.size()), height() - y_padding - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), TDT4102::Point(x_padding + ((i +1) * width()/activated_layers.size()), height() - y_padding - (((height() - y_padding*2 - 2* circle_size * activated_layers[i + 1].getRows()))/(activated_layers[i + 1].getRows() + 1))*k - (circle_size * 2 * k)), TDT4102::Color::dark_green);
                     
                 }
             }
             
             if (i == activated_layers.size() - 1) { //drawing output layer
+
+                if (y_labels_names_show) {
+                    draw_text(TDT4102::Point(x_padding + 25 + (i * width()/activated_layers.size()), height() - y_padding - 12 - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), y_labels_names[j-1], TDT4102::Color::black, 17);
+                }
+
                 if (j == max_index +1) {
-                    draw_circle(TDT4102::Point(50 + (i * width()/activated_layers.size()), height() - y_padding - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), circle_size, TDT4102::Color::dark_green);
-                    draw_text(TDT4102::Point(37 + (i * width()/activated_layers.size()), height() - y_padding - 12 - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), std::format("{:.1f}", static_cast <double> (std::round(activated_layers[i][j-1][0] * 10) / 10)), TDT4102::Color::white, 17);
+                    draw_circle(TDT4102::Point(x_padding + (i * width()/activated_layers.size()), height() - y_padding - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), circle_size, TDT4102::Color::dark_green);
+                    draw_text(TDT4102::Point(x_padding - 15 + (i * width()/activated_layers.size()), height() - y_padding - 12 - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), std::format("{:.1f}", static_cast <double> (std::round(activated_layers[i][j-1][0] * 10) / 10)), TDT4102::Color::white, 17);
                 }
                 else {
-                    draw_circle(TDT4102::Point(50 + (i * width()/activated_layers.size()), height() - y_padding - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), circle_size, TDT4102::Color::black);
+                    draw_circle(TDT4102::Point(x_padding + (i * width()/activated_layers.size()), height() - y_padding - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), circle_size, TDT4102::Color::black);
                     if (activated_layers[i][j-1][0]< 0) {
-                        draw_text(TDT4102::Point(32 + (i * width()/activated_layers.size()), height() - y_padding - 12 - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), std::format("{:.1f}", static_cast <double> (std::round(activated_layers[i][j-1][0] * 10) / 10)), TDT4102::Color::white, 17);
+                        draw_text(TDT4102::Point(x_padding - 18 + (i * width()/activated_layers.size()), height() - y_padding - 12 - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), std::format("{:.1f}", static_cast <double> (std::round(activated_layers[i][j-1][0] * 10) / 10)), TDT4102::Color::white, 17);
                         }
                         else if (static_cast <int> (activated_layers[i][j-1][0]) >= 10) {
-                            draw_text(TDT4102::Point(37 + (i * width()/activated_layers.size()), height() - y_padding - 12 - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), std::to_string(static_cast <int> (std::round(activated_layers[i][j-1][0] * 10) / 10)), TDT4102::Color::white, 17);
+                            draw_text(TDT4102::Point(x_padding - 12 + (i * width()/activated_layers.size()), height() - y_padding - 12 - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), std::to_string(static_cast <int> (std::round(activated_layers[i][j-1][0] * 10) / 10)), TDT4102::Color::white, 17);
                         }
                         else {
-                        draw_text(TDT4102::Point(37 + (i * width()/activated_layers.size()), height() - y_padding -12 - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), std::format("{:.1f}", static_cast <double> (std::round(activated_layers[i][j-1][0] * 10) / 10)), TDT4102::Color::white, 17);
+                        draw_text(TDT4102::Point(x_padding - 15 + (i * width()/activated_layers.size()), height() - y_padding -12 - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), std::format("{:.1f}", static_cast <double> (std::round(activated_layers[i][j-1][0] * 10) / 10)), TDT4102::Color::white, 17);
                         }
                     }
             }
             else {
+
+                if (i == 0 && x_labels_names_show) {
+                    std::cout << j <<std::endl;
+                    
+                    draw_text(TDT4102::Point(x_padding - 35 + (i * width()/activated_layers.size()), height() - y_padding - 12 - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), x_labels_names[j-1], TDT4102::Color::black, 17);
+                }
+
                 if (activated_layers[i][j-1][0] >= 1) {
-                    draw_circle(TDT4102::Point(50 + (i * width()/activated_layers.size()), height() - y_padding - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), circle_size, TDT4102::Color::dark_green);
+                    draw_circle(TDT4102::Point(x_padding + (i * width()/activated_layers.size()), height() - y_padding - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), circle_size, TDT4102::Color::dark_green);
                 }
                 else {
-                draw_circle(TDT4102::Point(50 + (i * width()/activated_layers.size()), height() - y_padding - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), circle_size, TDT4102::Color::black);
+                draw_circle(TDT4102::Point(x_padding + (i * width()/activated_layers.size()), height() - y_padding - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), circle_size, TDT4102::Color::black);
                 }
                 if (activated_layers[i][j-1][0] < 0) {
-                draw_text(TDT4102::Point(32 + (i * width()/activated_layers.size()), height() - y_padding - 12 - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), std::format("{:.1f}", static_cast <double> (std::round(activated_layers[i][j-1][0] * 10) / 10)), TDT4102::Color::white, 17);
+                draw_text(TDT4102::Point(x_padding - 18 + (i * width()/activated_layers.size()), height() - y_padding - 12 - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), std::format("{:.1f}", static_cast <double> (std::round(activated_layers[i][j-1][0] * 10) / 10)), TDT4102::Color::white, 17);
                 }
                 else if (static_cast <int> (activated_layers[i][j-1][0]) >= 10) {
-                    draw_text(TDT4102::Point(37 + (i * width()/activated_layers.size()), height() - y_padding -12 - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), std::to_string(static_cast <int> (std::round(activated_layers[i][j-1][0] * 10) / 10)), TDT4102::Color::white, 17);
+                    draw_text(TDT4102::Point(x_padding - 12 + (i * width()/activated_layers.size()), height() - y_padding -12 - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), std::to_string(static_cast <int> (std::round(activated_layers[i][j-1][0] * 10) / 10)), TDT4102::Color::white, 17);
                 }
                 else {
-                draw_text(TDT4102::Point(37 + (i * width()/activated_layers.size()), height() - y_padding - 12 - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), std::format("{:.1f}", static_cast <double> (std::round(activated_layers[i][j-1][0] * 10) / 10)), TDT4102::Color::white, 17);
+                draw_text(TDT4102::Point(x_padding - 15 + (i * width()/activated_layers.size()), height() - y_padding - 12 - (((height() - y_padding*2 - 2* circle_size * activated_layers[i].getRows()))/(activated_layers[i].getRows() + 1))*j - (circle_size * 2 * j)), std::format("{:.1f}", static_cast <double> (std::round(activated_layers[i][j-1][0] * 10) / 10)), TDT4102::Color::white, 17);
                 }
             }
 
