@@ -8,7 +8,7 @@
 
 class Matrix{
 private:
-    std::vector<std::vector<double>> data;
+    std::vector<double> data;
     int rows;
     int cols;
 public:
@@ -22,7 +22,8 @@ public:
     void setRandomValues(double lowerBound, double upperBound);
     friend std::ostream& operator<<(std::ostream& os, const Matrix& m);
     Matrix& operator=(Matrix rhs);
-    std::vector<double>& operator[](const size_t index) {return data.at(index);}
+    double* operator[](const size_t index) {return &data[index * cols];}
+    const double* operator[](size_t i) const {return &data[i * cols];}
     Matrix operator*(const Matrix& rhs) const;
     Matrix operator+(const Matrix& rhs) const;
     Matrix operator-(const Matrix &rhs) const;

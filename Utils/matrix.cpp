@@ -4,20 +4,10 @@
 #include <fstream>
 
 //"default" constructor
-Matrix::Matrix(int rows, int cols) : rows(rows), cols(cols){
-    data.resize(static_cast<size_t>(rows));
-    for (size_t i = 0; i < data.size(); i++){
-        data.at(i).resize(cols, 0.0);
-    }
-}
+Matrix::Matrix(int rows, int cols) : rows(rows), cols(cols), data(rows * cols, 0.0){}
 
 //Deepcopy constructor
-Matrix::Matrix(const Matrix& m) : rows(m.getRows()), cols(m.getCols()){
-    data.resize(rows);
-    for (size_t i = 0; i < data.size(); i++){
-        data.at(i) = m.data.at(i);
-    }
-}
+Matrix::Matrix(const Matrix& m) : rows(m.getRows()), cols(m.getCols()), data(m.data){}
 
 //assign operation utilizing copy-swap
 Matrix& Matrix::operator=(Matrix rhs){
@@ -36,9 +26,9 @@ Matrix Matrix::operator*(const Matrix &rhs) const {
 
     for (size_t i = 0; i < rows; i++){
         for (size_t k = 0; k < cols; k++){
-            double data_copy = data[i][k];
+            double data_copy = data[i * cols + k];
             for (size_t j = 0; j < rhs.cols; j++){
-                product[i][j] +=  data_copy * rhs.data[k][j];
+                product[i][j] +=  data_copy * rhs.data[k * rhs.cols + j];
             }
         }
     }
@@ -56,7 +46,7 @@ Matrix Matrix::operator+(const Matrix &rhs) const{
    
     for (size_t i = 0; i < rows; i++){
         for (size_t j = 0; j < cols; j++){
-            sum[i][j] = data[i][j] + rhs.data[i][j];
+            sum[i][j] = data[i * cols + j] + rhs.data[i * cols + j];
         }
     }
     return sum;
@@ -70,7 +60,7 @@ Matrix Matrix::operator-(const Matrix &rhs) const{
    
     for (size_t i = 0; i < rows; i++){
         for (size_t j = 0; j < cols; j++){
-            sum[i][j] = data[i][j] - rhs.data[i][j];
+            sum[i][j] = data[i * cols + j] - rhs.data[i * cols + j];
         }
     }
     return sum;
@@ -82,7 +72,7 @@ Matrix Matrix::transposed() const{
 
     for (size_t i = 0; i < rows; i++) {
         for (size_t j = 0; j < cols; j++) {
-            transposed[j][i] = data[i][j];
+            transposed[j][i] = data[i * cols + j];
         }
     }
     return transposed;
@@ -92,7 +82,7 @@ Matrix Matrix::transposed() const{
 void Matrix::setRandomValues(double lowerBound, double upperBound){
     for (size_t i = 0; i < rows; i++){
         for (size_t j = 0; j < cols; j++){
-            data[i][j] = randDouble(lowerBound, upperBound);
+            data[i * cols + j] = randDouble(lowerBound, upperBound);
         }
     }
 }
@@ -103,10 +93,10 @@ std::ostream &operator<<(std::ostream &os, const Matrix &m){
         os << "[";
         for (size_t j = 0; j < m.cols; j++){
             if (j == m.cols - 1) {
-                os << m.data.at(i).at(j);
+                os << m.data[i * m.cols + j];
             }
             else {
-            os << m.data.at(i).at(j) << ", ";
+            os << m.data[i * m.cols + j] << ", ";
             }
         }
         os << "]\n";
@@ -120,31 +110,31 @@ Matrix Matrix::applyActivationFunction(std::string func){
     if (func == "sigmoid"){
         for (size_t i = 0; i < rows; i++){
             for (size_t j = 0; j < cols; j++){
-                activatedMatrix[i][j] = sigmoid(data[i][j]);
+                activatedMatrix[i][j] = sigmoid(data[i * cols + j]);
             }
         }
     }
     else if (func == "reLu"){
         for (size_t i = 0; i < rows; i++){
             for (size_t j = 0; j < cols; j++){
-                activatedMatrix[i][j] = reLu(data[i][j]);
+                activatedMatrix[i][j] = reLu(data[i * cols + j]);
             }
         }
     }
     else if (func == "tanH"){
         for (size_t i = 0; i < rows; i++){
             for (size_t j = 0; j < cols; j++){
-                activatedMatrix[i][j] = tanh(data[i][j]);
+                activatedMatrix[i][j] = tanh(data[i * cols + j]);
             }
         }
     }
     else if (func == "softmax") {
-        double max_val = data[0][0];
+        double max_val = data[0];
       
         for (size_t i = 0; i < rows; ++i) {
             for (size_t j = 0; j < this->getCols(); ++j) {
-                if (data[i][j] > max_val) {
-                    max_val = data[i][j];
+                if (data[i * cols + j] > max_val) {
+                    max_val = data[i * cols + j];
                 }
             }
         }
@@ -152,7 +142,7 @@ Matrix Matrix::applyActivationFunction(std::string func){
         double exponential_sum = 0.0;
         for (size_t i = 0; i < rows; ++i) { //we dont use paralell here becouse of small size (TODO: test with paralell and see if it is faster!!)
             for (size_t j = 0; j < cols; ++j) {
-                double exponential = std::exp(data[i][j] - max_val);
+                double exponential = std::exp(data[i * cols + j] - max_val);
                 exponential_sum += exponential;
                 activatedMatrix[i][j] = exponential;
             }
@@ -168,7 +158,7 @@ Matrix Matrix::applyActivationFunction(std::string func){
     else if (func == "leakyReLu") {
         for (size_t i = 0; i < rows; i++) {
             for (size_t j = 0; j < cols; j++) {
-                activatedMatrix[i][j] = leakyReLu(data[i][j]);
+                activatedMatrix[i][j] = leakyReLu(data[i * cols + j]);
             }
         }
     }
@@ -187,21 +177,21 @@ Matrix Matrix::applyActivationFunction_derivative(std::string func) {
     if (func == "sigmoid"){
         for (size_t i = 0; i < rows; i++){
             for (size_t j = 0; j < cols; j++){
-                activatedMatrix[i][j] = d_sigmoid(data[i][j]);
+                activatedMatrix[i][j] = d_sigmoid(data[i * cols + j]);
             }
         }
     }
     else if(func == "reLu"){
         for (size_t i = 0; i < rows; i++){
             for (size_t j = 0; j < cols; j++){
-                activatedMatrix[i][j] = d_ReLu(data[i][j]);
+                activatedMatrix[i][j] = d_ReLu(data[i * cols + j]);
             }
         }
     }
     else if (func == "leakyReLu") {
         for (size_t i = 0; i < rows; i++) {
             for (size_t j = 0; j < cols; j++) {
-                activatedMatrix[i][j] = d_leakyReLu(data[i][j]);
+                activatedMatrix[i][j] = d_leakyReLu(data[i * cols + j]);
             }
         }
     }
@@ -214,8 +204,8 @@ double Matrix::getMaxRow() const {
     int max_idx = 0;
     for (size_t i = 0; i < rows; ++i) {
         for (size_t j = 0; j < cols; ++j) {
-            if (data[i][j] > max) {
-                max = data[i][j];
+            if (data[i * cols + j] > max) {
+                max = data[i * cols + j];
                 max_idx = i;
             }
         }
@@ -228,28 +218,23 @@ void Matrix::SaveToBin(std::ofstream& file){
     file.write(reinterpret_cast<char*>(&cols), sizeof(cols));
     for (size_t i = 0; i < rows; ++i) {
         for (size_t j = 0; j < cols; ++j) {
-            file.write(reinterpret_cast<char*>(&data[i][j]), sizeof(data[i][j]));
+            file.write(reinterpret_cast<char*>(&data[i * cols + j]), sizeof(data[i * cols + j]));
         }
     }
 }
 
-void Matrix::LoadFromBin(std::ifstream& file) { //Loading the weights and biases from a file
+void Matrix::LoadFromBin(std::ifstream& file) {
     file.read(reinterpret_cast<char*>(&rows), sizeof(rows)); // Read the number of rows
     file.read(reinterpret_cast<char*>(&cols), sizeof(cols)); // Read the number of cols
-    data.resize(rows);
-    for (size_t i = 0; i < rows; ++i) {
-        data[i].resize(cols);
-        for (size_t j = 0; j < cols; ++j) {
-            file.read(reinterpret_cast<char*>(&data[i][j]), sizeof(data[i][j]));
-        }
-    }
+    data.resize(rows * cols); // Resize to total size
+    file.read(reinterpret_cast<char*>(data.data()), sizeof(double) * rows * cols); // Read all elements at once
 }
 
 Matrix Matrix::divideByNumber(double number) {
     Matrix result(rows, cols);
     for (size_t i = 0; i < rows; ++i) {
         for (size_t j = 0; j < cols; ++j) {
-            result[i][j] = data[i][j] / number;
+            result[i][j] = data[i * cols + j] / number;
         }
     }
     return result;
