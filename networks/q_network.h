@@ -30,8 +30,8 @@ class q_network : public network {
     q_network(int input_layer_size, std::vector <int> hidden_layers_sizes, int output_layer_size, std::vector <std::string> activationFuncions) : network(input_layer_size, hidden_layers_sizes, output_layer_size, activationFuncions) {};
     information get_information(Matrix& input, Game& game_play, bool nextState = true);
     double reward(Matrix current_state);
-    void update_net(double learning_rate, int mini_batch_size, std::deque<information> experiences);
-    void train(int games, int batch_size, int mini_batch_size, double learning_rate, std::map<std::string, int> autosave_file = {});
+    void update_net(double learning_rate, int mini_batch_size, std::deque<information>& mini_batch);
+    void train(int games, int batch_size, int mini_batch_size, double learning_rate, const std::map<std::string, int>& autosave_file = {});
     int select_action(Matrix& state, Game& game_play);
     double get_epsilon() {return epsilon;}
 

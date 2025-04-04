@@ -155,8 +155,9 @@ information q_network::get_information(Matrix& state, Game& game_play, bool next
  * @param Learning_rate Learning rate (0-1).
  * @param mini_batch Deque with information structs to train on.
  * @param mini_batch_size The size of the mini-batch used for training the network.
+ * 
  */
-void q_network::update_net(double learning_rate, int mini_batch_size, std::deque<information> mini_batch) {
+void q_network::update_net(double learning_rate, int mini_batch_size, std::deque<information>& mini_batch) {
     auto start = std::chrono::high_resolution_clock::now();
 
     std::vector<std::vector<Matrix>> batch_errors;
@@ -196,7 +197,7 @@ void q_network::update_net(double learning_rate, int mini_batch_size, std::deque
  *                      (in terms of games) as values. If provided, the network 
  *                      state is saved to the specified files at the given intervals.
  */
-void q_network::train(int games, int batch_size, int mini_batch_size, double learning_rate, std::map<std::string, int> autosave_file) {
+void q_network::train(int games, int batch_size, int mini_batch_size, double learning_rate, const std::map<std::string, int>& autosave_file) {
     std::cout << "starting training" << std::endl;
     std::deque<information> experiences;
     for (int game = 0; game < games; ++game) {
