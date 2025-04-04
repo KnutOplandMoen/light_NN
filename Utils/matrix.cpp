@@ -7,7 +7,7 @@
 Matrix::Matrix(int rows, int cols) : rows(rows), cols(cols), data(rows * cols, 0.0){}
 
 //Deepcopy constructor
-Matrix::Matrix(const Matrix& m) : rows(m.getRows()), cols(m.getCols()), data(m.getCols() * m.getRows(), 0.0){}
+Matrix::Matrix(const Matrix& m) : rows(m.getRows()), cols(m.getCols()), data(m.data){}
 
 //assign operation utilizing copy-swap
 Matrix& Matrix::operator=(Matrix rhs){
@@ -72,7 +72,7 @@ Matrix Matrix::transposed() const{
 
     for (size_t i = 0; i < rows; i++) {
         for (size_t j = 0; j < cols; j++) {
-            transposed[i][j] = data[i * cols + j];
+            transposed[j][i] = data[i * cols + j];
         }
     }
     return transposed;

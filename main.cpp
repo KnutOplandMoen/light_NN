@@ -37,7 +37,7 @@ int main() {
     double batch_size = 32;
 
     // Train the network
-    nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size, false);
+    nn.train(x_labels_train, y_labels_train, x_labels_test, y_labels_test, epochs, learning_rate, batch_size, true);
 
     nn.save_state("file_to_save.txt"); // Save model state to file
 
