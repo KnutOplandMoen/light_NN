@@ -28,6 +28,7 @@ public:
     Board(int x = 300, int y = 100);
     ~Board();//need destructor for proper handling of the inputThread
     Matrix getState();
+    Matrix getState_full_board();
     void handleInput();
     void playSnake();
     int distanceToFood(TDT4102::Point p);
