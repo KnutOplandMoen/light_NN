@@ -163,6 +163,45 @@ Matrix Board::getState() {
     return state;
 }
 
+Matrix Board::getState_full_board() {
+    /*
+    [
+    danger_up, right, down, left,    // [0, 0, 1, 0] # Danger one step away
+    food_adj_up, right, down, left,  // [0, 1, 0, 0] # Food one step away
+    dir_up, right, down, left,       // [0, 0, 1, 0] # Current direction
+    food_dir_up, right, down, left   // [1, 0, 0, 0] # Food direction (relative to head)
+    ]
+    */
+
+    Matrix state(boardW / blockSize * boardH / blockSize, 1); 
+    std::unordered_set<TDT4102::Point> occupiedPositions;
+    TDT4102::Point pos = snake.getSnakeHead();
+    TDT4102::Point food = foodVec[0]; 
+    TDT4102::Point moveIncrement = {blockSize, blockSize};
+    TDT4102::Point dir = snake.getDirection();
+
+    for (int i = 0; i < boardW/blockSize; i++){
+        state[i][0] = 0;
+    }
+
+    // Populate occupied positions (snake body)
+    for (const TDT4102::Point& part : snake.getSnakeBody()) {
+        occupiedPositions.insert(part);
+        int index = (part.y / blockSize) * (boardW / blockSize) + (part.x / blockSize);
+        state[index][0] = 1; // Mark occupied positions in the state matrix
+    }
+
+    int index_head = (pos.y / blockSize) * (boardW / blockSize) + (pos.x / blockSize);
+    state[index_head][0] = 2; // Mark head position in the state matrix
+
+    int index_food = (food.y / blockSize) * (boardW / blockSize) + (food.x / blockSize);
+    state[index_food][0] = 3; // Mark food position in the state matrix    
+
+    // Add
+    return state;
+}
+
+
 /**
  * @brief Function for manually playing snake.
  * 

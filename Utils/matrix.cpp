@@ -2,9 +2,26 @@
 #include "functions.h"
 #include <cmath>
 #include <fstream>
+#include <stdexcept> // Required for std::runtime_error
+#include <limits>    // Required for std::numeric_limits
+#include <string>    // Required for std::to_string
+#include <iostream> // Make sure iostream is included
 
-//"default" constructor
-Matrix::Matrix(int rows, int cols) : rows(rows), cols(cols), data(rows * cols, 0.0){}
+Matrix::Matrix(long rows, long cols) : rows(rows), cols(cols) {
+    // Log immediately upon entry, forcing flush
+    std::cerr << "Matrix::Matrix called with rows=" << rows << ", cols=" << cols << std::endl;
+
+    // Add your dimension checks here (using std::cerr for output)
+    if (rows <= 0 || cols <= 0) {
+         std::cerr << "ERROR: Matrix dimensions must be positive. Got rows=" << rows << ", cols=" << cols << std::endl;
+         throw std::runtime_error("Invalid matrix dimensions"); // Or handle differently
+    }
+    unsigned long long total_elements = static_cast<unsigned long long>(rows) * cols;
+     std::cerr << "Matrix::Matrix attempting to allocate " << total_elements << " elements." << std::endl;
+
+    // ... rest of the constructor (resize/allocation) ...
+    data.resize(total_elements, 0.0); // Using resize after checks
+}
 
 //Deepcopy constructor
 Matrix::Matrix(const Matrix& m) : rows(m.getRows()), cols(m.getCols()), data(m.data){}

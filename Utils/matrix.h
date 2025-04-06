@@ -9,14 +9,14 @@
 class Matrix{
 private:
     std::vector<double> data;
-    int rows;
-    int cols;
+    long rows;
+    long cols;
 public:
-    Matrix(int rows, int cols);
+    Matrix(long rows, long cols);
     Matrix() = default;
     Matrix(const Matrix& m); 
-    int getRows() const {return rows;}
-    int getCols() const {return cols;}
+    long getRows() const {return rows;}
+    long getCols() const {return cols;}
     double getMaxRow() const;
 
     void setRandomValues(double lowerBound, double upperBound);
